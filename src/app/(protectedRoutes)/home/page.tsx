@@ -1,84 +1,103 @@
-import React from "react";
-import FeatureSectionLayout from "./_components/FeatureSectionLayout";
-import { potentialCustomer } from "@/lib/data";
-import FeatureCard from "./_components/FeatureCard";
-import OnBoarding from "./_components/OnBoarding";
-import { Upload, Webcam } from "lucide-react";
-import Image from "next/image";
-import UserInfoCard from "@/components/ReusableComponent/UserInfoCard";
+"use client";
 
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Home, BarChart3, TrendingUp, Users, Megaphone, Sparkles, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
+import ExecutiveOverview from "./_components/ExecutiveOverview";
+import SalesSnapshot from "./_components/SalesSnapshot";
+import CustomerSegments from "./_components/CustomerSegments";
+import ForecastPreview from "./_components/ForecastPreview";
+import QuickActions from "./_components/QuickActions";
+import RecentActivities from "./_components/RecentActivities";
+import LoyaltyUpsell from "./_components/LoyaltyUpsell";
+import NotificationsAlerts from "./_components/NotificationsAlerts";
+import PageFooter from "./_components/PageFooter";
 
-const page = () => {
+const navigationTabs = [
+  { id: "home", label: "Home", icon: Home, route: "/home" },
+  { id: "analytics", label: "Analytics", icon: BarChart3, route: "/dashboard" },
+  { id: "forecast", label: "Forecast", icon: TrendingUp, route: "/dashboard" },
+  { id: "customers", label: "Customers", icon: Users, route: "/lead" },
+  { id: "campaigns", label: "Campaigns", icon: Megaphone, route: "/webinars" },
+  { id: "ai-workspace", label: "AI Workspace", icon: Sparkles, route: "/ai-agents" },
+  { id: "settings", label: "Settings", icon: Settings, route: "/settings" },
+];
+
+export default function HomePage() {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("home");
+
+  const handleTabClick = (route: string) => {
+    if (route !== "/home") {
+      router.push(route);
+    }
+  };
+
   return (
-    <div className="w-full mx-auto h-full">
-      <div className="w-full flex flex-col sm:flex-row justify-between items-start gap-14">
-        <div className="space-y-6">
-          <h2 className="text-primary font-semibold text-4xl">
-            Get maximum Conversion from your webinars
-          </h2>
-          <OnBoarding />
-        </div>
-
-        {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 place-content-center">
-          <FeatureCard
-            Icon={<Upload className="w-10 h-10" />}
-            heading="Browse or drag a pre-recorded webinar file"
-            link="#"
-          />
-          <FeatureCard
-            Icon={<Webcam className="w-10 h-10" />}
-            heading="Browse or drag a pre-recorded webinar file"
-            link="/webinars"
-          />
-        </div>
+    <div className="w-full min-h-screen space-y-8 pb-12">
+      {/* Top Navigation Bar */}
+      <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-b border-border/50 rounded-2xl p-2 shadow-lg">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="w-full h-14 bg-gradient-to-r from-muted/80 to-muted/60 backdrop-blur-md border-2 border-border/50 shadow-xl rounded-xl p-1.5 flex overflow-x-auto scrollbar-hide">
+            {navigationTabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <TabsTrigger
+                  key={tab.id}
+                  value={tab.id}
+                  onClick={() => handleTabClick(tab.route)}
+                  className="flex items-center justify-center gap-2 text-sm font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:text-purple-400 data-[state=active]:shadow-xl data-[state=active]:border data-[state=active]:border-purple-500/30 transition-all duration-300 rounded-lg whitespace-nowrap flex-shrink-0 min-w-fit px-4"
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </Tabs>
       </div>
 
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 rounded-xl  bg-background-10">
-        <FeatureSectionLayout
-          heading="See how far along are your potential customers"
-          link="/lead"
-        >
-          <div className="p-5 flex flex-col gap-4 items-start border rounded-xl border-border backdrop-blur-3xl">
-            <div className="w-full flex justify-between items-center gap-3">
-              <p className="text-primary font-semibold text-sm">Conversions</p>
-              <p className="text-xs text-muted-foreground font-normal">50</p>
-            </div>
-            <div className="flex flex-col gap-4 items-start">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <Image
-                  src="/featurecard.png"
-                  alt="Info-card"
-                  width={250}
-                  height={250}
-                  className="w-full h-full object-cover rounded-xl"
-                  key={index}
-                />
-              ))}
-            </div>
+      {/* Main Content */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsContent value="home" className="mt-0 space-y-8">
+          {/* Executive Overview Panel */}
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Executive Overview</h1>
+            <p className="text-muted-foreground mb-6">Key performance indicators and business metrics</p>
+            <ExecutiveOverview />
           </div>
-        </FeatureSectionLayout>
-        <FeatureSectionLayout
-          heading="See the list of your current customers"
-          link="/pipeline"
-        >
-          <div className="flex gap-4 items-center h-full w-full justify-center relative flex-wrap">
-            {potentialCustomer.slice(0, 2).map((customer, index) => (
-              <UserInfoCard customer={customer} tags={customer.tags} key={index} />
-            ))}
-            {/* <InfoCard customer={potentialCustomer[0]} className="" /> */}
-            <Image
-              src={"/glowCard.png"}
-              alt="Info-card"
-              width={350}
-              height={350}
-              className="object-cover rounded-xl absolute px-5 mb-28 hidden sm:flex backdrop-blur-[20px]"
-            />
+
+          {/* Sales Snapshot Cards */}
+          <div>
+            <h2 className="text-2xl font-bold text-foreground mb-6">Sales Snapshot</h2>
+            <SalesSnapshot />
           </div>
-        </FeatureSectionLayout>
-      </div>
+
+          {/* Customer Segment Overview */}
+          <CustomerSegments />
+
+          {/* Forecast Preview and Quick Actions Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ForecastPreview />
+            <QuickActions />
+          </div>
+
+          {/* Recent Activities and Notifications Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <RecentActivities />
+            <NotificationsAlerts />
+          </div>
+
+          {/* Loyalty & Upsell Highlight */}
+          <div>
+            <LoyaltyUpsell />
+          </div>
+
+          {/* Footer */}
+          <PageFooter />
+        </TabsContent>
+      </Tabs>
     </div>
   );
-};
-
-export default page;
+}
