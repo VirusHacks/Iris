@@ -2,6 +2,9 @@
 
 import { useDashboardDataContext } from "../../DashboardDataProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 const formatCurrency = (value: number) => {
@@ -37,6 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function AOVTrendLineChart() {
   const { aovTrend } = useDashboardDataContext();
+  const router = useRouter();
   const data = aovTrend || [];
 
   if (data.length === 0) {
@@ -63,7 +67,7 @@ export default function AOVTrendLineChart() {
     <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
       <CardHeader className="border-b border-border/50 bg-gradient-to-r from-blue-500/5 to-transparent">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="flex-1">
             <CardTitle className="text-xl font-bold flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
               Average Order Value Trend
@@ -72,6 +76,15 @@ export default function AOVTrendLineChart() {
               Average: {formatCurrency(avgAOV)} • Range: {formatCurrency(minAOV)} - {formatCurrency(maxAOV)}
             </CardDescription>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/dashboard/orders")}
+            className="ml-4 border-purple-500/30 hover:bg-purple-500/10"
+          >
+            View Details
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="p-6">

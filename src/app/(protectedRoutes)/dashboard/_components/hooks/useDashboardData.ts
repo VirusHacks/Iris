@@ -168,93 +168,139 @@ export function useDashboardData() {
       ]);
 
       // Fetch forecast data in parallel (only if we have historical data)
-      // Forecasts are now cached in database, so these calls are fast
+      // Try blockchain first, then fall back to API
       let revenueForecast = null;
       let aovForecast = null;
       let ordersForecast = null;
 
       if (monthlySales && monthlySales.length >= 3) {
         try {
-          // Fetch forecasts - these will use cached data if available
-          const [revenueForecastRes, aovForecastRes, ordersForecastRes] = await Promise.allSettled([
-            fetch("/api/dashboard/forecast?type=revenue&periods=6"),
-            fetch("/api/dashboard/forecast?type=aov&periods=6"),
-            fetch("/api/dashboard/forecast?type=orders&periods=6"),
-          ]);
-
-          // Handle revenue forecast
-          if (revenueForecastRes.status === "fulfilled") {
-            if (revenueForecastRes.value.ok) {
-              try {
-                const data = await revenueForecastRes.value.json();
-                if (data && !data.error && data.historical && data.forecast) {
-                  revenueForecast = data;
-                } else if (data?.error) {
-                  console.warn("Revenue forecast error:", data.error);
-                }
-              } catch (e) {
-                console.warn("Failed to parse revenue forecast:", e);
+          // Try to get wallet address for blockchain fetch
+          let walletAddress: string | null = null;
+          if (typeof window !== "undefined" && window.ethereum) {
+            try {
+              const { getUserWalletAddress } = await import("@/lib/blockchain/clientBlockchain");
+              walletAddress = await getUserWalletAddress();
+              if (walletAddress) {
+                console.log("[useDashboardData] Wallet connected, trying blockchain first:", walletAddress);
               }
-            } else {
-              try {
-                const errorData = await revenueForecastRes.value.json();
-                console.warn("Revenue forecast API error:", errorData.error || `HTTP ${revenueForecastRes.value.status}`);
-              } catch (e) {
-                console.warn("Revenue forecast failed:", revenueForecastRes.value.statusText);
-              }
+            } catch (err) {
+              console.log("[useDashboardData] Could not get wallet address:", err);
             }
-          } else {
-            console.warn("Revenue forecast request rejected:", revenueForecastRes.reason);
           }
 
-          // Handle AOV forecast
-          if (aovForecastRes.status === "fulfilled") {
-            if (aovForecastRes.value.ok) {
-              try {
-                const data = await aovForecastRes.value.json();
-                if (data && !data.error && data.historical && data.forecast) {
-                  aovForecast = data;
-                } else if (data?.error) {
-                  console.warn("AOV forecast error:", data.error);
-                }
-              } catch (e) {
-                console.warn("Failed to parse AOV forecast:", e);
+          // Try blockchain first if wallet is connected
+          if (walletAddress) {
+            try {
+              const { fetchForecastFromBlockchain } = await import("@/lib/blockchain/clientBlockchain");
+              console.log("[useDashboardData] Attempting to fetch forecasts from blockchain...");
+              
+              const [blockchainRevenue, blockchainAOV, blockchainOrders] = await Promise.allSettled([
+                fetchForecastFromBlockchain(walletAddress, "revenue").catch(() => null),
+                fetchForecastFromBlockchain(walletAddress, "aov").catch(() => null),
+                fetchForecastFromBlockchain(walletAddress, "orders").catch(() => null),
+              ]);
+
+              if (blockchainRevenue.status === "fulfilled" && blockchainRevenue.value) {
+                revenueForecast = blockchainRevenue.value;
+                console.log("[useDashboardData] ✅ Revenue forecast loaded from blockchain");
+              } else if (blockchainRevenue.status === "fulfilled" && blockchainRevenue.value === null) {
+                console.log("[useDashboardData] ℹ️ No revenue forecast on blockchain, will use API");
               }
-            } else {
-              try {
-                const errorData = await aovForecastRes.value.json();
-                console.warn("AOV forecast API error:", errorData.error || `HTTP ${aovForecastRes.value.status}`);
-              } catch (e) {
-                console.warn("AOV forecast failed:", aovForecastRes.value.statusText);
+              
+              if (blockchainAOV.status === "fulfilled" && blockchainAOV.value) {
+                aovForecast = blockchainAOV.value;
+                console.log("[useDashboardData] ✅ AOV forecast loaded from blockchain");
+              } else if (blockchainAOV.status === "fulfilled" && blockchainAOV.value === null) {
+                console.log("[useDashboardData] ℹ️ No AOV forecast on blockchain, will use API");
               }
+              
+              if (blockchainOrders.status === "fulfilled" && blockchainOrders.value) {
+                ordersForecast = blockchainOrders.value;
+                console.log("[useDashboardData] ✅ Orders forecast loaded from blockchain");
+              } else if (blockchainOrders.status === "fulfilled" && blockchainOrders.value === null) {
+                console.log("[useDashboardData] ℹ️ No orders forecast on blockchain, will use API");
+              }
+            } catch (blockchainError) {
+              console.log("[useDashboardData] Blockchain fetch failed, falling back to API:", blockchainError);
             }
-          } else {
-            console.warn("AOV forecast request rejected:", aovForecastRes.reason);
           }
 
-          // Handle orders forecast
-          if (ordersForecastRes.status === "fulfilled") {
-            if (ordersForecastRes.value.ok) {
-              try {
-                const data = await ordersForecastRes.value.json();
-                if (data && !data.error && data.historical && data.forecast) {
-                  ordersForecast = data;
-                } else if (data?.error) {
-                  console.warn("Orders forecast error:", data.error);
-                }
-              } catch (e) {
-                console.warn("Failed to parse orders forecast:", e);
+          // Fetch from API for any missing forecasts
+          const apiPromises: { type: string; promise: Promise<any> }[] = [];
+          if (!revenueForecast) {
+            apiPromises.push({ type: "revenue", promise: fetch("/api/dashboard/forecast?type=revenue&periods=6").then(r => r.ok ? r.json() : null) });
+          }
+          if (!aovForecast) {
+            apiPromises.push({ type: "aov", promise: fetch("/api/dashboard/forecast?type=aov&periods=6").then(r => r.ok ? r.json() : null) });
+          }
+          if (!ordersForecast) {
+            apiPromises.push({ type: "orders", promise: fetch("/api/dashboard/forecast?type=orders&periods=6").then(r => r.ok ? r.json() : null) });
+          }
+
+          if (apiPromises.length > 0) {
+            const apiResults = await Promise.allSettled(apiPromises.map(p => p.promise));
+            
+            // Map results back to forecast types
+            let revenueIdx = -1, aovIdx = -1, ordersIdx = -1;
+            if (!revenueForecast) revenueIdx = apiPromises.findIndex(p => p.type === "revenue");
+            if (!aovForecast) aovIdx = apiPromises.findIndex(p => p.type === "aov");
+            if (!ordersForecast) ordersIdx = apiPromises.findIndex(p => p.type === "orders");
+            
+            const revenueForecastRes = revenueIdx >= 0 ? apiResults[revenueIdx] : { status: "fulfilled" as const, value: null };
+            const aovForecastRes = aovIdx >= 0 ? apiResults[aovIdx] : { status: "fulfilled" as const, value: null };
+            const ordersForecastRes = ordersIdx >= 0 ? apiResults[ordersIdx] : { status: "fulfilled" as const, value: null };
+
+          // Handle revenue forecast from API (if not from blockchain)
+          if (!revenueForecast && revenueForecastRes.status === "fulfilled" && revenueForecastRes.value) {
+            try {
+              const data = revenueForecastRes.value;
+              if (data && !data.error && data.historical && data.forecast) {
+                revenueForecast = data;
+                console.log("[useDashboardData] 📡 Revenue forecast loaded from API");
+              } else if (data?.error) {
+                console.warn("[useDashboardData] Revenue forecast error:", data.error);
               }
-            } else {
-              try {
-                const errorData = await ordersForecastRes.value.json();
-                console.warn("Orders forecast API error:", errorData.error || `HTTP ${ordersForecastRes.value.status}`);
-              } catch (e) {
-                console.warn("Orders forecast failed:", ordersForecastRes.value.statusText);
-              }
+            } catch (e) {
+              console.warn("[useDashboardData] Failed to parse revenue forecast:", e);
             }
-          } else {
-            console.warn("Orders forecast request rejected:", ordersForecastRes.reason);
+          } else if (revenueForecastRes.status === "rejected") {
+            console.warn("[useDashboardData] Revenue forecast request rejected:", revenueForecastRes.reason);
+          }
+
+          // Handle AOV forecast from API (if not from blockchain)
+          if (!aovForecast && aovForecastRes.status === "fulfilled" && aovForecastRes.value) {
+            try {
+              const data = aovForecastRes.value;
+              if (data && !data.error && data.historical && data.forecast) {
+                aovForecast = data;
+                console.log("[useDashboardData] 📡 AOV forecast loaded from API");
+              } else if (data?.error) {
+                console.warn("[useDashboardData] AOV forecast error:", data.error);
+              }
+            } catch (e) {
+              console.warn("[useDashboardData] Failed to parse AOV forecast:", e);
+            }
+          } else if (aovForecastRes.status === "rejected") {
+            console.warn("[useDashboardData] AOV forecast request rejected:", aovForecastRes.reason);
+          }
+
+          // Handle orders forecast from API (if not from blockchain)
+          if (!ordersForecast && ordersForecastRes.status === "fulfilled" && ordersForecastRes.value) {
+            try {
+              const data = ordersForecastRes.value;
+              if (data && !data.error && data.historical && data.forecast) {
+                ordersForecast = data;
+                console.log("[useDashboardData] 📡 Orders forecast loaded from API");
+              } else if (data?.error) {
+                console.warn("[useDashboardData] Orders forecast error:", data.error);
+              }
+            } catch (e) {
+              console.warn("[useDashboardData] Failed to parse orders forecast:", e);
+            }
+          } else if (ordersForecastRes.status === "rejected") {
+            console.warn("[useDashboardData] Orders forecast request rejected:", ordersForecastRes.reason);
+          }
           }
         } catch (forecastError) {
           console.warn("Forecast data unavailable:", forecastError);

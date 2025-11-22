@@ -2,6 +2,9 @@
 
 import { useDashboardDataContext } from "../../DashboardDataProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Users } from "lucide-react";
 
@@ -31,6 +34,7 @@ const COLORS = ["#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#ec4899"
 
 export default function TopCustomersBarChart() {
   const { topCustomers } = useDashboardDataContext();
+  const router = useRouter();
   const data = topCustomers || [];
 
   if (data.length === 0) {
@@ -62,7 +66,7 @@ export default function TopCustomersBarChart() {
     <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
       <CardHeader className="border-b border-border/50 bg-gradient-to-r from-amber-500/5 to-transparent">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="flex-1">
             <CardTitle className="text-xl font-bold flex items-center gap-2">
               <Users className="h-5 w-5 text-amber-400" />
               Top Customers by Spending
@@ -71,6 +75,15 @@ export default function TopCustomersBarChart() {
               Customer #{topCustomer.customerId} leads with {formatCurrency(topCustomer.revenue)} • Total: {formatCurrency(totalSpent)}
             </CardDescription>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/dashboard/customers")}
+            className="ml-4 border-purple-500/30 hover:bg-purple-500/10"
+          >
+            View Details
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="p-6">

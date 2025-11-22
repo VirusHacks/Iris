@@ -4,6 +4,8 @@ import { useDashboardDataContext } from "../../DashboardDataProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Line } from "recharts";
 import { TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useEffect } from "react";
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("en-US", {
@@ -54,6 +56,25 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
   const { revenueForecast } = useDashboardDataContext();
   const data = revenueForecast;
   const error = revenueForecast?.error || null;
+  const isFromBlockchain = data?.source === "blockchain";
+
+  useEffect(() => {
+    if (data && !error) {
+      console.log("[RevenueForecastAreaChart] Data loaded:", {
+        source: data.source || "api",
+        historicalCount: data.historical?.length || 0,
+        forecastCount: data.forecast?.length || 0,
+        metrics: data.metrics,
+        timestamp: data.timestamp ? new Date(data.timestamp * 1000).toISOString() : null,
+      });
+      
+      if (isFromBlockchain) {
+        console.log("[RevenueForecastAreaChart] ✅ Data is from blockchain");
+      } else {
+        console.log("[RevenueForecastAreaChart] 📡 Data is from API");
+      }
+    }
+  }, [data, error, isFromBlockchain]);
 
   if (!data || data.error) {
     const errorMessage = error || data?.error || "No forecast available";
@@ -62,11 +83,23 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
     return (
       <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl">
         <CardHeader className="border-b border-border/50 bg-gradient-to-r from-purple-500/10 to-transparent">
-          <CardTitle className="text-xl font-bold flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-purple-400" />
-            Revenue Forecast (Prophet AI)
-          </CardTitle>
-          <CardDescription>AI-powered revenue predictions</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xl font-bold flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-purple-400" />
+                Revenue Forecast (Prophet AI)
+              </CardTitle>
+              <CardDescription className="flex items-center gap-2 mt-1">
+                AI-powered revenue predictions
+                {isFromBlockchain && (
+                  <Badge variant="outline" className="gap-1 text-green-500 border-green-500/50">
+                    <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                    On-Chain
+                  </Badge>
+                )}
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="p-6">
           <div className="h-[450px] flex flex-col items-center justify-center gap-4">
@@ -122,6 +155,12 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
             <CardDescription className="mt-2">
               {periods}-month projection • MAPE: {data.metrics?.mape?.toFixed(2) || "N/A"}% • 
               RMSE: {formatCurrency(data.metrics?.rmse || 0)}
+              {isFromBlockchain && (
+                <Badge variant="outline" className="ml-2 gap-1 text-green-500 border-green-500/50">
+                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  On-Chain
+                </Badge>
+              )}
             </CardDescription>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from "recharts";
 import { Loader2 } from "lucide-react";
+import StoreToBlockchainButton from "../StoreToBlockchainButton";
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("en-US", {
@@ -43,59 +44,113 @@ export default function RevenueForecast({ periods }: { periods: number }) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dataSource, setDataSource] = useState<"blockchain" | "api" | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  useEffect(() => {
+  // Extract data fetching logic into a reusable function
+  const fetchData = async () => {
     setLoading(true);
     setError(null);
     
-    fetch(`/api/dashboard/forecast?type=revenue&periods=${periods}`)
-      .then(async (res) => {
-        const data = await res.json();
-        
-        if (!res.ok) {
-          console.error("[RevenueForecast] API error:", data);
-          setError(data.error || `HTTP ${res.status}: Failed to load forecast`);
-          setLoading(false);
-          return;
+    // Try to fetch from blockchain first if user has wallet connected
+    const tryBlockchainFirst = async () => {
+      try {
+        // Check if MetaMask is available
+        if (typeof window !== "undefined" && window.ethereum) {
+          const { getUserWalletAddress, fetchForecastFromBlockchain } = await import("@/lib/blockchain/clientBlockchain");
+          const walletAddress = await getUserWalletAddress();
+          
+          if (walletAddress) {
+            console.log("[RevenueForecast] Attempting to fetch from blockchain...");
+            try {
+              const blockchainData = await fetchForecastFromBlockchain(walletAddress, "revenue");
+              
+              if (blockchainData && blockchainData.historical && blockchainData.forecast) {
+                console.log("[RevenueForecast] Data loaded from blockchain");
+                setDataSource("blockchain");
+                setData(blockchainData);
+                setLoading(false);
+                return;
+              }
+            } catch (blockchainError) {
+              console.log("[RevenueForecast] Blockchain fetch failed, falling back to API:", blockchainError);
+            }
+          }
         }
-        
-        if (data.error) {
-          console.error("[RevenueForecast] Forecast error:", data.error);
-          setError(data.error);
+      } catch (err) {
+        console.log("[RevenueForecast] Blockchain check failed, using API:", err);
+      }
+      
+      // Fallback to API
+      console.log("[RevenueForecast] Fetching from API...");
+      fetch(`/api/dashboard/forecast?type=revenue&periods=${periods}`)
+        .then(async (res) => {
+          const data = await res.json();
+          
+          if (!res.ok) {
+            console.error("[RevenueForecast] API error:", data);
+            setError(data.error || `HTTP ${res.status}: Failed to load forecast`);
+            setLoading(false);
+            return;
+          }
+          
+          if (data.error) {
+            console.error("[RevenueForecast] Forecast error:", data.error);
+            setError(data.error);
+            setLoading(false);
+            return;
+          }
+          
+          // Validate data structure
+          if (!data.historical || !data.forecast) {
+            console.error("[RevenueForecast] Invalid data structure:", data);
+            setError("Invalid forecast data format");
+            setLoading(false);
+            return;
+          }
+          
+          if (data.historical.length === 0) {
+            console.warn("[RevenueForecast] No historical data");
+            setError("No historical data available");
+            setLoading(false);
+            return;
+          }
+          
+          console.log("[RevenueForecast] Data loaded from API:", {
+            historical: data.historical.length,
+            forecast: data.forecast.length,
+            metrics: data.metrics
+          });
+          
+          setDataSource("api");
+          setData(data);
           setLoading(false);
-          return;
-        }
-        
-        // Validate data structure
-        if (!data.historical || !data.forecast) {
-          console.error("[RevenueForecast] Invalid data structure:", data);
-          setError("Invalid forecast data format");
+        })
+        .catch((err) => {
+          console.error("[RevenueForecast] Fetch error:", err);
+          setError(`Failed to load forecast: ${err.message}`);
           setLoading(false);
-          return;
-        }
-        
-        if (data.historical.length === 0) {
-          console.warn("[RevenueForecast] No historical data");
-          setError("No historical data available");
-          setLoading(false);
-          return;
-        }
-        
-        console.log("[RevenueForecast] Data loaded:", {
-          historical: data.historical.length,
-          forecast: data.forecast.length,
-          metrics: data.metrics
         });
-        
-        setData(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("[RevenueForecast] Fetch error:", err);
-        setError(`Failed to load forecast: ${err.message}`);
-        setLoading(false);
-      });
-  }, [periods]);
+    };
+    
+    tryBlockchainFirst();
+  };
+
+  // Fetch data on mount and when refreshKey changes
+  useEffect(() => {
+    fetchData();
+  }, [periods, refreshKey]);
+
+  // Refresh data after storing to blockchain
+  const handleStored = async (txHash: string, blockNumber: number) => {
+    console.log(`[RevenueForecast] Forecast stored! TX: ${txHash}, Block: ${blockNumber}`);
+    console.log("[RevenueForecast] Refreshing data to show blockchain data...");
+    
+    // Wait a moment for blockchain to update, then refresh
+    setTimeout(() => {
+      setRefreshKey(prev => prev + 1);
+    }, 2000); // 2 second delay to allow blockchain to update
+  };
 
   if (loading) {
     return (
@@ -175,11 +230,26 @@ export default function RevenueForecast({ periods }: { periods: number }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Revenue Forecast (Prophet Model)</CardTitle>
-        <CardDescription>
-          {periods}-month AI forecast • MAPE: {data.metrics?.mape?.toFixed(2) || "N/A"}% • 
-          RMSE: {formatCurrency(data.metrics?.rmse || 0)}
-        </CardDescription>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle>Revenue Forecast (Prophet Model)</CardTitle>
+            <CardDescription>
+              {periods}-month AI forecast • MAPE: {data.metrics?.mape?.toFixed(2) || "N/A"}% • 
+              RMSE: {formatCurrency(data.metrics?.rmse || 0)}
+              {dataSource === "blockchain" && (
+                <span className="ml-2 text-xs text-green-500">• On-Chain</span>
+              )}
+            </CardDescription>
+          </div>
+          {dataSource === "api" && data && (
+            <StoreToBlockchainButton
+              forecastData={data}
+              forecastType="revenue"
+              periods={periods}
+              onStored={handleStored}
+            />
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="bg-card rounded-lg p-4 border border-border">

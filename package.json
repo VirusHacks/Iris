@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.19.4",
+    "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.3.1",
     "@radix-ui/react-accordion": "^1.2.10",
@@ -51,6 +52,7 @@
     "csv-parse": "^6.1.0",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
+    "ethers": "^6.15.0",
     "framer-motion": "^12.12.2",
     "input-otp": "^1.4.2",
     "jsonwebtoken": "^9.0.2",

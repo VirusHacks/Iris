@@ -4,6 +4,7 @@ import { useDashboardDataContext } from "../../DashboardDataProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Line } from "recharts";
 import { ShoppingCart } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -29,6 +30,7 @@ export default function OrdersForecastAreaChart({ periods }: { periods: number }
   const { ordersForecast } = useDashboardDataContext();
   const data = ordersForecast;
   const error = ordersForecast?.error || null;
+  const isFromBlockchain = data?.source === "blockchain";
 
   if (!data || data.error) {
     const errorMessage = error || data?.error || "No forecast available";
@@ -63,6 +65,12 @@ export default function OrdersForecastAreaChart({ periods }: { periods: number }
             </CardTitle>
             <CardDescription className="mt-2">
               {periods}-month projection • MAPE: {data.metrics?.mape?.toFixed(2) || "N/A"}%
+              {isFromBlockchain && (
+                <Badge variant="outline" className="ml-2 gap-1 text-green-500 border-green-500/50">
+                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  On-Chain
+                </Badge>
+              )}
             </CardDescription>
           </div>
         </div>
