@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String     @db.VarChar(100)
+  clerkId          String     @unique
+  email            String     @unique
+  profileImage     String
+  stripeConnectId  String?    @db.VarChar(255)
+  lastLoginAt      DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  deletedAt        DateTime?
+  subscription     Boolean    @default(false)
+  stripeCustomerId String?    @db.VarChar(255)
+  webinars         Webinar[]  @relation("PresenterWebinars")
+  aiAgents         AiAgents[] @relation("AiAgentsToUser")
+
+  @@index([email])
+  @@index([clerkId])
+}
+
+model Webinar {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String            @db.VarChar(255)
+  description     String?
+  startTime       DateTime
+  endTime         DateTime?
+  duration        Int               @default(0)
+  webinarStatus   WebinarStatusEnum @default(SCHEDULED)
+  presenterId     String            @db.Uuid
+  tags            String[]
+  ctaLabel        String?           @db.VarChar(50)
+  ctaType         CtaTypeEnum
+  ctaUrl          String?           @db.VarChar(255)
+  couponCode      String?           @db.VarChar(50)
+  couponEnabled   Boolean           @default(false)
+  couponExpiry    DateTime?
+  lockChat        Boolean           @default(false)
+  stripeProductId String?           @db.VarChar(255)
+  aiAgentId       String?           @db.Uuid
+  priceId         String?           @db.VarChar(255)
+  recordingUrl    String?
+  thumbnail       String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  deletedAt       DateTime?
+  attendeeId      String?           @db.Uuid
+  attendances     Attendance[]
+  Attendee        Attendee?         @relation(fields: [attendeeId], references: [id])
+  presenter       User              @relation("PresenterWebinars", fields: [presenterId], references: [id], onDelete: Cascade)
+
+  @@index([presenterId])
+  @@index([aiAgentId])
+  @@index([startTime])
+}
+
+model Attendee {
+  id         String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email      String         @unique
+  name       String         @db.VarChar(100)
+  callStatus CallStatusEnum @default(PENDING)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  Attendance Attendance[]
+  Webinar    Webinar[]
+
+}
+
+model Attendance {
+  id           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  webinarId    String           @db.Uuid
+  joinedAt     DateTime         @default(now())
+  leftAt       DateTime?
+  attendedType AttendedTypeEnum
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  attendeeId   String           @db.Uuid
+  userId       String?          @db.Uuid
+  user         Attendee         @relation(fields: [attendeeId], references: [id])
+  webinar      Webinar          @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+
+  @@unique([attendeeId, webinarId])
+  @@index([webinarId])
+  @@index([attendedType])
+}
+
+model AiAgents {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String   @db.VarChar(100)
+  firstMessage String
+  prompt       String
+  model        String   @db.VarChar(50)
+  provider     String   @db.VarChar(50)
+  userId       String   @db.Uuid
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  User         User[]   @relation("AiAgentsToUser")
+}
+
+enum AttendedTypeEnum {
+  REGISTERED
+  ATTENDED
+  ADDED_TO_CART
+  FOLLOW_UP
+  BREAKOUT_ROOM
+  CONVERTED
+}
+
+enum CtaTypeEnum {
+  BUY_NOW
+  BOOK_A_CALL
+}
+
+enum WebinarStatusEnum {
+  SCHEDULED
+  WAITING_ROOM
+  LIVE
+  ENDED
+  CANCELLED
+}
+
+enum CallStatusEnum {
+  PENDING
+  InProgress
+  COMPLETED
+}
+
+model SalesTransaction {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoice      String   @db.VarChar(50)
+  stockCode    String   @db.VarChar(50)
+  description  String   @default("Unknown Product")
+  quantity     Float
+  invoiceDate  DateTime
+  price        Float
+  customerId   Int      @default(0)
+  country      String   @db.VarChar(100)
+  totalPrice   Float
+  invoiceMonth String   @db.VarChar(7) // YYYY-MM format
+  dayOfWeek    String   @db.VarChar(10) // Mon, Tue, etc.
+  hourOfDay    Int
+  isReturn     Boolean  @default(false)
+  isCreditNote Boolean  @default(false)
+  userId       String   @db.Uuid
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([invoice])
+  @@index([customerId])
+  @@index([invoiceMonth])
+  @@index([userId])
+  @@index([invoiceDate])
+}
+
+model RFMAnalysis {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId   Int      @unique
+  recency      Int      // Days since last order
+  frequency    Int      // Count of unique invoices
+  monetary     Float    // Sum of TotalPrice
+  rScore       Int      // 1-5
+  fScore       Int      // 1-5
+  mScore       Int      // 1-5
+  rfmScore     String   @db.VarChar(3) // e.g., "342"
+  rfmSegment   String   @db.VarChar(50) // e.g., "Champions"
+  userId       String   @db.Uuid
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([rfmSegment])
+}
+
+model DashboardAnalytics {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @unique @db.Uuid
+  // Store aggregated analytics as JSON
+  monthlySales     Json   // Array of {month, revenue}
+  aovTrend         Json   // Array of {month, aov}
+  topCountries     Json   // Array of {country, revenue}
+  topProducts      Json   // Array of {product, revenue}
+  topCustomers     Json   // Array of {customerId, revenue}
+  rfmDistribution  Json   // Array of {segment, count}
+  revenueByDay     Json   // Array of {day, revenue}
+  revenueByHour    Json   // Array of {hour, revenue}
+  // Store RFM data separately for easier querying
+  rfmData          Json   // Array of RFM analysis objects
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId])
+}

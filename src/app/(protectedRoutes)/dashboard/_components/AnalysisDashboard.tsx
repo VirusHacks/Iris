@@ -1,0 +1,83 @@
+"use client";
+
+import { useDashboardDataContext } from "./DashboardDataProvider";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
+import MonthlySalesAreaChart from "./charts/analysis/MonthlySalesAreaChart";
+import AOVTrendLineChart from "./charts/analysis/AOVTrendLineChart";
+import TopCountriesBarChart from "./charts/analysis/TopCountriesBarChart";
+import TopProductsBarChart from "./charts/analysis/TopProductsBarChart";
+import TopCustomersBarChart from "./charts/analysis/TopCustomersBarChart";
+import RFMRadialChart from "./charts/analysis/RFMRadialChart";
+import RevenueByDayBarChart from "./charts/analysis/RevenueByDayBarChart";
+import RevenueByHourAreaChart from "./charts/analysis/RevenueByHourAreaChart";
+import RevenueSummaryCards from "./charts/analysis/RevenueSummaryCards";
+
+export default function AnalysisDashboard() {
+  const { loading } = useDashboardDataContext();
+
+  if (loading) {
+    return (
+      <div className="w-full space-y-6">
+        {/* Summary Cards Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="bg-gradient-to-br from-card to-card/50 border-border/50 backdrop-blur-sm">
+              <CardContent className="p-6">
+                <div className="h-24 animate-pulse bg-muted rounded" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Charts Skeleton */}
+        {[1, 2, 3, 4].map((row) => (
+          <div key={row} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {[1, 2].map((col) => (
+              <Card key={col} className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl">
+                <CardContent className="p-6">
+                  <div className="h-[400px] flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full space-y-6">
+      {/* Summary Cards Row */}
+      <RevenueSummaryCards />
+
+      {/* Main Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Row 1: Revenue Trends */}
+        <MonthlySalesAreaChart />
+        <AOVTrendLineChart />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Row 2: Top Performers */}
+        <TopCountriesBarChart />
+        <TopProductsBarChart />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Row 3: Customer Analysis */}
+        <TopCustomersBarChart />
+        <RFMRadialChart />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Row 4: Time Analysis */}
+        <RevenueByDayBarChart />
+        <RevenueByHourAreaChart />
+      </div>
+    </div>
+  );
+}
+
