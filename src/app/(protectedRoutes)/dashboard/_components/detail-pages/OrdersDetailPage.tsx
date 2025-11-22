@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useDashboardDataContext } from "../DashboardDataProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ShoppingCart, TrendingUp, Package, BarChart3 } from "lucide-react";
+import { ArrowLeft, ShoppingCart, TrendingUp, Package, BarChart3, MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, AreaChart, Area } from "recharts";
 import Chatbot from "./Chatbot";
@@ -13,6 +14,7 @@ import { ORDERS_SYSTEM_MESSAGE } from "@/lib/ai/systemMessages";
 export default function OrdersDetailPage() {
   const router = useRouter();
   const { monthlySales, aovTrend, ordersForecast, loading } = useDashboardDataContext();
+  const [isChatbotOpen, setIsChatbotOpen] = useState(true);
 
   if (loading) {
     return (
@@ -61,102 +63,112 @@ export default function OrdersDetailPage() {
     <div className="min-h-screen bg-background">
       <div className="w-full">
         {/* Header */}
-        <div className="border-b border-border/50 bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent px-6 py-5 backdrop-blur-sm">
+        <div className="border-b border-border/50 bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent px-8 py-6 backdrop-blur-sm shadow-sm">
           <div className="max-w-[1920px] mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => router.push("/dashboard")}
-                className="hover:bg-purple-500/10 rounded-lg"
+                className="hover:bg-purple-500/10 rounded-lg transition-all duration-200 hover:scale-105"
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30 shadow-lg hover:shadow-purple-500/20 transition-all duration-300 hover:scale-105">
                   <ShoppingCart className="h-8 w-8 text-purple-400" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-                    Orders Analytics
-                  </h1>
-                  <p className="text-muted-foreground mt-1 text-sm">Comprehensive order volume insights and trends</p>
+                  <h1 className="text-3xl font-bold text-foreground flex items-center gap-2 bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
+                  Orders Analytics
+                </h1>
+                  <p className="text-muted-foreground mt-1.5 text-sm font-medium">Comprehensive order volume insights and trends</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-6 p-6 pr-[22rem]">
+        <div className={`flex gap-6 p-6 transition-all duration-300 ${isChatbotOpen ? 'pr-[29rem]' : 'pr-6'}`}>
           {/* Main Content */}
-          <div className="flex-1 space-y-6 min-w-0">
+          <div className={`flex-1 space-y-6 min-w-0 transition-all duration-300 ${isChatbotOpen ? 'max-w-[calc(100%-29rem)]' : 'max-w-full'}`}>
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-purple-500/30 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <ShoppingCart className="h-4 w-4 text-purple-400" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              <Card className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-purple-500/30 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <div className="p-1.5 rounded-md bg-purple-500/20">
+                      <ShoppingCart className="h-4 w-4 text-purple-400" />
+                    </div>
                     Total Orders
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-purple-400">{totalOrders.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground mt-1">All time</p>
+                  <div className="text-3xl font-bold text-purple-400 mb-1">{totalOrders.toLocaleString()}</div>
+                  <p className="text-xs text-muted-foreground font-medium">All time</p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 border-blue-500/30 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4 text-blue-400" />
+              <Card className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <div className="p-1.5 rounded-md bg-blue-500/20">
+                      <BarChart3 className="h-4 w-4 text-blue-400" />
+                    </div>
                     Avg Monthly
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-blue-400">{Math.round(avgOrdersPerMonth).toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground mt-1">Per month</p>
+                  <div className="text-3xl font-bold text-blue-400 mb-1">{Math.round(avgOrdersPerMonth).toLocaleString()}</div>
+                  <p className="text-xs text-muted-foreground font-medium">Per month</p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border-emerald-500/30 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-emerald-400" />
+              <Card className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <div className="p-1.5 rounded-md bg-emerald-500/20">
+                      <TrendingUp className="h-4 w-4 text-emerald-400" />
+                    </div>
                     Peak Orders
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-emerald-400">{peakOrders.orders.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground mt-1">{peakOrders.month || "N/A"}</p>
+                  <div className="text-3xl font-bold text-emerald-400 mb-1">{peakOrders.orders.toLocaleString()}</div>
+                  <p className="text-xs text-muted-foreground font-medium">{peakOrders.month || "N/A"}</p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-amber-500/20 to-amber-600/10 border-amber-500/30 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Package className="h-4 w-4 text-amber-400" />
+              <Card className="bg-gradient-to-br from-amber-500/20 to-amber-600/10 border-amber-500/30 hover:shadow-xl hover:shadow-amber-500/20 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                    <div className="p-1.5 rounded-md bg-amber-500/20">
+                      <Package className="h-4 w-4 text-amber-400" />
+                    </div>
                     Avg Order Value
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-amber-400">
+                  <div className="text-3xl font-bold text-amber-400 mb-1">
                     ${aovTrend && aovTrend.length > 0
                       ? (aovTrend.reduce((sum: number, item: any) => sum + (item.aov || 0), 0) / aovTrend.length).toFixed(0)
                       : 0}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">Per order</p>
+                  <p className="text-xs text-muted-foreground font-medium">Per order</p>
                 </CardContent>
               </Card>
             </div>
 
             {/* Monthly Orders Trend */}
-            <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl">
-              <CardHeader>
-                <CardTitle className="text-xl font-bold flex items-center gap-2">
+            <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-bold flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-500/20">
                   <BarChart3 className="h-5 w-5 text-purple-400" />
+                  </div>
                   Monthly Orders Trend
                 </CardTitle>
-                <CardDescription>Historical order volume over time</CardDescription>
+                <CardDescription className="mt-1.5 font-medium">Historical order volume over time</CardDescription>
               </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={450}>
@@ -202,13 +214,15 @@ export default function OrdersDetailPage() {
 
             {/* Orders Forecast */}
             {forecastData.length > 0 && (
-              <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl">
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl font-bold flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-purple-500/20">
                     <TrendingUp className="h-5 w-5 text-purple-400" />
+                    </div>
                     Orders Forecast (Prophet AI)
                   </CardTitle>
-                  <CardDescription>AI-powered order volume predictions</CardDescription>
+                  <CardDescription className="mt-1.5 font-medium">AI-powered order volume predictions</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={450}>
@@ -256,13 +270,15 @@ export default function OrdersDetailPage() {
             )}
 
             {/* Orders vs Revenue Correlation */}
-            <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl">
-              <CardHeader>
-                <CardTitle className="text-xl font-bold flex items-center gap-2">
+            <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-bold flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-purple-500/20">
                   <Package className="h-5 w-5 text-purple-400" />
+                  </div>
                   Orders vs Revenue Correlation
                 </CardTitle>
-                <CardDescription>Relationship between order volume and revenue</CardDescription>
+                <CardDescription className="mt-1.5 font-medium">Relationship between order volume and revenue</CardDescription>
               </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={450}>
@@ -317,7 +333,8 @@ export default function OrdersDetailPage() {
           </div>
 
           {/* Chatbot Sidebar - Fixed to Right */}
-          <div className="w-80 flex-shrink-0">
+          {isChatbotOpen && (
+            <div className="w-[28rem] flex-shrink-0">
             <div className="fixed right-0 top-0 h-screen z-50">
               <Chatbot
                 systemMessage={ORDERS_SYSTEM_MESSAGE}
@@ -332,9 +349,23 @@ export default function OrdersDetailPage() {
                   avgAOV,
                 }}
                 pageTitle="Orders Analytics"
+                  isOpen={isChatbotOpen}
+                  onClose={() => setIsChatbotOpen(false)}
               />
             </div>
           </div>
+          )}
+
+          {/* Floating Chat Button - Show when chatbot is closed */}
+          {!isChatbotOpen && (
+            <Button
+              onClick={() => setIsChatbotOpen(true)}
+              className="fixed bottom-8 right-8 h-14 w-14 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/50 z-40 transition-all duration-300 hover:scale-110"
+              size="icon"
+            >
+              <MessageSquare className="h-6 w-6" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

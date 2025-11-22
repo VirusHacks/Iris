@@ -31,20 +31,9 @@ export default function RevenueByHourAreaChart() {
   const { revenueByHour } = useDashboardDataContext();
   const data = revenueByHour || [];
 
+  // Don't render if no data
   if (data.length === 0) {
-    return (
-      <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl">
-        <CardHeader className="border-b border-border/50">
-          <CardTitle className="text-xl font-bold">Revenue by Hour of Day</CardTitle>
-          <CardDescription>Peak shopping hours</CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="h-[400px] flex items-center justify-center">
-            <p className="text-muted-foreground">No data available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return null;
   }
 
   const chartData = data.map((item) => ({

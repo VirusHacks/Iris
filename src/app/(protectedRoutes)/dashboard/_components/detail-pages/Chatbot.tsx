@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Bot, User, Loader2, Sparkles, AlertCircle, RefreshCw } from "lucide-react";
+import { Send, Bot, User, Loader2, Sparkles, AlertCircle, RefreshCw, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -20,6 +20,8 @@ interface ChatbotProps {
   systemMessage: string;
   contextData?: any;
   pageTitle?: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 const QUICK_QUESTIONS = {
@@ -41,9 +43,15 @@ const QUICK_QUESTIONS = {
     "Explain the RFM segments",
     "What's my customer lifetime value?",
   ],
+  "Lead Generation": [
+    "Where should I focus my lead generation efforts?",
+    "What channels work best for my business?",
+    "How can I find more leads like my best customers?",
+    "What's the best time to reach out to prospects?",
+  ],
 };
 
-export default function Chatbot({ systemMessage, contextData, pageTitle = "Analytics" }: ChatbotProps) {
+export default function Chatbot({ systemMessage, contextData, pageTitle = "Analytics", isOpen = true, onClose }: ChatbotProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -169,16 +177,18 @@ export default function Chatbot({ systemMessage, contextData, pageTitle = "Analy
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Card className="h-screen w-80 flex flex-col bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-2xl overflow-hidden rounded-none border-l border-t-0 border-b-0 border-r-0">
-      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-purple-500/10 to-transparent">
+    <Card className="h-screen w-[28rem] flex flex-col bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-2xl overflow-hidden rounded-none border-l border-t-0 border-b-0 border-r-0 animate-in slide-in-from-right duration-300">
+      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-purple-500/10 to-transparent px-6 py-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold flex items-center gap-2">
-            <div className="relative">
+          <CardTitle className="text-lg font-bold flex items-center gap-3">
+            <div className="relative p-2 rounded-lg bg-purple-500/20">
               <Bot className="h-5 w-5 text-purple-400" />
-              <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
+              <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
             </div>
-            Analytics Assistant
+            <span className="bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">Analytics Assistant</span>
           </CardTitle>
           <div className="flex items-center gap-2">
             {messages.length > 1 && (
@@ -186,10 +196,21 @@ export default function Chatbot({ systemMessage, contextData, pageTitle = "Analy
                 variant="ghost"
                 size="sm"
                 onClick={handleClearChat}
-                className="h-7 w-7 p-0"
+                className="h-7 w-7 p-0 hover:bg-purple-500/10"
                 title="Clear chat"
               >
                 <RefreshCw className="h-3 w-3" />
+              </Button>
+            )}
+            {onClose && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="h-7 w-7 p-0 hover:bg-red-500/10 hover:text-red-400"
+                title="Close chatbot"
+              >
+                <X className="h-4 w-4" />
               </Button>
             )}
           </div>
@@ -202,19 +223,19 @@ export default function Chatbot({ systemMessage, contextData, pageTitle = "Analy
         )}
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-0">
-        <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-          <div className="space-y-4">
+        <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
+          <div className="space-y-5">
             {messages.length === 1 && (
-              <div className="space-y-2 mb-4">
-                <p className="text-xs font-medium text-muted-foreground mb-2">Quick questions:</p>
-                <div className="flex flex-col gap-2">
+              <div className="space-y-3 mb-4">
+                <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Quick questions:</p>
+                <div className="flex flex-col gap-2.5">
                   {quickQuestions.map((question, idx) => (
                     <Button
                       key={idx}
                       variant="outline"
                       size="sm"
                       onClick={() => handleQuickQuestion(question)}
-                      className="text-left justify-start h-auto py-2 px-3 text-xs hover:bg-purple-500/10 hover:border-purple-500/30"
+                      className="text-left justify-start h-auto py-2.5 px-4 text-xs hover:bg-purple-500/10 hover:border-purple-500/30 transition-all duration-200 hover:scale-[1.02]"
                       disabled={isTyping}
                     >
                       {question}
@@ -236,14 +257,14 @@ export default function Chatbot({ systemMessage, contextData, pageTitle = "Analy
                   </div>
                 )}
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 shadow-sm ${
+                  className={`max-w-[85%] rounded-xl p-4 shadow-md ${
                     message.role === "user"
                       ? "bg-gradient-to-br from-purple-500/20 to-purple-600/10 text-foreground border border-purple-500/30"
                       : "bg-muted/80 text-foreground border border-border/50"
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
-                  <p className="text-xs text-muted-foreground mt-2">
+                  <p className="text-xs text-muted-foreground mt-2.5 font-medium">
                     {message.timestamp.toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -287,20 +308,20 @@ export default function Chatbot({ systemMessage, contextData, pageTitle = "Analy
             </Button>
           </div>
         )}
-        <div className="border-t border-border/50 p-4 bg-gradient-to-t from-background to-transparent">
-          <div className="flex gap-2">
+        <div className="border-t border-border/50 p-5 bg-gradient-to-t from-background to-transparent">
+          <div className="flex gap-3">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask about your analytics..."
-              className="flex-1 bg-background/50 border-purple-500/20 focus:border-purple-500/50"
+              className="flex-1 bg-background/50 border-purple-500/20 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
               disabled={isTyping}
             />
             <Button
               onClick={() => handleSend(false)}
               disabled={!input.trim() || isTyping}
-              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 shadow-lg"
+              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
             >
               {isTyping ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -310,8 +331,8 @@ export default function Chatbot({ systemMessage, contextData, pageTitle = "Analy
             </Button>
           </div>
           {contextData && (
-            <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-              <Sparkles className="h-3 w-3 text-purple-400" />
+            <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1.5 font-medium">
+              <Sparkles className="h-3.5 w-3.5 text-purple-400 animate-pulse" />
               AI has access to your current data
             </p>
           )}

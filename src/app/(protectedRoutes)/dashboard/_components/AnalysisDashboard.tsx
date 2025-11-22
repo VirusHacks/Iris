@@ -9,12 +9,15 @@ import TopCountriesBarChart from "./charts/analysis/TopCountriesBarChart";
 import TopProductsBarChart from "./charts/analysis/TopProductsBarChart";
 import TopCustomersBarChart from "./charts/analysis/TopCustomersBarChart";
 import RFMRadialChart from "./charts/analysis/RFMRadialChart";
+import RFMBarChart from "./charts/analysis/RFMBarChart";
+import RFMRadarChart from "./charts/analysis/RFMRadarChart";
 import RevenueByDayBarChart from "./charts/analysis/RevenueByDayBarChart";
 import RevenueByHourAreaChart from "./charts/analysis/RevenueByHourAreaChart";
 import RevenueSummaryCards from "./charts/analysis/RevenueSummaryCards";
+import DynamicChart from "./charts/DynamicChart";
 
 export default function AnalysisDashboard() {
-  const { loading } = useDashboardDataContext();
+  const { loading, generatedCharts, removeGeneratedChart } = useDashboardDataContext();
 
   if (loading) {
     return (
@@ -73,10 +76,39 @@ export default function AnalysisDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Row 3b: Additional RFM Analysis */}
+        <RFMBarChart />
+        <RFMRadarChart />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Row 4: Time Analysis */}
         <RevenueByDayBarChart />
         <RevenueByHourAreaChart />
       </div>
+
+      {/* AI Generated Charts */}
+      {generatedCharts && generatedCharts.length > 0 && (
+        <>
+          <div className="mt-8 pt-8 border-t border-border/50">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                AI Generated Charts
+              </span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {generatedCharts.map((chart) => (
+              <DynamicChart
+                key={chart.config.id}
+                config={chart.config}
+                data={chart.data}
+                onRemove={() => removeGeneratedChart(chart.config.id)}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

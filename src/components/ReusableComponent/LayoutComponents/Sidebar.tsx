@@ -14,6 +14,30 @@ import { usePathname } from 'next/navigation'
 const Sidebar = () => {
   const pathname = usePathname()
 
+  // Find the most specific matching link (longest match wins)
+  const getActiveLink = () => {
+    let activeLink = ''
+    let maxLength = 0
+    
+    for (const item of sidebarData) {
+      if (pathname === item.link || pathname.startsWith(item.link + '/')) {
+        if (item.link.length > maxLength) {
+          maxLength = item.link.length
+          activeLink = item.link
+        }
+      }
+    }
+    
+    return activeLink
+  }
+
+  const activeLink = getActiveLink()
+
+  // Check if a specific link is active
+  const isActive = (link: string) => {
+    return activeLink === link
+  }
+
   return (
     <div className="w-18 sm:w-24 h-screen sticky top-0 py-10 px-2 sm:px-6 border rounded-lg   bg-background border-border flex flex-col items-center justify-start gap-10">
       <div className="">
@@ -22,17 +46,19 @@ const Sidebar = () => {
       {/* Sidebar Menu */}
       <div className="w-full h-full justify-between items-center flex flex-col">
         <div className="w-full h-fit flex flex-col gap-4 items-center justify-center ">
-          {sidebarData.map((item) => (
+          {sidebarData.map((item) => {
+            const active = isActive(item.link)
+            return (
             <TooltipProvider key={item.id}>
               <Tooltip>
                 <TooltipTrigger>
                   <Link
                     href={item.link}
                     className={`flex items-center gap-2 cursor-pointer rounded-lg p-2 
-                    ${pathname.includes(item.link) ? 'iconBackground' : ''}`}
+                      ${active ? 'iconBackground' : ''}`}
                   >
                     <item.icon
-                      className={`w-4 h-4 ${pathname.includes(item.link) ? '' : 'opacity-80'}`}
+                        className={`w-4 h-4 ${active ? '' : 'opacity-80'}`}
                     />
                   </Link>
                 </TooltipTrigger>
@@ -41,7 +67,8 @@ const Sidebar = () => {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          ))}
+            )
+          })}
         </div>
         <UserButton />
       </div>

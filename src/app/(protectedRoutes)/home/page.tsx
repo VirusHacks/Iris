@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Home, BarChart3, TrendingUp, Users, Megaphone, Sparkles, Settings } from "lucide-react";
+import { Home, BarChart3, TrendingUp, Users, Megaphone, Sparkles, Settings, Target, MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ExecutiveOverview from "./_components/ExecutiveOverview";
 import SalesSnapshot from "./_components/SalesSnapshot";
@@ -16,12 +16,12 @@ import PageFooter from "./_components/PageFooter";
 
 const navigationTabs = [
   { id: "home", label: "Home", icon: Home, route: "/home" },
-  { id: "analytics", label: "Analytics", icon: BarChart3, route: "/dashboard" },
-  { id: "forecast", label: "Forecast", icon: TrendingUp, route: "/dashboard" },
-  { id: "customers", label: "Customers", icon: Users, route: "/lead" },
-  { id: "campaigns", label: "Campaigns", icon: Megaphone, route: "/webinars" },
-  { id: "ai-workspace", label: "AI Workspace", icon: Sparkles, route: "/ai-agents" },
-  { id: "settings", label: "Settings", icon: Settings, route: "/settings" },
+  { id: "dashboard", label: "Dashboard", icon: BarChart3, route: "/dashboard" },
+  { id: "customers", label: "Customers", icon: Users, route: "/dashboard/customers" },
+  { id: "lead-generation", label: "Lead Generation", icon: Target, route: "/dashboard/leads" },
+  { id: "assistant", label: "Assistant", icon: MessageSquare, route: "/assistant" },
+  { id: "ai-agents", label: "AI Agents", icon: Sparkles, route: "/ai-agents" },
+  { id: "webinars", label: "Webinars", icon: Megaphone, route: "/webinars" },
 ];
 
 export default function HomePage() {

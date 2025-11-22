@@ -3,55 +3,60 @@
 import { useDashboardDataContext } from "../../DashboardDataProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { Globe } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
+const COLORS = {
+  "Champions": "#10b981",
+  "Loyal Customers": "#3b82f6",
+  "Potential Loyalists": "#f59e0b",
+  "New Customers": "#8b5cf6",
+  "At-Risk": "#ef4444",
+  "Lost Customers": "#6b7280",
 };
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    const value = payload[0].value as number;
+    const data = payload[0];
     return (
       <div className="bg-background/95 backdrop-blur-md border-2 border-primary/50 rounded-xl p-4 shadow-2xl">
-        <p className="font-bold text-lg text-foreground mb-2">{label}</p>
-        <p className="text-xl font-bold text-primary">{formatCurrency(value)}</p>
+        <p className="font-bold text-lg text-foreground mb-2">{data.payload.segment}</p>
+        <p className="text-xl font-bold text-primary">{data.value} customers</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          {((data.value / data.payload.total) * 100).toFixed(1)}% of total customers
+        </p>
       </div>
     );
   }
   return null;
 };
 
-const COLORS = ["#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#ec4899", "#06b6d4", "#6366f1", "#a855f7", "#14b8a6"];
-
-export default function TopCountriesBarChart() {
-  const { topCountries } = useDashboardDataContext();
-  const data = topCountries || [];
+export default function RFMBarChart() {
+  const { rfmDistribution } = useDashboardDataContext();
+  const rawData = rfmDistribution || [];
+  const total = rawData.reduce((sum: number, item: any) => sum + item.count, 0);
+  const data = rawData
+    .map((item: any) => ({ ...item, total }))
+    .sort((a: any, b: any) => b.count - a.count); // Sort by count descending
 
   // Don't render if no data
   if (data.length === 0) {
     return null;
   }
 
-  const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0);
-  const topCountry = data[0];
+  const totalCustomers = data.reduce((sum, item) => sum + item.count, 0);
+  const largestSegment = data[0]; // Already sorted
 
   return (
     <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
-      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-emerald-500/5 to-transparent">
+      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-blue-500/5 to-transparent">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Globe className="h-5 w-5 text-emerald-400" />
-              Top Countries by Revenue
+              <TrendingUp className="h-5 w-5 text-blue-400" />
+              RFM Segment Comparison
             </CardTitle>
             <CardDescription className="mt-2">
-              {topCountry.country} leads with {formatCurrency(topCountry.revenue)} • Total: {formatCurrency(totalRevenue)}
+              {largestSegment.segment} leads with {largestSegment.count} customers • Total: {totalCustomers} customers
             </CardDescription>
           </div>
         </div>
@@ -59,27 +64,29 @@ export default function TopCountriesBarChart() {
       <CardContent className="p-6">
         <div className="bg-gradient-to-br from-background/50 to-background/30 rounded-xl p-4 border border-border/30">
           <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" opacity={0.2} />
-              <XAxis 
-                type="number" 
+              <XAxis
+                dataKey="segment"
+                angle={-45}
+                textAnchor="end"
+                height={100}
                 stroke="hsl(var(--foreground))"
                 tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 600 }}
-                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
                 tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
               />
-              <YAxis 
-                dataKey="country" 
-                type="category" 
-                width={120}
+              <YAxis
                 stroke="hsl(var(--foreground))"
                 tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 600 }}
                 tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="revenue" radius={[0, 8, 8, 0]}>
+              <Bar dataKey="count" radius={[8, 8, 0, 0]}>
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[entry.segment as keyof typeof COLORS] || "#8b5cf6"}
+                  />
                 ))}
               </Bar>
             </BarChart>

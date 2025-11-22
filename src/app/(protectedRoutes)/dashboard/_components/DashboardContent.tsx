@@ -9,9 +9,10 @@ import { toast } from "sonner";
 import { useDashboardDataContext } from "./DashboardDataProvider";
 import AnalysisDashboard from "./AnalysisDashboard";
 import PredictionDashboard from "./PredictionDashboard";
+import GenerativeChartChatbot from "./GenerativeChartChatbot";
 
 function DashboardContentInner() {
-  const { loading, refreshData, updateDataDirectly, monthlySales } = useDashboardDataContext();
+  const { loading, refreshData, updateDataDirectly, monthlySales, addGeneratedChart } = useDashboardDataContext();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStats, setUploadStats] = useState<any>(null);
   const [hasData, setHasData] = useState(false);
@@ -158,6 +159,10 @@ function DashboardContentInner() {
       </Card>
 
       {hasData ? (
+        <>
+          {/* AI Chart Generator - appears at the start */}
+          <GenerativeChartChatbot onChartGenerated={addGeneratedChart} />
+
         <Tabs defaultValue="analysis" className="w-full">
           <div className="flex justify-center mb-8">
             <TabsList className="grid w-full max-w-2xl grid-cols-2 h-14 bg-gradient-to-r from-muted/80 to-muted/60 backdrop-blur-md border-2 border-border/50 shadow-xl rounded-xl p-1.5">
@@ -186,6 +191,7 @@ function DashboardContentInner() {
             <PredictionDashboard />
           </TabsContent>
         </Tabs>
+        </>
       ) : (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">

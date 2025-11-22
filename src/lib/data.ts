@@ -3,7 +3,7 @@ import LeadIcon from '@/icons/LeadIcon'
 import SettingsIcon from '@/icons/SettingsIcon'
 import DashboardIcon from '@/icons/DashboardIcon'
 import { CallStatusEnum } from '@prisma/client'
-import { Sparkle, Webcam } from 'lucide-react'
+import { Sparkle, Webcam, Users, Target } from 'lucide-react'
 
 export const sidebarData = [
   {
@@ -35,6 +35,18 @@ export const sidebarData = [
     title: 'Dashboard',
     icon: DashboardIcon,
     link: '/dashboard',
+  },
+  {
+    id: 7,
+    title: 'Customers',
+    icon: Users,
+    link: '/dashboard/customers',
+  },
+  {
+    id: 8,
+    title: 'Lead Generation',
+    icon: Target,
+    link: '/dashboard/leads',
   },
   {
     id: 6,
