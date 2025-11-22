@@ -54,6 +54,24 @@ function getRpcUrl(): string {
 // Export RPC URL for error messages
 export const CURRENT_RPC_URL = getRpcUrl();
 
+// Singleton RPC provider to prevent multiple instances and retry loops
+let rpcProviderInstance: ethers.JsonRpcProvider | null = null;
+let rpcProviderInitializing = false;
+
+// Suppress JsonRpcProvider retry warnings on server-side (globally)
+// These warnings occur asynchronously after provider creation, so we need global suppression
+if (typeof window === "undefined") {
+  const originalWarn = console.warn;
+  console.warn = (...args: any[]) => {
+    const message = args[0]?.toString() || "";
+    // Suppress only the JsonRpcProvider network detection retry messages
+    if (message.includes("JsonRpcProvider failed to detect network")) {
+      return; // Suppress this specific warning
+    }
+    originalWarn.apply(console, args);
+  };
+}
+
 // Get wallet provider (client-side only)
 export async function getWalletProvider(): Promise<ethers.BrowserProvider> {
   if (typeof window === "undefined") {
@@ -68,15 +86,42 @@ export async function getWalletProvider(): Promise<ethers.BrowserProvider> {
   return provider;
 }
 
-// Get RPC provider (server-side or fallback)
+// Get RPC provider (server-side or fallback) - lazy singleton pattern
 export function getRpcProvider(): ethers.JsonRpcProvider {
-  const rpcUrl = getRpcUrl();
+  // Return existing instance if available
+  if (rpcProviderInstance) {
+    return rpcProviderInstance;
+  }
 
-  // Create provider with Sepolia network config
-  return new ethers.JsonRpcProvider(rpcUrl, {
-    name: "sepolia",
-    chainId: 11155111,
-  });
+  // Prevent concurrent initialization
+  if (rpcProviderInitializing) {
+    // Wait a bit and retry (shouldn't happen in practice)
+    throw new Error("RPC provider is being initialized, please retry");
+  }
+
+  rpcProviderInitializing = true;
+  
+  try {
+    const rpcUrl = getRpcUrl();
+
+    // Create a static network configuration to prevent network detection retries
+    const staticNetwork = {
+      name: "sepolia",
+      chainId: 11155111n,
+    };
+
+    // Create provider with static network - this prevents auto-detection
+    // Using Network.from() creates a proper network object
+    const network = ethers.Network.from(staticNetwork);
+    rpcProviderInstance = new ethers.JsonRpcProvider(rpcUrl, network);
+    
+    return rpcProviderInstance;
+  } catch (error) {
+    rpcProviderInitializing = false;
+    throw error;
+  } finally {
+    rpcProviderInitializing = false;
+  }
 }
 
 // Get provider (for read operations) - prefers wallet, falls back to RPC

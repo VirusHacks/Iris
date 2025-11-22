@@ -28,10 +28,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Initialize Gemini model - using gemini-1.5-flash (stable)
-    // For Gemini 2.5 Flash, use "gemini-2.0-flash-exp" or "gemini-2.5-flash" when available
+    // Initialize Gemini model - using gemini-2.5-flash
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       generationConfig: {
         temperature: 0.7,
         topP: 0.95,

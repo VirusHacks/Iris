@@ -40,4 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-prisma/generated/client
+# prisma generated files
+prisma/generated/
+
+# markdown files (except README.md)
+*.md
+!README.md
