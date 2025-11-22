@@ -56,6 +56,9 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
   const error = revenueForecast?.error || null;
 
   if (!data || data.error) {
+    const errorMessage = error || data?.error || "No forecast available";
+    const isServiceError = errorMessage?.includes("Forecast service") || errorMessage?.includes("Python service") || errorMessage?.includes("ECONNREFUSED") || errorMessage?.includes("Failed to fetch");
+    
     return (
       <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl">
         <CardHeader className="border-b border-border/50 bg-gradient-to-r from-purple-500/10 to-transparent">
@@ -66,10 +69,20 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
           <CardDescription>AI-powered revenue predictions</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="h-[450px] flex items-center justify-center">
+          <div className="h-[450px] flex flex-col items-center justify-center gap-4">
             <p className="text-muted-foreground text-center px-4">
-              {error || data?.error || "No forecast available. Ensure Python forecast service is running."}
+              {errorMessage}
             </p>
+            {isServiceError && (
+              <div className="text-sm text-muted-foreground/70 text-center px-4 max-w-md">
+                <p className="mb-2">💡 Troubleshooting:</p>
+                <ul className="list-disc list-inside space-y-1 text-left">
+                  <li>Ensure Python service is running: <code className="bg-muted px-1 rounded">cd forecast-service && python app.py</code></li>
+                  <li>Check service URL: <code className="bg-muted px-1 rounded">http://localhost:4000</code></li>
+                  <li>Verify service health: <code className="bg-muted px-1 rounded">curl http://localhost:4000/health</code></li>
+                </ul>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

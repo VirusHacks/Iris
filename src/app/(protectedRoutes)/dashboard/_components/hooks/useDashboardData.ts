@@ -168,12 +168,14 @@ export function useDashboardData() {
       ]);
 
       // Fetch forecast data in parallel (only if we have historical data)
+      // Forecasts are now cached in database, so these calls are fast
       let revenueForecast = null;
       let aovForecast = null;
       let ordersForecast = null;
 
       if (monthlySales && monthlySales.length >= 3) {
         try {
+          // Fetch forecasts - these will use cached data if available
           const [revenueForecastRes, aovForecastRes, ordersForecastRes] = await Promise.allSettled([
             fetch("/api/dashboard/forecast?type=revenue&periods=6"),
             fetch("/api/dashboard/forecast?type=aov&periods=6"),
@@ -181,30 +183,78 @@ export function useDashboardData() {
           ]);
 
           // Handle revenue forecast
-          if (revenueForecastRes.status === "fulfilled" && revenueForecastRes.value.ok) {
-            try {
-              revenueForecast = await revenueForecastRes.value.json();
-            } catch (e) {
-              console.warn("Failed to parse revenue forecast:", e);
+          if (revenueForecastRes.status === "fulfilled") {
+            if (revenueForecastRes.value.ok) {
+              try {
+                const data = await revenueForecastRes.value.json();
+                if (data && !data.error && data.historical && data.forecast) {
+                  revenueForecast = data;
+                } else if (data?.error) {
+                  console.warn("Revenue forecast error:", data.error);
+                }
+              } catch (e) {
+                console.warn("Failed to parse revenue forecast:", e);
+              }
+            } else {
+              try {
+                const errorData = await revenueForecastRes.value.json();
+                console.warn("Revenue forecast API error:", errorData.error || `HTTP ${revenueForecastRes.value.status}`);
+              } catch (e) {
+                console.warn("Revenue forecast failed:", revenueForecastRes.value.statusText);
+              }
             }
+          } else {
+            console.warn("Revenue forecast request rejected:", revenueForecastRes.reason);
           }
 
           // Handle AOV forecast
-          if (aovForecastRes.status === "fulfilled" && aovForecastRes.value.ok) {
-            try {
-              aovForecast = await aovForecastRes.value.json();
-            } catch (e) {
-              console.warn("Failed to parse AOV forecast:", e);
+          if (aovForecastRes.status === "fulfilled") {
+            if (aovForecastRes.value.ok) {
+              try {
+                const data = await aovForecastRes.value.json();
+                if (data && !data.error && data.historical && data.forecast) {
+                  aovForecast = data;
+                } else if (data?.error) {
+                  console.warn("AOV forecast error:", data.error);
+                }
+              } catch (e) {
+                console.warn("Failed to parse AOV forecast:", e);
+              }
+            } else {
+              try {
+                const errorData = await aovForecastRes.value.json();
+                console.warn("AOV forecast API error:", errorData.error || `HTTP ${aovForecastRes.value.status}`);
+              } catch (e) {
+                console.warn("AOV forecast failed:", aovForecastRes.value.statusText);
+              }
             }
+          } else {
+            console.warn("AOV forecast request rejected:", aovForecastRes.reason);
           }
 
           // Handle orders forecast
-          if (ordersForecastRes.status === "fulfilled" && ordersForecastRes.value.ok) {
-            try {
-              ordersForecast = await ordersForecastRes.value.json();
-            } catch (e) {
-              console.warn("Failed to parse orders forecast:", e);
+          if (ordersForecastRes.status === "fulfilled") {
+            if (ordersForecastRes.value.ok) {
+              try {
+                const data = await ordersForecastRes.value.json();
+                if (data && !data.error && data.historical && data.forecast) {
+                  ordersForecast = data;
+                } else if (data?.error) {
+                  console.warn("Orders forecast error:", data.error);
+                }
+              } catch (e) {
+                console.warn("Failed to parse orders forecast:", e);
+              }
+            } else {
+              try {
+                const errorData = await ordersForecastRes.value.json();
+                console.warn("Orders forecast API error:", errorData.error || `HTTP ${ordersForecastRes.value.status}`);
+              } catch (e) {
+                console.warn("Orders forecast failed:", ordersForecastRes.value.statusText);
+              }
             }
+          } else {
+            console.warn("Orders forecast request rejected:", ordersForecastRes.reason);
           }
         } catch (forecastError) {
           console.warn("Forecast data unavailable:", forecastError);

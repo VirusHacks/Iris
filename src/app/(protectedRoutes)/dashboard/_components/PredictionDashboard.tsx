@@ -2,7 +2,9 @@
 
 import { useDashboardDataContext } from "./DashboardDataProvider";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, RefreshCw } from "lucide-react";
+import { useState } from "react";
 import ForecastMetricsCards from "./charts/prediction/ForecastMetricsCards";
 import RevenueForecastAreaChart from "./charts/prediction/RevenueForecastAreaChart";
 import AOVForecastLineChart from "./charts/prediction/AOVForecastLineChart";
@@ -11,7 +13,22 @@ import ForecastConfidenceRadial from "./charts/prediction/ForecastConfidenceRadi
 import ForecastComparisonBar from "./charts/prediction/ForecastComparisonBar";
 
 export default function PredictionDashboard() {
-  const { loading } = useDashboardDataContext();
+  const { loading, refreshData } = useDashboardDataContext();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      // Clear forecast cache
+      await fetch("/api/dashboard/forecast/refresh", { method: "POST" });
+      // Refresh all data (this will trigger new forecast calculations)
+      await refreshData();
+    } catch (error) {
+      console.error("Error refreshing forecasts:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -57,6 +74,25 @@ export default function PredictionDashboard() {
 
   return (
     <div className="w-full space-y-6">
+      {/* Header with Refresh Button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground">AI Forecast Dashboard</h2>
+          <p className="text-muted-foreground mt-1">
+            Prophet AI-powered predictions based on historical data
+          </p>
+        </div>
+        <Button
+          onClick={handleRefresh}
+          disabled={refreshing || loading}
+          variant="outline"
+          className="gap-2 border-purple-500/30 hover:bg-purple-500/10"
+        >
+          <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          {refreshing ? "Refreshing..." : "Refresh Forecasts"}
+        </Button>
+      </div>
+
       {/* Forecast Metrics Cards */}
       <ForecastMetricsCards />
 

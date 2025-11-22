@@ -53,6 +53,11 @@ export type RFMAnalysis = $Result.DefaultSelection<Prisma.$RFMAnalysisPayload>
  * 
  */
 export type DashboardAnalytics = $Result.DefaultSelection<Prisma.$DashboardAnalyticsPayload>
+/**
+ * Model ForecastAnalytics
+ * 
+ */
+export type ForecastAnalytics = $Result.DefaultSelection<Prisma.$ForecastAnalyticsPayload>
 
 /**
  * Enums
@@ -319,6 +324,16 @@ export class PrismaClient<
     * ```
     */
   get dashboardAnalytics(): Prisma.DashboardAnalyticsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.forecastAnalytics`: Exposes CRUD operations for the **ForecastAnalytics** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ForecastAnalytics
+    * const forecastAnalytics = await prisma.forecastAnalytics.findMany()
+    * ```
+    */
+  get forecastAnalytics(): Prisma.ForecastAnalyticsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -766,7 +781,8 @@ export namespace Prisma {
     AiAgents: 'AiAgents',
     SalesTransaction: 'SalesTransaction',
     RFMAnalysis: 'RFMAnalysis',
-    DashboardAnalytics: 'DashboardAnalytics'
+    DashboardAnalytics: 'DashboardAnalytics',
+    ForecastAnalytics: 'ForecastAnalytics'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -782,7 +798,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "webinar" | "attendee" | "attendance" | "aiAgents" | "salesTransaction" | "rFMAnalysis" | "dashboardAnalytics"
+      modelProps: "user" | "webinar" | "attendee" | "attendance" | "aiAgents" | "salesTransaction" | "rFMAnalysis" | "dashboardAnalytics" | "forecastAnalytics"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1378,6 +1394,80 @@ export namespace Prisma {
           }
         }
       }
+      ForecastAnalytics: {
+        payload: Prisma.$ForecastAnalyticsPayload<ExtArgs>
+        fields: Prisma.ForecastAnalyticsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ForecastAnalyticsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ForecastAnalyticsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>
+          }
+          findFirst: {
+            args: Prisma.ForecastAnalyticsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ForecastAnalyticsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>
+          }
+          findMany: {
+            args: Prisma.ForecastAnalyticsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>[]
+          }
+          create: {
+            args: Prisma.ForecastAnalyticsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>
+          }
+          createMany: {
+            args: Prisma.ForecastAnalyticsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ForecastAnalyticsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>[]
+          }
+          delete: {
+            args: Prisma.ForecastAnalyticsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>
+          }
+          update: {
+            args: Prisma.ForecastAnalyticsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>
+          }
+          deleteMany: {
+            args: Prisma.ForecastAnalyticsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ForecastAnalyticsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ForecastAnalyticsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>[]
+          }
+          upsert: {
+            args: Prisma.ForecastAnalyticsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ForecastAnalyticsPayload>
+          }
+          aggregate: {
+            args: Prisma.ForecastAnalyticsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateForecastAnalytics>
+          }
+          groupBy: {
+            args: Prisma.ForecastAnalyticsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ForecastAnalyticsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ForecastAnalyticsCountArgs<ExtArgs>
+            result: $Utils.Optional<ForecastAnalyticsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1470,6 +1560,7 @@ export namespace Prisma {
     salesTransaction?: SalesTransactionOmit
     rFMAnalysis?: RFMAnalysisOmit
     dashboardAnalytics?: DashboardAnalyticsOmit
+    forecastAnalytics?: ForecastAnalyticsOmit
   }
 
   /* Types for Logging */
@@ -11085,6 +11176,1075 @@ export namespace Prisma {
 
 
   /**
+   * Model ForecastAnalytics
+   */
+
+  export type AggregateForecastAnalytics = {
+    _count: ForecastAnalyticsCountAggregateOutputType | null
+    _avg: ForecastAnalyticsAvgAggregateOutputType | null
+    _sum: ForecastAnalyticsSumAggregateOutputType | null
+    _min: ForecastAnalyticsMinAggregateOutputType | null
+    _max: ForecastAnalyticsMaxAggregateOutputType | null
+  }
+
+  export type ForecastAnalyticsAvgAggregateOutputType = {
+    periods: number | null
+  }
+
+  export type ForecastAnalyticsSumAggregateOutputType = {
+    periods: number | null
+  }
+
+  export type ForecastAnalyticsMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    periods: number | null
+    lastCalculated: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ForecastAnalyticsMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    periods: number | null
+    lastCalculated: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ForecastAnalyticsCountAggregateOutputType = {
+    id: number
+    userId: number
+    revenueForecast: number
+    aovForecast: number
+    ordersForecast: number
+    periods: number
+    lastCalculated: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ForecastAnalyticsAvgAggregateInputType = {
+    periods?: true
+  }
+
+  export type ForecastAnalyticsSumAggregateInputType = {
+    periods?: true
+  }
+
+  export type ForecastAnalyticsMinAggregateInputType = {
+    id?: true
+    userId?: true
+    periods?: true
+    lastCalculated?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ForecastAnalyticsMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    periods?: true
+    lastCalculated?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ForecastAnalyticsCountAggregateInputType = {
+    id?: true
+    userId?: true
+    revenueForecast?: true
+    aovForecast?: true
+    ordersForecast?: true
+    periods?: true
+    lastCalculated?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ForecastAnalyticsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ForecastAnalytics to aggregate.
+     */
+    where?: ForecastAnalyticsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ForecastAnalytics to fetch.
+     */
+    orderBy?: ForecastAnalyticsOrderByWithRelationInput | ForecastAnalyticsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ForecastAnalyticsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ForecastAnalytics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ForecastAnalytics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ForecastAnalytics
+    **/
+    _count?: true | ForecastAnalyticsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ForecastAnalyticsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ForecastAnalyticsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ForecastAnalyticsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ForecastAnalyticsMaxAggregateInputType
+  }
+
+  export type GetForecastAnalyticsAggregateType<T extends ForecastAnalyticsAggregateArgs> = {
+        [P in keyof T & keyof AggregateForecastAnalytics]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateForecastAnalytics[P]>
+      : GetScalarType<T[P], AggregateForecastAnalytics[P]>
+  }
+
+
+
+
+  export type ForecastAnalyticsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ForecastAnalyticsWhereInput
+    orderBy?: ForecastAnalyticsOrderByWithAggregationInput | ForecastAnalyticsOrderByWithAggregationInput[]
+    by: ForecastAnalyticsScalarFieldEnum[] | ForecastAnalyticsScalarFieldEnum
+    having?: ForecastAnalyticsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ForecastAnalyticsCountAggregateInputType | true
+    _avg?: ForecastAnalyticsAvgAggregateInputType
+    _sum?: ForecastAnalyticsSumAggregateInputType
+    _min?: ForecastAnalyticsMinAggregateInputType
+    _max?: ForecastAnalyticsMaxAggregateInputType
+  }
+
+  export type ForecastAnalyticsGroupByOutputType = {
+    id: string
+    userId: string
+    revenueForecast: JsonValue
+    aovForecast: JsonValue
+    ordersForecast: JsonValue
+    periods: number
+    lastCalculated: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: ForecastAnalyticsCountAggregateOutputType | null
+    _avg: ForecastAnalyticsAvgAggregateOutputType | null
+    _sum: ForecastAnalyticsSumAggregateOutputType | null
+    _min: ForecastAnalyticsMinAggregateOutputType | null
+    _max: ForecastAnalyticsMaxAggregateOutputType | null
+  }
+
+  type GetForecastAnalyticsGroupByPayload<T extends ForecastAnalyticsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ForecastAnalyticsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ForecastAnalyticsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ForecastAnalyticsGroupByOutputType[P]>
+            : GetScalarType<T[P], ForecastAnalyticsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ForecastAnalyticsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    revenueForecast?: boolean
+    aovForecast?: boolean
+    ordersForecast?: boolean
+    periods?: boolean
+    lastCalculated?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["forecastAnalytics"]>
+
+  export type ForecastAnalyticsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    revenueForecast?: boolean
+    aovForecast?: boolean
+    ordersForecast?: boolean
+    periods?: boolean
+    lastCalculated?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["forecastAnalytics"]>
+
+  export type ForecastAnalyticsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    revenueForecast?: boolean
+    aovForecast?: boolean
+    ordersForecast?: boolean
+    periods?: boolean
+    lastCalculated?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["forecastAnalytics"]>
+
+  export type ForecastAnalyticsSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    revenueForecast?: boolean
+    aovForecast?: boolean
+    ordersForecast?: boolean
+    periods?: boolean
+    lastCalculated?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ForecastAnalyticsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "revenueForecast" | "aovForecast" | "ordersForecast" | "periods" | "lastCalculated" | "createdAt" | "updatedAt", ExtArgs["result"]["forecastAnalytics"]>
+
+  export type $ForecastAnalyticsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ForecastAnalytics"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      revenueForecast: Prisma.JsonValue
+      aovForecast: Prisma.JsonValue
+      ordersForecast: Prisma.JsonValue
+      periods: number
+      lastCalculated: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["forecastAnalytics"]>
+    composites: {}
+  }
+
+  type ForecastAnalyticsGetPayload<S extends boolean | null | undefined | ForecastAnalyticsDefaultArgs> = $Result.GetResult<Prisma.$ForecastAnalyticsPayload, S>
+
+  type ForecastAnalyticsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ForecastAnalyticsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ForecastAnalyticsCountAggregateInputType | true
+    }
+
+  export interface ForecastAnalyticsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ForecastAnalytics'], meta: { name: 'ForecastAnalytics' } }
+    /**
+     * Find zero or one ForecastAnalytics that matches the filter.
+     * @param {ForecastAnalyticsFindUniqueArgs} args - Arguments to find a ForecastAnalytics
+     * @example
+     * // Get one ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ForecastAnalyticsFindUniqueArgs>(args: SelectSubset<T, ForecastAnalyticsFindUniqueArgs<ExtArgs>>): Prisma__ForecastAnalyticsClient<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+
+    /**
+     * Find one ForecastAnalytics that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ForecastAnalyticsFindUniqueOrThrowArgs} args - Arguments to find a ForecastAnalytics
+     * @example
+     * // Get one ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ForecastAnalyticsFindUniqueOrThrowArgs>(args: SelectSubset<T, ForecastAnalyticsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ForecastAnalyticsClient<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Find the first ForecastAnalytics that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForecastAnalyticsFindFirstArgs} args - Arguments to find a ForecastAnalytics
+     * @example
+     * // Get one ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ForecastAnalyticsFindFirstArgs>(args?: SelectSubset<T, ForecastAnalyticsFindFirstArgs<ExtArgs>>): Prisma__ForecastAnalyticsClient<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+
+    /**
+     * Find the first ForecastAnalytics that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForecastAnalyticsFindFirstOrThrowArgs} args - Arguments to find a ForecastAnalytics
+     * @example
+     * // Get one ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ForecastAnalyticsFindFirstOrThrowArgs>(args?: SelectSubset<T, ForecastAnalyticsFindFirstOrThrowArgs<ExtArgs>>): Prisma__ForecastAnalyticsClient<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Find zero or more ForecastAnalytics that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForecastAnalyticsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.findMany()
+     * 
+     * // Get first 10 ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const forecastAnalyticsWithIdOnly = await prisma.forecastAnalytics.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ForecastAnalyticsFindManyArgs>(args?: SelectSubset<T, ForecastAnalyticsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "findMany", ClientOptions>>
+
+    /**
+     * Create a ForecastAnalytics.
+     * @param {ForecastAnalyticsCreateArgs} args - Arguments to create a ForecastAnalytics.
+     * @example
+     * // Create one ForecastAnalytics
+     * const ForecastAnalytics = await prisma.forecastAnalytics.create({
+     *   data: {
+     *     // ... data to create a ForecastAnalytics
+     *   }
+     * })
+     * 
+     */
+    create<T extends ForecastAnalyticsCreateArgs>(args: SelectSubset<T, ForecastAnalyticsCreateArgs<ExtArgs>>): Prisma__ForecastAnalyticsClient<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Create many ForecastAnalytics.
+     * @param {ForecastAnalyticsCreateManyArgs} args - Arguments to create many ForecastAnalytics.
+     * @example
+     * // Create many ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ForecastAnalyticsCreateManyArgs>(args?: SelectSubset<T, ForecastAnalyticsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ForecastAnalytics and returns the data saved in the database.
+     * @param {ForecastAnalyticsCreateManyAndReturnArgs} args - Arguments to create many ForecastAnalytics.
+     * @example
+     * // Create many ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ForecastAnalytics and only return the `id`
+     * const forecastAnalyticsWithIdOnly = await prisma.forecastAnalytics.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ForecastAnalyticsCreateManyAndReturnArgs>(args?: SelectSubset<T, ForecastAnalyticsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
+
+    /**
+     * Delete a ForecastAnalytics.
+     * @param {ForecastAnalyticsDeleteArgs} args - Arguments to delete one ForecastAnalytics.
+     * @example
+     * // Delete one ForecastAnalytics
+     * const ForecastAnalytics = await prisma.forecastAnalytics.delete({
+     *   where: {
+     *     // ... filter to delete one ForecastAnalytics
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ForecastAnalyticsDeleteArgs>(args: SelectSubset<T, ForecastAnalyticsDeleteArgs<ExtArgs>>): Prisma__ForecastAnalyticsClient<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Update one ForecastAnalytics.
+     * @param {ForecastAnalyticsUpdateArgs} args - Arguments to update one ForecastAnalytics.
+     * @example
+     * // Update one ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ForecastAnalyticsUpdateArgs>(args: SelectSubset<T, ForecastAnalyticsUpdateArgs<ExtArgs>>): Prisma__ForecastAnalyticsClient<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+
+    /**
+     * Delete zero or more ForecastAnalytics.
+     * @param {ForecastAnalyticsDeleteManyArgs} args - Arguments to filter ForecastAnalytics to delete.
+     * @example
+     * // Delete a few ForecastAnalytics
+     * const { count } = await prisma.forecastAnalytics.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ForecastAnalyticsDeleteManyArgs>(args?: SelectSubset<T, ForecastAnalyticsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ForecastAnalytics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForecastAnalyticsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ForecastAnalyticsUpdateManyArgs>(args: SelectSubset<T, ForecastAnalyticsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ForecastAnalytics and returns the data updated in the database.
+     * @param {ForecastAnalyticsUpdateManyAndReturnArgs} args - Arguments to update many ForecastAnalytics.
+     * @example
+     * // Update many ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ForecastAnalytics and only return the `id`
+     * const forecastAnalyticsWithIdOnly = await prisma.forecastAnalytics.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ForecastAnalyticsUpdateManyAndReturnArgs>(args: SelectSubset<T, ForecastAnalyticsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
+
+    /**
+     * Create or update one ForecastAnalytics.
+     * @param {ForecastAnalyticsUpsertArgs} args - Arguments to update or create a ForecastAnalytics.
+     * @example
+     * // Update or create a ForecastAnalytics
+     * const forecastAnalytics = await prisma.forecastAnalytics.upsert({
+     *   create: {
+     *     // ... data to create a ForecastAnalytics
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ForecastAnalytics we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ForecastAnalyticsUpsertArgs>(args: SelectSubset<T, ForecastAnalyticsUpsertArgs<ExtArgs>>): Prisma__ForecastAnalyticsClient<$Result.GetResult<Prisma.$ForecastAnalyticsPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+
+
+    /**
+     * Count the number of ForecastAnalytics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForecastAnalyticsCountArgs} args - Arguments to filter ForecastAnalytics to count.
+     * @example
+     * // Count the number of ForecastAnalytics
+     * const count = await prisma.forecastAnalytics.count({
+     *   where: {
+     *     // ... the filter for the ForecastAnalytics we want to count
+     *   }
+     * })
+    **/
+    count<T extends ForecastAnalyticsCountArgs>(
+      args?: Subset<T, ForecastAnalyticsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ForecastAnalyticsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ForecastAnalytics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForecastAnalyticsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ForecastAnalyticsAggregateArgs>(args: Subset<T, ForecastAnalyticsAggregateArgs>): Prisma.PrismaPromise<GetForecastAnalyticsAggregateType<T>>
+
+    /**
+     * Group by ForecastAnalytics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForecastAnalyticsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ForecastAnalyticsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ForecastAnalyticsGroupByArgs['orderBy'] }
+        : { orderBy?: ForecastAnalyticsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ForecastAnalyticsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetForecastAnalyticsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ForecastAnalytics model
+   */
+  readonly fields: ForecastAnalyticsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ForecastAnalytics.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ForecastAnalyticsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ForecastAnalytics model
+   */ 
+  interface ForecastAnalyticsFieldRefs {
+    readonly id: FieldRef<"ForecastAnalytics", 'String'>
+    readonly userId: FieldRef<"ForecastAnalytics", 'String'>
+    readonly revenueForecast: FieldRef<"ForecastAnalytics", 'Json'>
+    readonly aovForecast: FieldRef<"ForecastAnalytics", 'Json'>
+    readonly ordersForecast: FieldRef<"ForecastAnalytics", 'Json'>
+    readonly periods: FieldRef<"ForecastAnalytics", 'Int'>
+    readonly lastCalculated: FieldRef<"ForecastAnalytics", 'DateTime'>
+    readonly createdAt: FieldRef<"ForecastAnalytics", 'DateTime'>
+    readonly updatedAt: FieldRef<"ForecastAnalytics", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ForecastAnalytics findUnique
+   */
+  export type ForecastAnalyticsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * Filter, which ForecastAnalytics to fetch.
+     */
+    where: ForecastAnalyticsWhereUniqueInput
+  }
+
+  /**
+   * ForecastAnalytics findUniqueOrThrow
+   */
+  export type ForecastAnalyticsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * Filter, which ForecastAnalytics to fetch.
+     */
+    where: ForecastAnalyticsWhereUniqueInput
+  }
+
+  /**
+   * ForecastAnalytics findFirst
+   */
+  export type ForecastAnalyticsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * Filter, which ForecastAnalytics to fetch.
+     */
+    where?: ForecastAnalyticsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ForecastAnalytics to fetch.
+     */
+    orderBy?: ForecastAnalyticsOrderByWithRelationInput | ForecastAnalyticsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ForecastAnalytics.
+     */
+    cursor?: ForecastAnalyticsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ForecastAnalytics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ForecastAnalytics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ForecastAnalytics.
+     */
+    distinct?: ForecastAnalyticsScalarFieldEnum | ForecastAnalyticsScalarFieldEnum[]
+  }
+
+  /**
+   * ForecastAnalytics findFirstOrThrow
+   */
+  export type ForecastAnalyticsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * Filter, which ForecastAnalytics to fetch.
+     */
+    where?: ForecastAnalyticsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ForecastAnalytics to fetch.
+     */
+    orderBy?: ForecastAnalyticsOrderByWithRelationInput | ForecastAnalyticsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ForecastAnalytics.
+     */
+    cursor?: ForecastAnalyticsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ForecastAnalytics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ForecastAnalytics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ForecastAnalytics.
+     */
+    distinct?: ForecastAnalyticsScalarFieldEnum | ForecastAnalyticsScalarFieldEnum[]
+  }
+
+  /**
+   * ForecastAnalytics findMany
+   */
+  export type ForecastAnalyticsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * Filter, which ForecastAnalytics to fetch.
+     */
+    where?: ForecastAnalyticsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ForecastAnalytics to fetch.
+     */
+    orderBy?: ForecastAnalyticsOrderByWithRelationInput | ForecastAnalyticsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ForecastAnalytics.
+     */
+    cursor?: ForecastAnalyticsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ForecastAnalytics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ForecastAnalytics.
+     */
+    skip?: number
+    distinct?: ForecastAnalyticsScalarFieldEnum | ForecastAnalyticsScalarFieldEnum[]
+  }
+
+  /**
+   * ForecastAnalytics create
+   */
+  export type ForecastAnalyticsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ForecastAnalytics.
+     */
+    data: XOR<ForecastAnalyticsCreateInput, ForecastAnalyticsUncheckedCreateInput>
+  }
+
+  /**
+   * ForecastAnalytics createMany
+   */
+  export type ForecastAnalyticsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ForecastAnalytics.
+     */
+    data: ForecastAnalyticsCreateManyInput | ForecastAnalyticsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ForecastAnalytics createManyAndReturn
+   */
+  export type ForecastAnalyticsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * The data used to create many ForecastAnalytics.
+     */
+    data: ForecastAnalyticsCreateManyInput | ForecastAnalyticsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ForecastAnalytics update
+   */
+  export type ForecastAnalyticsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ForecastAnalytics.
+     */
+    data: XOR<ForecastAnalyticsUpdateInput, ForecastAnalyticsUncheckedUpdateInput>
+    /**
+     * Choose, which ForecastAnalytics to update.
+     */
+    where: ForecastAnalyticsWhereUniqueInput
+  }
+
+  /**
+   * ForecastAnalytics updateMany
+   */
+  export type ForecastAnalyticsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ForecastAnalytics.
+     */
+    data: XOR<ForecastAnalyticsUpdateManyMutationInput, ForecastAnalyticsUncheckedUpdateManyInput>
+    /**
+     * Filter which ForecastAnalytics to update
+     */
+    where?: ForecastAnalyticsWhereInput
+    /**
+     * Limit how many ForecastAnalytics to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ForecastAnalytics updateManyAndReturn
+   */
+  export type ForecastAnalyticsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * The data used to update ForecastAnalytics.
+     */
+    data: XOR<ForecastAnalyticsUpdateManyMutationInput, ForecastAnalyticsUncheckedUpdateManyInput>
+    /**
+     * Filter which ForecastAnalytics to update
+     */
+    where?: ForecastAnalyticsWhereInput
+    /**
+     * Limit how many ForecastAnalytics to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ForecastAnalytics upsert
+   */
+  export type ForecastAnalyticsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ForecastAnalytics to update in case it exists.
+     */
+    where: ForecastAnalyticsWhereUniqueInput
+    /**
+     * In case the ForecastAnalytics found by the `where` argument doesn't exist, create a new ForecastAnalytics with this data.
+     */
+    create: XOR<ForecastAnalyticsCreateInput, ForecastAnalyticsUncheckedCreateInput>
+    /**
+     * In case the ForecastAnalytics was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ForecastAnalyticsUpdateInput, ForecastAnalyticsUncheckedUpdateInput>
+  }
+
+  /**
+   * ForecastAnalytics delete
+   */
+  export type ForecastAnalyticsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+    /**
+     * Filter which ForecastAnalytics to delete.
+     */
+    where: ForecastAnalyticsWhereUniqueInput
+  }
+
+  /**
+   * ForecastAnalytics deleteMany
+   */
+  export type ForecastAnalyticsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ForecastAnalytics to delete
+     */
+    where?: ForecastAnalyticsWhereInput
+    /**
+     * Limit how many ForecastAnalytics to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ForecastAnalytics without action
+   */
+  export type ForecastAnalyticsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForecastAnalytics
+     */
+    select?: ForecastAnalyticsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ForecastAnalytics
+     */
+    omit?: ForecastAnalyticsOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11249,6 +12409,21 @@ export namespace Prisma {
   };
 
   export type DashboardAnalyticsScalarFieldEnum = (typeof DashboardAnalyticsScalarFieldEnum)[keyof typeof DashboardAnalyticsScalarFieldEnum]
+
+
+  export const ForecastAnalyticsScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    revenueForecast: 'revenueForecast',
+    aovForecast: 'aovForecast',
+    ordersForecast: 'ordersForecast',
+    periods: 'periods',
+    lastCalculated: 'lastCalculated',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ForecastAnalyticsScalarFieldEnum = (typeof ForecastAnalyticsScalarFieldEnum)[keyof typeof ForecastAnalyticsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12203,6 +13378,80 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"DashboardAnalytics"> | Date | string
   }
 
+  export type ForecastAnalyticsWhereInput = {
+    AND?: ForecastAnalyticsWhereInput | ForecastAnalyticsWhereInput[]
+    OR?: ForecastAnalyticsWhereInput[]
+    NOT?: ForecastAnalyticsWhereInput | ForecastAnalyticsWhereInput[]
+    id?: UuidFilter<"ForecastAnalytics"> | string
+    userId?: UuidFilter<"ForecastAnalytics"> | string
+    revenueForecast?: JsonFilter<"ForecastAnalytics">
+    aovForecast?: JsonFilter<"ForecastAnalytics">
+    ordersForecast?: JsonFilter<"ForecastAnalytics">
+    periods?: IntFilter<"ForecastAnalytics"> | number
+    lastCalculated?: DateTimeFilter<"ForecastAnalytics"> | Date | string
+    createdAt?: DateTimeFilter<"ForecastAnalytics"> | Date | string
+    updatedAt?: DateTimeFilter<"ForecastAnalytics"> | Date | string
+  }
+
+  export type ForecastAnalyticsOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    revenueForecast?: SortOrder
+    aovForecast?: SortOrder
+    ordersForecast?: SortOrder
+    periods?: SortOrder
+    lastCalculated?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ForecastAnalyticsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: ForecastAnalyticsWhereInput | ForecastAnalyticsWhereInput[]
+    OR?: ForecastAnalyticsWhereInput[]
+    NOT?: ForecastAnalyticsWhereInput | ForecastAnalyticsWhereInput[]
+    revenueForecast?: JsonFilter<"ForecastAnalytics">
+    aovForecast?: JsonFilter<"ForecastAnalytics">
+    ordersForecast?: JsonFilter<"ForecastAnalytics">
+    periods?: IntFilter<"ForecastAnalytics"> | number
+    lastCalculated?: DateTimeFilter<"ForecastAnalytics"> | Date | string
+    createdAt?: DateTimeFilter<"ForecastAnalytics"> | Date | string
+    updatedAt?: DateTimeFilter<"ForecastAnalytics"> | Date | string
+  }, "id" | "userId">
+
+  export type ForecastAnalyticsOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    revenueForecast?: SortOrder
+    aovForecast?: SortOrder
+    ordersForecast?: SortOrder
+    periods?: SortOrder
+    lastCalculated?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ForecastAnalyticsCountOrderByAggregateInput
+    _avg?: ForecastAnalyticsAvgOrderByAggregateInput
+    _max?: ForecastAnalyticsMaxOrderByAggregateInput
+    _min?: ForecastAnalyticsMinOrderByAggregateInput
+    _sum?: ForecastAnalyticsSumOrderByAggregateInput
+  }
+
+  export type ForecastAnalyticsScalarWhereWithAggregatesInput = {
+    AND?: ForecastAnalyticsScalarWhereWithAggregatesInput | ForecastAnalyticsScalarWhereWithAggregatesInput[]
+    OR?: ForecastAnalyticsScalarWhereWithAggregatesInput[]
+    NOT?: ForecastAnalyticsScalarWhereWithAggregatesInput | ForecastAnalyticsScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"ForecastAnalytics"> | string
+    userId?: UuidWithAggregatesFilter<"ForecastAnalytics"> | string
+    revenueForecast?: JsonWithAggregatesFilter<"ForecastAnalytics">
+    aovForecast?: JsonWithAggregatesFilter<"ForecastAnalytics">
+    ordersForecast?: JsonWithAggregatesFilter<"ForecastAnalytics">
+    periods?: IntWithAggregatesFilter<"ForecastAnalytics"> | number
+    lastCalculated?: DateTimeWithAggregatesFilter<"ForecastAnalytics"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"ForecastAnalytics"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ForecastAnalytics"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -13126,6 +14375,90 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ForecastAnalyticsCreateInput = {
+    id?: string
+    userId: string
+    revenueForecast: JsonNullValueInput | InputJsonValue
+    aovForecast: JsonNullValueInput | InputJsonValue
+    ordersForecast: JsonNullValueInput | InputJsonValue
+    periods?: number
+    lastCalculated?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ForecastAnalyticsUncheckedCreateInput = {
+    id?: string
+    userId: string
+    revenueForecast: JsonNullValueInput | InputJsonValue
+    aovForecast: JsonNullValueInput | InputJsonValue
+    ordersForecast: JsonNullValueInput | InputJsonValue
+    periods?: number
+    lastCalculated?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ForecastAnalyticsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    revenueForecast?: JsonNullValueInput | InputJsonValue
+    aovForecast?: JsonNullValueInput | InputJsonValue
+    ordersForecast?: JsonNullValueInput | InputJsonValue
+    periods?: IntFieldUpdateOperationsInput | number
+    lastCalculated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ForecastAnalyticsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    revenueForecast?: JsonNullValueInput | InputJsonValue
+    aovForecast?: JsonNullValueInput | InputJsonValue
+    ordersForecast?: JsonNullValueInput | InputJsonValue
+    periods?: IntFieldUpdateOperationsInput | number
+    lastCalculated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ForecastAnalyticsCreateManyInput = {
+    id?: string
+    userId: string
+    revenueForecast: JsonNullValueInput | InputJsonValue
+    aovForecast: JsonNullValueInput | InputJsonValue
+    ordersForecast: JsonNullValueInput | InputJsonValue
+    periods?: number
+    lastCalculated?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ForecastAnalyticsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    revenueForecast?: JsonNullValueInput | InputJsonValue
+    aovForecast?: JsonNullValueInput | InputJsonValue
+    ordersForecast?: JsonNullValueInput | InputJsonValue
+    periods?: IntFieldUpdateOperationsInput | number
+    lastCalculated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ForecastAnalyticsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    revenueForecast?: JsonNullValueInput | InputJsonValue
+    aovForecast?: JsonNullValueInput | InputJsonValue
+    ordersForecast?: JsonNullValueInput | InputJsonValue
+    periods?: IntFieldUpdateOperationsInput | number
+    lastCalculated?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -13965,6 +15298,44 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type ForecastAnalyticsCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    revenueForecast?: SortOrder
+    aovForecast?: SortOrder
+    ordersForecast?: SortOrder
+    periods?: SortOrder
+    lastCalculated?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ForecastAnalyticsAvgOrderByAggregateInput = {
+    periods?: SortOrder
+  }
+
+  export type ForecastAnalyticsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    periods?: SortOrder
+    lastCalculated?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ForecastAnalyticsMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    periods?: SortOrder
+    lastCalculated?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ForecastAnalyticsSumOrderByAggregateInput = {
+    periods?: SortOrder
   }
 
   export type WebinarCreateNestedManyWithoutPresenterInput = {

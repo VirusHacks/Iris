@@ -199,3 +199,19 @@ model DashboardAnalytics {
 
   @@index([userId])
 }
+
+model ForecastAnalytics {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @unique @db.Uuid
+  // Store forecast results as JSON
+  revenueForecast   Json   // {historical, forecast, metrics}
+  aovForecast       Json   // {historical, forecast, metrics}
+  ordersForecast    Json   // {historical, forecast, metrics}
+  // Cache metadata
+  periods           Int     @default(6)
+  lastCalculated    DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+}

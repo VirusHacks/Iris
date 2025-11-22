@@ -124,8 +124,45 @@ export async function POST(request: NextRequest) {
     // Calculate all analytics in memory
     const analytics = calculateAllAnalytics(uniqueData, user.user.id);
 
+    // Verify Prisma client has the model
+    if (!prismaClient) {
+      console.error("Prisma client not initialized");
+      return NextResponse.json({
+        success: true,
+        message: "CSV processed successfully (analytics not saved - Prisma client unavailable)",
+        stats: {
+          total: records.length,
+          processed: uniqueData.length,
+          returns: returns.length,
+          creditNotes: creditNotes.length,
+          duplicates: processedData.length - uniqueData.length,
+        },
+        analytics,
+      });
+    }
+
+    // Check if model exists
+    if (!prismaClient.dashboardAnalytics) {
+      console.error("dashboardAnalytics model not found in Prisma client");
+      console.error("Available models:", Object.keys(prismaClient).filter(k => !k.startsWith('_') && typeof prismaClient[k as keyof typeof prismaClient] === 'object'));
+      // Still return analytics even if we can't save to DB
+      return NextResponse.json({
+        success: true,
+        message: "CSV processed successfully (analytics not saved - model missing. Please restart server.)",
+        stats: {
+          total: records.length,
+          processed: uniqueData.length,
+          returns: returns.length,
+          creditNotes: creditNotes.length,
+          duplicates: processedData.length - uniqueData.length,
+        },
+        analytics,
+      });
+    }
+
     // Store analytics in database (upsert - update if exists, create if not)
-    await prismaClient.dashboardAnalytics.upsert({
+    try {
+      await prismaClient.dashboardAnalytics.upsert({
       where: { userId: user.user.id },
       update: {
         monthlySales: analytics.monthlySales as any,
@@ -151,6 +188,23 @@ export async function POST(request: NextRequest) {
         rfmData: analytics.rfmData as any,
       },
     });
+    } catch (dbError) {
+      console.error("Error saving analytics to database:", dbError);
+      // Still return analytics even if DB save fails
+      return NextResponse.json({
+        success: true,
+        message: "CSV processed successfully (analytics calculated but not saved)",
+        stats: {
+          total: records.length,
+          processed: uniqueData.length,
+          returns: returns.length,
+          creditNotes: creditNotes.length,
+          duplicates: processedData.length - uniqueData.length,
+        },
+        analytics,
+        warning: "Analytics not saved to database. Please restart the server.",
+      });
+    }
 
     return NextResponse.json({
       success: true,

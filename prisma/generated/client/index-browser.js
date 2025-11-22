@@ -246,6 +246,18 @@ exports.Prisma.DashboardAnalyticsScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ForecastAnalyticsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  revenueForecast: 'revenueForecast',
+  aovForecast: 'aovForecast',
+  ordersForecast: 'ordersForecast',
+  periods: 'periods',
+  lastCalculated: 'lastCalculated',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -306,7 +318,8 @@ exports.Prisma.ModelName = {
   AiAgents: 'AiAgents',
   SalesTransaction: 'SalesTransaction',
   RFMAnalysis: 'RFMAnalysis',
-  DashboardAnalytics: 'DashboardAnalytics'
+  DashboardAnalytics: 'DashboardAnalytics',
+  ForecastAnalytics: 'ForecastAnalytics'
 };
 
 /**

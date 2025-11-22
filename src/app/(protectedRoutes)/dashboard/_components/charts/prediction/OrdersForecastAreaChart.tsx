@@ -31,6 +31,7 @@ export default function OrdersForecastAreaChart({ periods }: { periods: number }
   const error = ordersForecast?.error || null;
 
   if (!data || data.error) {
+    const errorMessage = error || data?.error || "No forecast available";
     return (
       <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl">
         <CardHeader className="border-b border-border/50">
@@ -40,7 +41,7 @@ export default function OrdersForecastAreaChart({ periods }: { periods: number }
         <CardContent className="p-6">
           <div className="h-[450px] flex items-center justify-center">
             <p className="text-muted-foreground text-center px-4">
-              {error || data?.error || "No forecast available"}
+              {errorMessage}
             </p>
           </div>
         </CardContent>

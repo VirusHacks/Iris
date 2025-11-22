@@ -13,6 +13,15 @@ export async function GET(request: NextRequest) {
     const chartType = searchParams.get("type");
 
     // Get analytics from database
+    // Ensure Prisma client is properly initialized
+    if (!prismaClient) {
+      console.error("Prisma client not initialized");
+      return NextResponse.json(
+        { error: "Database service unavailable" },
+        { status: 503 }
+      );
+    }
+
     const analyticsRecord = await prismaClient.dashboardAnalytics.findUnique({
       where: { userId: user.user.id },
     });
