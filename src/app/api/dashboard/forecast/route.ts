@@ -1,3 +1,4 @@
+import { prismaClient } from "@/lib/prismaClient";
 import { onAuthenticateUser } from "@/action/auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,11 +15,12 @@ export async function GET(request: NextRequest) {
     const forecastType = searchParams.get("type") || "revenue";
     const periods = parseInt(searchParams.get("periods") || "6");
 
-    // Get cached analytics (no database queries)
-    const { getCachedAnalytics } = await import("../upload/route");
-    const analytics = getCachedAnalytics(user.user.id);
+    // Get analytics from database
+    const analyticsRecord = await prismaClient.dashboardAnalytics.findUnique({
+      where: { userId: user.user.id },
+    });
 
-    if (!analytics || !analytics.monthlySales || analytics.monthlySales.length === 0) {
+    if (!analyticsRecord || !analyticsRecord.monthlySales || (analyticsRecord.monthlySales as any[]).length === 0) {
       return NextResponse.json({
         error: "No analytics data available. Please upload a CSV file.",
         historical: [],
@@ -27,9 +29,9 @@ export async function GET(request: NextRequest) {
       }, { status: 404 });
     }
 
-    // Use cached monthly sales and AOV data
-    const monthlySales = analytics.monthlySales;
-    const aovTrend = analytics.aovTrend;
+    // Use monthly sales and AOV data from database
+    const monthlySales = analyticsRecord.monthlySales as any[];
+    const aovTrend = analyticsRecord.aovTrend as any[];
 
     // Combine into monthly data array for forecast
     const monthlyDataMap = new Map<string, { revenue: number; aov: number; orders: number }>();

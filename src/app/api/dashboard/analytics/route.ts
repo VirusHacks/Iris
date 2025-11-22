@@ -1,6 +1,6 @@
+import { prismaClient } from "@/lib/prismaClient";
 import { onAuthenticateUser } from "@/action/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { getCachedAnalytics } from "../upload/route";
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,12 +12,26 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const chartType = searchParams.get("type");
 
-    // Get cached analytics (no database queries)
-    const analytics = getCachedAnalytics(user.user.id);
+    // Get analytics from database
+    const analyticsRecord = await prismaClient.dashboardAnalytics.findUnique({
+      where: { userId: user.user.id },
+    });
 
-    if (!analytics) {
+    if (!analyticsRecord) {
       return NextResponse.json({ error: "No analytics data available. Please upload a CSV file." }, { status: 404 });
     }
+
+    // Parse JSON fields
+    const analytics = {
+      monthlySales: analyticsRecord.monthlySales as any,
+      aovTrend: analyticsRecord.aovTrend as any,
+      topCountries: analyticsRecord.topCountries as any,
+      topProducts: analyticsRecord.topProducts as any,
+      topCustomers: analyticsRecord.topCustomers as any,
+      rfmDistribution: analyticsRecord.rfmDistribution as any,
+      revenueByDay: analyticsRecord.revenueByDay as any,
+      revenueByHour: analyticsRecord.revenueByHour as any,
+    };
 
     switch (chartType) {
       case "monthly-sales":
