@@ -1,3 +1,4 @@
+import { prismaClient } from "@/lib/prismaClient";
 import { onAuthenticateUser } from "@/action/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { parse } from "csv-parse/sync";
@@ -30,13 +31,7 @@ interface ProcessedTransaction {
   isCreditNote: boolean;
 }
 
-// In-memory cache for processed analytics (keyed by userId)
-const analyticsCache = new Map<string, {
-  data: any;
-  timestamp: number;
-}>();
-
-const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+// No in-memory cache - using database instead
 
 export async function POST(request: NextRequest) {
   try {
@@ -129,11 +124,87 @@ export async function POST(request: NextRequest) {
     // Calculate all analytics in memory
     const analytics = calculateAllAnalytics(uniqueData, user.user.id);
 
-    // Store analytics in cache (in-memory only, no database)
-    analyticsCache.set(user.user.id, {
-      data: analytics,
-      timestamp: Date.now(),
+    // Verify Prisma client has the model
+    if (!prismaClient) {
+      console.error("Prisma client not initialized");
+      return NextResponse.json({
+        success: true,
+        message: "CSV processed successfully (analytics not saved - Prisma client unavailable)",
+        stats: {
+          total: records.length,
+          processed: uniqueData.length,
+          returns: returns.length,
+          creditNotes: creditNotes.length,
+          duplicates: processedData.length - uniqueData.length,
+        },
+        analytics,
+      });
+    }
+
+    // Check if model exists
+    if (!prismaClient.dashboardAnalytics) {
+      console.error("dashboardAnalytics model not found in Prisma client");
+      console.error("Available models:", Object.keys(prismaClient).filter(k => !k.startsWith('_') && typeof prismaClient[k as keyof typeof prismaClient] === 'object'));
+      // Still return analytics even if we can't save to DB
+      return NextResponse.json({
+        success: true,
+        message: "CSV processed successfully (analytics not saved - model missing. Please restart server.)",
+        stats: {
+          total: records.length,
+          processed: uniqueData.length,
+          returns: returns.length,
+          creditNotes: creditNotes.length,
+          duplicates: processedData.length - uniqueData.length,
+        },
+        analytics,
+      });
+    }
+
+    // Store analytics in database (upsert - update if exists, create if not)
+    try {
+      await prismaClient.dashboardAnalytics.upsert({
+      where: { userId: user.user.id },
+      update: {
+        monthlySales: analytics.monthlySales as any,
+        aovTrend: analytics.aovTrend as any,
+        topCountries: analytics.topCountries as any,
+        topProducts: analytics.topProducts as any,
+        topCustomers: analytics.topCustomers as any,
+        rfmDistribution: analytics.rfmDistribution as any,
+        revenueByDay: analytics.revenueByDay as any,
+        revenueByHour: analytics.revenueByHour as any,
+        rfmData: analytics.rfmData as any,
+      },
+      create: {
+        userId: user.user.id,
+        monthlySales: analytics.monthlySales as any,
+        aovTrend: analytics.aovTrend as any,
+        topCountries: analytics.topCountries as any,
+        topProducts: analytics.topProducts as any,
+        topCustomers: analytics.topCustomers as any,
+        rfmDistribution: analytics.rfmDistribution as any,
+        revenueByDay: analytics.revenueByDay as any,
+        revenueByHour: analytics.revenueByHour as any,
+        rfmData: analytics.rfmData as any,
+      },
     });
+    } catch (dbError) {
+      console.error("Error saving analytics to database:", dbError);
+      // Still return analytics even if DB save fails
+      return NextResponse.json({
+        success: true,
+        message: "CSV processed successfully (analytics calculated but not saved)",
+        stats: {
+          total: records.length,
+          processed: uniqueData.length,
+          returns: returns.length,
+          creditNotes: creditNotes.length,
+          duplicates: processedData.length - uniqueData.length,
+        },
+        analytics,
+        warning: "Analytics not saved to database. Please restart the server.",
+      });
+    }
 
     return NextResponse.json({
       success: true,
@@ -194,6 +265,7 @@ function calculateAllAnalytics(transactions: ProcessedTransaction[], userId: str
     rfmDistribution,
     revenueByDay,
     revenueByHour,
+    rfmData, // Include full RFM data for forecast
   };
 }
 
@@ -435,11 +507,3 @@ function getRFMDistribution(rfmData: any[]) {
     }));
 }
 
-// Export function to get cached analytics
-export function getCachedAnalytics(userId: string) {
-  const cached = analyticsCache.get(userId);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    return cached.data;
-  }
-  return null;
-}
