@@ -32,7 +32,7 @@ export const CallToAction = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="text-5xl md:text-6xl max-w-sm mx-auto tracking-tighter text-center font-medium text-white"
+                        className="text-5xl md:text-6xl max-w-sm mx-auto tracking-tighter text-center font-medium"
                     >
                         AI-driven CRM for everyone.
                     </motion.h2>
