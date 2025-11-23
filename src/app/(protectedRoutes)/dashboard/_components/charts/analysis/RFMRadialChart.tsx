@@ -9,10 +9,10 @@ const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="bg-background/95 backdrop-blur-md border-2 border-primary/50 rounded-xl p-4 shadow-2xl">
-        <p className="font-bold text-lg text-foreground mb-2">{data.name}</p>
-        <p className="text-xl font-bold text-primary">{data.value} customers</p>
-        <p className="text-sm text-muted-foreground mt-1">
+      <div className="bg-[#0a0a0a] border border-gray-700 rounded-lg p-3 shadow-xl">
+        <p className="font-semibold text-sm text-white mb-2">{data.name}</p>
+        <p className="text-sm font-bold text-pink-400">{data.value} customers</p>
+        <p className="text-xs text-gray-400 mt-1">
           {((data.value / data.payload.total) * 100).toFixed(1)}% of total
         </p>
       </div>
@@ -59,28 +59,41 @@ export default function RFMRadialChart() {
   // Don't render if no data
   if (data.length === 0) {
     return null;
+    return (
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white">RFM Customer Segmentation</CardTitle>
+          <CardDescription className="text-gray-400 text-sm">Customer distribution by segment</CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="h-[400px] flex items-center justify-center">
+            <p className="text-gray-500">No data available</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   const totalCustomers = data.reduce((sum, item) => sum + item.count, 0);
   const largestSegment = data.reduce((max, item) => item.count > max.count ? item : max, data[0]);
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
-      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-pink-500/5 to-transparent">
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Users className="h-5 w-5 text-pink-400" />
+            <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+              <Users className="h-4 w-4 text-pink-400" />
               RFM Customer Segmentation
             </CardTitle>
-            <CardDescription className="mt-2">
+            <CardDescription className="mt-1 text-gray-400 text-sm">
               {largestSegment.segment} is largest ({largestSegment.count} customers) • Total: {totalCustomers} customers
             </CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="bg-gradient-to-br from-background/50 to-background/30 rounded-xl p-4 border border-border/30">
+        <div className="bg-black rounded-lg p-4">
           <ResponsiveContainer width="100%" height={400}>
             <PieChart>
               <Pie
@@ -99,9 +112,9 @@ export default function RFMRadialChart() {
               </Pie>
               <Tooltip content={<CustomTooltip />} />
               <Legend
-                wrapperStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
+                wrapperStyle={{ color: "#999", fontSize: "12px" }}
                 iconType="circle"
-                formatter={(value) => <span className="text-foreground">{value}</span>}
+                formatter={(value) => <span className="text-gray-400">{value}</span>}
               />
             </PieChart>
           </ResponsiveContainer>

@@ -101,9 +101,9 @@ export default function PredictionDashboard() {
         {/* Metrics Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="bg-gradient-to-br from-card to-card/50 border-border/50 backdrop-blur-sm">
+            <Card key={i} className="bg-[#0a0a0a] border border-gray-800">
               <CardContent className="p-6">
-                <div className="h-24 animate-pulse bg-muted rounded" />
+                <div className="h-24 animate-pulse bg-gray-900 rounded" />
               </CardContent>
             </Card>
           ))}
@@ -113,7 +113,7 @@ export default function PredictionDashboard() {
         {[1, 2, 3].map((row) => (
           <div key={row} className={row === 3 ? "grid grid-cols-1 gap-6" : "grid grid-cols-1 lg:grid-cols-2 gap-6"}>
             {row === 3 ? (
-              <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl">
+              <Card className="bg-[#0a0a0a] border border-gray-800">
                 <CardContent className="p-6">
                   <div className="h-[450px] flex items-center justify-center">
                     <Loader2 className="h-8 w-8 animate-spin text-purple-400" />
@@ -122,7 +122,7 @@ export default function PredictionDashboard() {
               </Card>
             ) : (
               [1, 2].map((col) => (
-                <Card key={col} className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl">
+                <Card key={col} className="bg-[#0a0a0a] border border-gray-800">
                   <CardContent className="p-6">
                     <div className="h-[450px] flex items-center justify-center">
                       <Loader2 className="h-8 w-8 animate-spin text-purple-400" />
@@ -142,8 +142,8 @@ export default function PredictionDashboard() {
       {/* Header with Refresh and Store Buttons */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">AI Forecast Dashboard</h2>
-          <p className="text-muted-foreground mt-1">
+          <h2 className="text-2xl font-bold text-white">AI Forecast Dashboard</h2>
+          <p className="text-gray-400 mt-1 text-sm">
             Prophet AI-powered predictions based on historical data
           </p>
         </div>

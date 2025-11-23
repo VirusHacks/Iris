@@ -20,9 +20,9 @@ export default function RevenueSummaryCards() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="bg-gradient-to-br from-card to-card/50 border-border/50 backdrop-blur-sm">
+          <Card key={i} className="bg-[#0a0a0a] border border-gray-800">
             <CardContent className="p-6">
-              <div className="h-20 animate-pulse bg-muted rounded" />
+              <div className="h-20 animate-pulse bg-gray-900 rounded" />
             </CardContent>
           </Card>
         ))}
@@ -44,33 +44,33 @@ export default function RevenueSummaryCards() {
       title: "Total Revenue",
       value: formatCurrency(stats.totalRevenue),
       icon: DollarSign,
-      gradient: "from-emerald-500/20 to-teal-500/10",
       iconColor: "text-emerald-400",
       borderColor: "border-emerald-500/30",
+      bgColor: "bg-emerald-500/10",
     },
     {
       title: "Total Orders",
       value: stats.totalOrders.toLocaleString(),
       icon: ShoppingCart,
-      gradient: "from-blue-500/20 to-cyan-500/10",
       iconColor: "text-blue-400",
       borderColor: "border-blue-500/30",
+      bgColor: "bg-blue-500/10",
     },
     {
       title: "Average Order Value",
       value: formatCurrency(stats.avgAOV),
       icon: TrendingUp,
-      gradient: "from-purple-500/20 to-pink-500/10",
       iconColor: "text-purple-400",
       borderColor: "border-purple-500/30",
+      bgColor: "bg-purple-500/10",
     },
     {
       title: "Total Customers",
       value: stats.totalCustomers.toLocaleString(),
       icon: Users,
-      gradient: "from-amber-500/20 to-orange-500/10",
-      iconColor: "text-amber-400",
-      borderColor: "border-amber-500/30",
+      iconColor: "text-pink-400",
+      borderColor: "border-pink-500/30",
+      bgColor: "bg-pink-500/10",
     },
   ];
 
@@ -79,16 +79,16 @@ export default function RevenueSummaryCards() {
       {cards.map((card, index) => (
         <Card
           key={index}
-          className={`bg-gradient-to-br ${card.gradient} border ${card.borderColor} backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]`}
+          className={`bg-[#0a0a0a] border ${card.borderColor} hover:border-opacity-60 transition-all duration-300`}
         >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground mb-2">{card.title}</p>
-                <p className="text-3xl font-bold text-foreground">{card.value}</p>
+                <p className="text-sm font-medium text-gray-400 mb-2">{card.title}</p>
+                <p className="text-2xl font-bold text-white">{card.value}</p>
               </div>
-              <div className={`${card.iconColor} bg-background/50 p-3 rounded-lg`}>
-                <card.icon className="h-6 w-6" />
+              <div className={`${card.iconColor} ${card.bgColor} p-3 rounded-lg`}>
+                <card.icon className="h-5 w-5" />
               </div>
             </div>
           </CardContent>

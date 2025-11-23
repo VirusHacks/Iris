@@ -21,9 +21,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const value = payload[0].value as number;
     return (
-      <div className="bg-background/95 backdrop-blur-md border-2 border-primary/50 rounded-xl p-4 shadow-2xl">
-        <p className="font-bold text-lg text-foreground mb-2">{label}</p>
-        <p className="text-xl font-bold text-primary">{formatCurrency(value)}</p>
+      <div className="bg-[#0a0a0a] border border-gray-700 rounded-lg p-3 shadow-xl">
+        <p className="font-semibold text-sm text-white mb-2">{label}</p>
+        <p className="text-sm font-bold text-amber-400">{formatCurrency(value)}</p>
       </div>
     );
   }
@@ -40,6 +40,19 @@ export default function TopCustomersBarChart() {
   // Don't render if no data
   if (data.length === 0) {
     return null;
+    return (
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white">Top Customers by Spending</CardTitle>
+          <CardDescription className="text-gray-400 text-sm">VIP customer analysis</CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="h-[400px] flex items-center justify-center">
+            <p className="text-gray-500">No data available</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   const chartData = data.map((item, index) => ({
@@ -52,15 +65,18 @@ export default function TopCustomersBarChart() {
   const totalSpent = data.reduce((sum, item) => sum + item.revenue, 0);
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
-      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-amber-500/5 to-transparent">
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <CardTitle className="text-xl font-bold flex items-center gap-2">
               <Users className="h-5 w-5 text-amber-400" />
+          <div>
+            <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+              <Users className="h-4 w-4 text-amber-400" />
               Top Customers by Spending
             </CardTitle>
-            <CardDescription className="mt-2">
+            <CardDescription className="mt-1 text-gray-400 text-sm">
               Customer #{topCustomer.customerId} leads with {formatCurrency(topCustomer.revenue)} • Total: {formatCurrency(totalSpent)}
             </CardDescription>
           </div>
@@ -76,24 +92,24 @@ export default function TopCustomersBarChart() {
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="bg-gradient-to-br from-background/50 to-background/30 rounded-xl p-4 border border-border/30">
+        <div className="bg-black rounded-lg p-4">
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={chartData} margin={{ top: 5, right: 20, left: 10, bottom: 80 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" opacity={0.2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" opacity={0.5} />
               <XAxis 
                 dataKey="customer" 
                 angle={-45} 
                 textAnchor="end" 
                 height={100}
-                stroke="hsl(var(--foreground))"
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 11, fontWeight: 600 }}
-                tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
+                stroke="#666"
+                tick={{ fill: "#999", fontSize: 11 }}
+                tickLine={{ stroke: "#333" }}
               />
               <YAxis 
-                stroke="hsl(var(--foreground))"
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 600 }}
+                stroke="#666"
+                tick={{ fill: "#999", fontSize: 12 }}
                 tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
+                tickLine={{ stroke: "#333" }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="revenue" radius={[8, 8, 0, 0]}>

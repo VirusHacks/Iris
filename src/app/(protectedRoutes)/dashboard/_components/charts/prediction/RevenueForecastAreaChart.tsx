@@ -20,26 +20,26 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="bg-background/95 backdrop-blur-md border-2 border-purple-500/50 rounded-xl p-4 shadow-2xl">
-        <p className="font-bold text-lg text-foreground mb-3 border-b border-border pb-2">{`Month: ${label}`}</p>
+      <div className="bg-[#0a0a0a] border border-gray-700 rounded-lg p-3 shadow-xl">
+        <p className="font-semibold text-sm text-white mb-2 border-b border-gray-800 pb-2">{`Month: ${label}`}</p>
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-4">
-            <span className="text-sm font-medium text-muted-foreground">Revenue:</span>
-            <span className={`text-lg font-bold ${data.type === 'forecast' ? 'text-purple-400' : 'text-primary'}`}>
+            <span className="text-xs font-medium text-gray-400">Revenue:</span>
+            <span className={`text-sm font-bold ${data.type === 'forecast' ? 'text-purple-400' : 'text-purple-400'}`}>
               {formatCurrency(data.value)}
             </span>
           </div>
           {data.type === "forecast" && (
             <>
-              <div className="flex items-center justify-between gap-4 pt-2 border-t border-border">
-                <span className="text-xs text-muted-foreground">Upper Bound:</span>
-                <span className="text-sm font-semibold text-emerald-400">
+              <div className="flex items-center justify-between gap-4 pt-2 border-t border-gray-800">
+                <span className="text-xs text-gray-400">Upper Bound:</span>
+                <span className="text-xs font-semibold text-emerald-400">
                   {formatCurrency(data.yhat_upper || data.value)}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-xs text-muted-foreground">Lower Bound:</span>
-                <span className="text-sm font-semibold text-red-400">
+                <span className="text-xs text-gray-400">Lower Bound:</span>
+                <span className="text-xs font-semibold text-red-400">
                   {formatCurrency(data.yhat_lower || data.value)}
                 </span>
               </div>
@@ -103,16 +103,16 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
         </CardHeader>
         <CardContent className="p-6">
           <div className="h-[450px] flex flex-col items-center justify-center gap-4">
-            <p className="text-muted-foreground text-center px-4">
+            <p className="text-gray-400 text-center px-4">
               {errorMessage}
             </p>
             {isServiceError && (
-              <div className="text-sm text-muted-foreground/70 text-center px-4 max-w-md">
+              <div className="text-sm text-gray-500 text-center px-4 max-w-md">
                 <p className="mb-2">💡 Troubleshooting:</p>
                 <ul className="list-disc list-inside space-y-1 text-left">
-                  <li>Ensure Python service is running: <code className="bg-muted px-1 rounded">cd forecast-service && python app.py</code></li>
-                  <li>Check service URL: <code className="bg-muted px-1 rounded">http://localhost:4000</code></li>
-                  <li>Verify service health: <code className="bg-muted px-1 rounded">curl http://localhost:4000/health</code></li>
+                  <li>Ensure Python service is running: <code className="bg-gray-900 px-1 rounded text-gray-300">cd forecast-service && python app.py</code></li>
+                  <li>Check service URL: <code className="bg-gray-900 px-1 rounded text-gray-300">http://localhost:4000</code></li>
+                  <li>Verify service health: <code className="bg-gray-900 px-1 rounded text-gray-300">curl http://localhost:4000/health</code></li>
                 </ul>
               </div>
             )}
@@ -124,14 +124,14 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
 
   if (!data.historical || data.historical.length === 0) {
     return (
-      <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl">
-        <CardHeader className="border-b border-border/50">
-          <CardTitle className="text-xl font-bold">Revenue Forecast (Prophet AI)</CardTitle>
-          <CardDescription>AI-powered revenue predictions</CardDescription>
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white">Revenue Forecast (Prophet AI)</CardTitle>
+          <CardDescription className="text-gray-400 text-sm">AI-powered revenue predictions</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="h-[450px] flex items-center justify-center">
-            <p className="text-muted-foreground text-center px-4">
+            <p className="text-gray-400 text-center px-4">
               No historical data available for forecasting
             </p>
           </div>
@@ -144,15 +144,15 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
   const lastHistoricalIndex = data.historical?.length || 0;
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-purple-500/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
-      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-purple-500/10 to-transparent">
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-purple-400" />
+            <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-purple-400" />
               Revenue Forecast (Prophet AI)
             </CardTitle>
-            <CardDescription className="mt-2">
+            <CardDescription className="mt-1 text-gray-400 text-sm">
               {periods}-month projection • MAPE: {data.metrics?.mape?.toFixed(2) || "N/A"}% • 
               RMSE: {formatCurrency(data.metrics?.rmse || 0)}
               {isFromBlockchain && (
@@ -166,7 +166,7 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="bg-gradient-to-br from-background/50 to-background/30 rounded-xl p-4 border border-purple-500/20">
+        <div className="bg-black rounded-lg p-4">
           <ResponsiveContainer width="100%" height={450}>
             <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
@@ -179,25 +179,25 @@ export default function RevenueForecastAreaChart({ periods }: { periods: number 
                   <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" opacity={0.2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" opacity={0.5} />
               <XAxis 
                 dataKey="month" 
-                stroke="hsl(var(--foreground))"
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 600 }}
+                stroke="#666"
+                tick={{ fill: "#999", fontSize: 12 }}
                 angle={-45}
                 textAnchor="end"
                 height={80}
-                tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
+                tickLine={{ stroke: "#333" }}
               />
               <YAxis 
-                stroke="hsl(var(--foreground))"
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 600 }}
+                stroke="#666"
+                tick={{ fill: "#999", fontSize: 12 }}
                 tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
+                tickLine={{ stroke: "#333" }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend 
-                wrapperStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
+                wrapperStyle={{ color: "#999", fontSize: "12px" }}
                 iconType="circle"
               />
               {/* Confidence interval area */}

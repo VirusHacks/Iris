@@ -40,14 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-<<<<<<< HEAD
 # prisma generated files
 prisma/generated/
 
 # markdown files (except README.md)
 *.md
 !README.md
-=======
-# clerk configuration (can include secrets)
-/.clerk/
->>>>>>> e10014c47180cb9b1de8a1e0cbdaa310fe8108c8

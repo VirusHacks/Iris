@@ -19,16 +19,16 @@ const formatCurrency = (value: number) => {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-background/95 backdrop-blur-md border-2 border-primary/50 rounded-xl p-4 shadow-2xl">
-        <p className="font-bold text-lg text-foreground mb-3 border-b border-border pb-2">{`${label}`}</p>
+      <div className="bg-[#0a0a0a] border border-gray-700 rounded-lg p-3 shadow-xl">
+        <p className="font-semibold text-sm text-white mb-2 border-b border-gray-800 pb-2">{`${label}`}</p>
         <div className="space-y-2">
           {payload.map((item: any, index: number) => (
             <div key={index} className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                <span className="text-sm font-medium text-muted-foreground">{item.name}</span>
+                <span className="text-xs font-medium text-gray-400">{item.name}</span>
               </div>
-              <span className="text-lg font-bold text-primary">{formatCurrency(item.value)}</span>
+              <span className="text-sm font-bold text-purple-400">{formatCurrency(item.value)}</span>
             </div>
           ))}
         </div>
@@ -46,6 +46,19 @@ export default function MonthlySalesAreaChart() {
   // Don't render if no data
   if (data.length === 0) {
     return null;
+    return (
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white">Monthly Revenue Trend</CardTitle>
+          <CardDescription className="text-gray-400 text-sm">Revenue growth over time</CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="h-[400px] flex items-center justify-center">
+            <p className="text-gray-500">No data available</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0);
@@ -53,15 +66,17 @@ export default function MonthlySalesAreaChart() {
   const growth = data.length > 1 ? ((data[data.length - 1].revenue - data[0].revenue) / data[0].revenue) * 100 : 0;
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
-      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <CardTitle className="text-xl font-bold flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <div>
+            <CardTitle className="text-lg font-semibold text-white">
               Monthly Revenue Trend
             </CardTitle>
-            <CardDescription className="mt-2">
+            <CardDescription className="mt-1 text-gray-400 text-sm">
               Total: {formatCurrency(totalRevenue)} • Avg: {formatCurrency(avgRevenue)}/month
               {growth !== 0 && (
                 <span className={`ml-2 ${growth > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -82,7 +97,7 @@ export default function MonthlySalesAreaChart() {
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="bg-gradient-to-br from-background/50 to-background/30 rounded-xl p-4 border border-border/30">
+        <div className="bg-black rounded-lg p-4">
           <ResponsiveContainer width="100%" height={400}>
             <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
@@ -91,22 +106,22 @@ export default function MonthlySalesAreaChart() {
                   <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" opacity={0.2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" opacity={0.5} />
               <XAxis 
                 dataKey="month" 
-                stroke="hsl(var(--foreground))"
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 600 }}
-                tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
+                stroke="#666"
+                tick={{ fill: "#999", fontSize: 12 }}
+                tickLine={{ stroke: "#333" }}
               />
               <YAxis 
-                stroke="hsl(var(--foreground))"
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 600 }}
+                stroke="#666"
+                tick={{ fill: "#999", fontSize: 12 }}
                 tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
+                tickLine={{ stroke: "#333" }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend 
-                wrapperStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
+                wrapperStyle={{ color: "#999", fontSize: "12px" }}
                 iconType="circle"
               />
               <Area
