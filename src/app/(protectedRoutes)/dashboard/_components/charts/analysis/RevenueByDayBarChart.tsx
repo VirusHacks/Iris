@@ -34,19 +34,6 @@ export default function RevenueByDayBarChart() {
   // Don't render if no data
   if (data.length === 0) {
     return null;
-    return (
-      <Card className="bg-[#0a0a0a] border border-gray-800">
-        <CardHeader className="border-b border-gray-800">
-          <CardTitle className="text-lg font-semibold text-white">Revenue by Day of Week</CardTitle>
-          <CardDescription className="text-gray-400 text-sm">Weekly performance pattern</CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="h-[400px] flex items-center justify-center">
-            <p className="text-gray-500">No data available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
   }
 
   const bestDay = data.reduce((max, item) => item.revenue > max.revenue ? item : max, data[0]);

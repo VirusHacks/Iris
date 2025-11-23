@@ -18,7 +18,7 @@ const navigationTabs = [
   { id: "home", label: "Home", icon: Home, route: "/home" },
   { id: "dashboard", label: "Dashboard", icon: BarChart3, route: "/dashboard" },
   { id: "customers", label: "Customers", icon: Users, route: "/dashboard/customers" },
-  { id: "lead-generation", label: "Lead Generation", icon: Target, route: "/dashboard/leads" },
+  { id: "lead-generation", label: "Lead Generation", icon: Target, route: "/dashboard/new-leads" },
   { id: "assistant", label: "Assistant", icon: MessageSquare, route: "/assistant" },
   { id: "ai-agents", label: "AI Agents", icon: Sparkles, route: "/ai-agents" },
   { id: "webinars", label: "Webinars", icon: Megaphone, route: "/webinars" },

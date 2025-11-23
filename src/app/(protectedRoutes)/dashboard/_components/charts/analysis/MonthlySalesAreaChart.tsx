@@ -46,19 +46,6 @@ export default function MonthlySalesAreaChart() {
   // Don't render if no data
   if (data.length === 0) {
     return null;
-    return (
-      <Card className="bg-[#0a0a0a] border border-gray-800">
-        <CardHeader className="border-b border-gray-800">
-          <CardTitle className="text-lg font-semibold text-white">Monthly Revenue Trend</CardTitle>
-          <CardDescription className="text-gray-400 text-sm">Revenue growth over time</CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="h-[400px] flex items-center justify-center">
-            <p className="text-gray-500">No data available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
   }
 
   const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0);
@@ -72,8 +59,6 @@ export default function MonthlySalesAreaChart() {
           <div className="flex-1">
             <CardTitle className="text-xl font-bold flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <div>
-            <CardTitle className="text-lg font-semibold text-white">
               Monthly Revenue Trend
             </CardTitle>
             <CardDescription className="mt-1 text-gray-400 text-sm">
