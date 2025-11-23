@@ -73,33 +73,25 @@ function DashboardContentInner() {
 
 
   return (
-    <div className="w-full min-h-screen space-y-8 pb-12">
-      {/* Luxury Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 p-8 backdrop-blur-sm">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
-        <div className="relative z-10">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent mb-2">
-                Retail Sales Analytics & Forecasting
-              </h1>
-              <p className="text-muted-foreground text-lg">
-                Comprehensive insights and AI-powered predictions for your business
-              </p>
-            </div>
-            <Sparkles className="h-12 w-12 text-primary/50" />
-          </div>
-        </div>
+    <div className="w-full min-h-screen bg-black space-y-8 pb-12">
+      {/* Minimal Header */}
+      <div className="relative">
+        <h1 className="text-3xl font-bold text-white mb-2">
+          Retail Sales Analytics & Forecasting
+        </h1>
+        <p className="text-gray-400 text-sm">
+          Comprehensive insights and AI-powered predictions for your business
+        </p>
       </div>
 
       {/* Upload Section */}
-      <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl">
-        <CardHeader className="border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
-          <CardTitle className="text-xl font-bold flex items-center gap-2">
-            <Upload className="h-5 w-5 text-primary" />
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <Upload className="h-4 w-4 text-purple-400" />
             Upload Sales Data
           </CardTitle>
-          <CardDescription className="text-base">
+          <CardDescription className="text-gray-400 text-sm">
             Upload a CSV file with sales transactions to begin analysis and forecasting
           </CardDescription>
         </CardHeader>
@@ -109,18 +101,18 @@ function DashboardContentInner() {
               <Button
                 asChild
                 variant="outline"
-                className="cursor-pointer h-12 px-6 text-base font-semibold hover:bg-primary/10 hover:border-primary/50 transition-all"
+                className="cursor-pointer h-10 px-4 text-sm font-medium bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50 transition-all"
                 disabled={isUploading}
               >
                 <span>
                   {isUploading ? (
                     <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Processing...
                     </>
                   ) : (
                     <>
-                      <Upload className="mr-2 h-5 w-5" />
+                      <Upload className="mr-2 h-4 w-4" />
                       Choose CSV File
                     </>
                   )}
@@ -136,10 +128,10 @@ function DashboardContentInner() {
               disabled={isUploading}
             />
             {uploadStats && (
-              <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground bg-muted/50 px-4 py-2 rounded-lg">
+              <div className="flex items-center gap-2 text-sm font-medium text-gray-400 bg-[#0a0a0a] border border-gray-800 px-4 py-2 rounded-lg">
                 <FileText className="h-4 w-4" />
                 <span>
-                  Processed: <span className="font-bold text-foreground">{uploadStats.processed}</span> rows
+                  Processed: <span className="font-bold text-white">{uploadStats.processed}</span> rows
                   {uploadStats.returns > 0 && (
                     <span className="ml-2">
                       • <span className="text-orange-400">{uploadStats.returns}</span> returns
@@ -160,19 +152,19 @@ function DashboardContentInner() {
       {hasData ? (
         <Tabs defaultValue="analysis" className="w-full">
           <div className="flex justify-center mb-8">
-            <TabsList className="grid w-full max-w-2xl grid-cols-2 h-14 bg-gradient-to-r from-muted/80 to-muted/60 backdrop-blur-md border-2 border-border/50 shadow-xl rounded-xl p-1.5">
+            <TabsList className="grid w-full max-w-2xl grid-cols-2 h-12 bg-[#0a0a0a] border border-gray-800 rounded-lg p-1">
               <TabsTrigger 
                 value="analysis" 
-                className="flex items-center justify-center gap-3 text-lg font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-xl data-[state=active]:border data-[state=active]:border-primary/30 transition-all duration-300 rounded-lg"
+                className="flex items-center justify-center gap-2 text-sm font-medium data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 data-[state=active]:border data-[state=active]:border-purple-500/30 text-gray-400 transition-all rounded-md"
               >
-                <BarChart3 className="h-6 w-6" />
+                <BarChart3 className="h-4 w-4" />
                 <span>Analysis</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="prediction" 
-                className="flex items-center justify-center gap-3 text-lg font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-purple-500/10 data-[state=active]:text-purple-400 data-[state=active]:shadow-xl data-[state=active]:border data-[state=active]:border-purple-500/30 transition-all duration-300 rounded-lg"
+                className="flex items-center justify-center gap-2 text-sm font-medium data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 data-[state=active]:border data-[state=active]:border-purple-500/30 text-gray-400 transition-all rounded-md"
               >
-                <TrendingUp className="h-6 w-6" />
+                <TrendingUp className="h-4 w-4" />
                 <span>Prediction</span>
               </TabsTrigger>
             </TabsList>
@@ -187,10 +179,10 @@ function DashboardContentInner() {
           </TabsContent>
         </Tabs>
       ) : (
-        <Card>
+        <Card className="bg-[#0a0a0a] border border-gray-800">
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground text-center">
+            <FileText className="h-12 w-12 text-gray-600 mb-4" />
+            <p className="text-gray-400 text-center">
               No data available. Please upload a CSV file to view analytics.
             </p>
           </CardContent>

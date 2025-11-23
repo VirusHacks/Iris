@@ -22,9 +22,9 @@ export default function AnalysisDashboard() {
         {/* Summary Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="bg-gradient-to-br from-card to-card/50 border-border/50 backdrop-blur-sm">
+            <Card key={i} className="bg-[#0a0a0a] border border-gray-800">
               <CardContent className="p-6">
-                <div className="h-24 animate-pulse bg-muted rounded" />
+                <div className="h-24 animate-pulse bg-gray-900 rounded" />
               </CardContent>
             </Card>
           ))}
@@ -34,10 +34,10 @@ export default function AnalysisDashboard() {
         {[1, 2, 3, 4].map((row) => (
           <div key={row} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {[1, 2].map((col) => (
-              <Card key={col} className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl">
+              <Card key={col} className="bg-[#0a0a0a] border border-gray-800">
                 <CardContent className="p-6">
                   <div className="h-[400px] flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <Loader2 className="h-8 w-8 animate-spin text-purple-400" />
                   </div>
                 </CardContent>
               </Card>
