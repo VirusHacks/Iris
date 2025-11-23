@@ -46,7 +46,7 @@ export const sidebarData = [
     id: 8,
     title: 'Lead Generation',
     icon: Target,
-    link: '/dashboard/leads',
+    link: '/dashboard/new-leads',
   },
   {
     id: 6,

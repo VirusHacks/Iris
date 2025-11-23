@@ -36,19 +36,6 @@ export default function TopCountriesBarChart() {
   // Don't render if no data
   if (data.length === 0) {
     return null;
-    return (
-      <Card className="bg-[#0a0a0a] border border-gray-800">
-        <CardHeader className="border-b border-gray-800">
-          <CardTitle className="text-lg font-semibold text-white">Top Countries by Revenue</CardTitle>
-          <CardDescription className="text-gray-400 text-sm">Geographic revenue distribution</CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="h-[400px] flex items-center justify-center">
-            <p className="text-gray-500">No data available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
   }
 
   const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0);

@@ -40,19 +40,6 @@ export default function TopCustomersBarChart() {
   // Don't render if no data
   if (data.length === 0) {
     return null;
-    return (
-      <Card className="bg-[#0a0a0a] border border-gray-800">
-        <CardHeader className="border-b border-gray-800">
-          <CardTitle className="text-lg font-semibold text-white">Top Customers by Spending</CardTitle>
-          <CardDescription className="text-gray-400 text-sm">VIP customer analysis</CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="h-[400px] flex items-center justify-center">
-            <p className="text-gray-500">No data available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
   }
 
   const chartData = data.map((item, index) => ({
@@ -71,9 +58,6 @@ export default function TopCustomersBarChart() {
           <div className="flex-1">
             <CardTitle className="text-xl font-bold flex items-center gap-2">
               <Users className="h-5 w-5 text-amber-400" />
-          <div>
-            <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
-              <Users className="h-4 w-4 text-amber-400" />
               Top Customers by Spending
             </CardTitle>
             <CardDescription className="mt-1 text-gray-400 text-sm">
