@@ -22,10 +22,31 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
+from twilio.rest import Client
+import phonenumbers
+from phonenumbers import NumberParseException
+from dotenv import load_dotenv
+import os
+from pathlib import Path
 
-# Configure logging
+# Configure logging first
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Load environment variables from .env file
+# Try loading from forecast-service directory first, then parent directory
+env_path = Path(__file__).parent / '.env'
+if not env_path.exists():
+    # Try parent directory (Pixro root)
+    env_path = Path(__file__).parent.parent / '.env'
+
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
+    logger.info(f"Loaded .env file from: {env_path}")
+else:
+    # If no .env file found, try loading from current directory
+    load_dotenv()
+    logger.info("Attempted to load .env file (not found, using system environment variables)")
 
 app = Flask(__name__)
 CORS(app)
@@ -35,13 +56,112 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Suppress plotly import warning from Prophet
-import os
 os.environ['PROPHET_DISABLE_PLOTLY'] = '1'
 
 # Suppress specific logger warnings
-import logging
 logging.getLogger('prophet').setLevel(logging.ERROR)
 logging.getLogger('prophet.plot').setLevel(logging.ERROR)
+
+# Twilio Configuration
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+TWILIO_WHATSAPP_FROM = os.environ.get('TWILIO_WHATSAPP_FROM')  # Format: whatsapp:+14155238886
+
+# Log environment variable status (without exposing sensitive data)
+logger.info(f"Twilio configuration check:")
+logger.info(f"  TWILIO_ACCOUNT_SID: {'Set' if TWILIO_ACCOUNT_SID else 'Not set'}")
+logger.info(f"  TWILIO_AUTH_TOKEN: {'Set' if TWILIO_AUTH_TOKEN else 'Not set'}")
+logger.info(f"  TWILIO_WHATSAPP_FROM: {TWILIO_WHATSAPP_FROM if TWILIO_WHATSAPP_FROM else 'Not set'}")
+
+# Initialize Twilio client if credentials are available
+twilio_client = None
+if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
+    try:
+        twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        logger.info("Twilio client initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize Twilio client: {str(e)}")
+        twilio_client = None
+else:
+    logger.warning("Twilio credentials not found. WhatsApp sending will be disabled. Set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_WHATSAPP_FROM environment variables in .env file.")
+
+def format_phone_number(phone, default_region='US'):
+    """
+    Format phone number to E.164 format required by Twilio
+    Returns formatted number or None if invalid
+    """
+    if not phone:
+        return None
+    
+    # Remove any whitespace and special characters except +
+    phone = str(phone).strip().replace(' ', '').replace('-', '').replace('(', '').replace(')', '').replace('.', '')
+    
+    # If it already starts with +, assume it's in international format
+    if phone.startswith('+'):
+        try:
+            parsed = phonenumbers.parse(phone, None)
+            if phonenumbers.is_valid_number(parsed):
+                return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+        except NumberParseException:
+            pass
+    
+    # Try parsing with default region first
+    try:
+        parsed = phonenumbers.parse(phone, default_region)
+        if phonenumbers.is_valid_number(parsed):
+            return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+    except NumberParseException:
+        pass
+    
+    # If it's a 10-digit number, try common country codes
+    if len(phone) == 10 and phone.isdigit():
+        # Common country codes to try (in order of likelihood)
+        country_codes = [
+            ('IN', '+91'),  # India (10 digits starting with 6-9)
+            ('US', '+1'),   # United States/Canada
+            ('GB', '+44'),  # United Kingdom
+            ('AU', '+61'),  # Australia
+            ('DE', '+49'),  # Germany
+        ]
+        
+        # Check if it looks like an Indian number (starts with 6, 7, 8, or 9)
+        if phone[0] in ['6', '7', '8', '9']:
+            # Try India first for numbers starting with 6-9
+            try:
+                parsed = phonenumbers.parse(f"+91{phone}", None)
+                if phonenumbers.is_valid_number(parsed):
+                    return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+            except NumberParseException:
+                pass
+        
+        # Try other common country codes
+        for region, code in country_codes:
+            try:
+                parsed = phonenumbers.parse(f"{code}{phone}", None)
+                if phonenumbers.is_valid_number(parsed):
+                    return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+            except NumberParseException:
+                continue
+    
+    # Try parsing with 'IN' region (India) as fallback for 10-digit numbers
+    if len(phone) == 10 and phone.isdigit():
+        try:
+            parsed = phonenumbers.parse(phone, 'IN')
+            if phonenumbers.is_valid_number(parsed):
+                return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+        except NumberParseException:
+            pass
+    
+    # Try other common regions
+    for region in ['IN', 'GB', 'AU', 'CA', 'DE', 'FR', 'IT', 'ES', 'BR', 'MX']:
+        try:
+            parsed = phonenumbers.parse(phone, region)
+            if phonenumbers.is_valid_number(parsed):
+                return phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.E164)
+        except NumberParseException:
+            continue
+    
+    return None
 
 @app.route('/health', methods=['GET'])
 def health():
@@ -484,63 +604,144 @@ def initialize_segmentation():
 
 @app.route('/whatsapp/send', methods=['POST'])
 def send_whatsapp():
-    """Send WhatsApp messages to customers"""
+    """Send WhatsApp messages to customers using Twilio"""
     try:
-        data = request.json
+        # Log request details
+        logger.info(f"WhatsApp send endpoint called. Method: {request.method}, Content-Type: {request.content_type}")
+        logger.info(f"Request headers: {dict(request.headers)}")
+        
+        # Handle JSON data - try multiple ways
+        data = None
+        if request.is_json:
+            data = request.get_json()
+        else:
+            # Try to parse as JSON anyway
+            try:
+                if request.data:
+                    data = json.loads(request.data.decode('utf-8'))
+            except Exception as e:
+                logger.error(f"Failed to parse request data as JSON: {str(e)}")
+        
         if not data:
+            logger.error("No data provided in request")
             return jsonify({"error": "No data provided"}), 400
+        
+        logger.info(f"Received data: {json.dumps(data, indent=2)}")
         
         recipients = data.get('recipients', [])  # Array of {phone: string, message: string, customerName?: string}
         
         if not recipients or len(recipients) == 0:
+            logger.error("No recipients provided in request")
             return jsonify({"error": "No recipients provided"}), 400
+        
+        # Check if Twilio is configured
+        logger.info(f"Twilio client status: {'Initialized' if twilio_client else 'Not initialized'}")
+        logger.info(f"TWILIO_WHATSAPP_FROM: {TWILIO_WHATSAPP_FROM}")
+        
+        if not twilio_client:
+            error_msg = "Twilio is not configured. Please set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_WHATSAPP_FROM environment variables."
+            logger.error(error_msg)
+            return jsonify({
+                "error": error_msg,
+                "success": False
+            }), 500
+        
+        if not TWILIO_WHATSAPP_FROM:
+            error_msg = "TWILIO_WHATSAPP_FROM is not configured. Please set the WhatsApp sender number in format: whatsapp:+14155238886"
+            logger.error(error_msg)
+            return jsonify({
+                "error": error_msg,
+                "success": False
+            }), 500
         
         logger.info(f"WhatsApp send request: {len(recipients)} recipients")
         
-        # TODO: Integrate with your WhatsApp API service (Twilio, WhatsApp Business API, etc.)
-        # For now, this is a placeholder that returns success
-        # Replace this with your actual WhatsApp sending logic
-        
         results = []
-        for recipient in recipients:
+        for idx, recipient in enumerate(recipients):
+            logger.info(f"Processing recipient {idx + 1}/{len(recipients)}: {recipient}")
             phone = recipient.get('phone')
             message = recipient.get('message')
             customer_name = recipient.get('customerName', 'Customer')
             
             if not phone or not message:
+                error_msg = "Missing phone or message"
+                logger.warning(f"Recipient {idx + 1} skipped: {error_msg}")
                 results.append({
                     "phone": phone,
+                    "customerName": customer_name,
                     "success": False,
-                    "error": "Missing phone or message"
+                    "error": error_msg
                 })
                 continue
             
-            # Example: Send via your WhatsApp service
-            # Replace this with actual WhatsApp API call
             try:
-                # Your WhatsApp API integration here
-                # Example: twilio_client.messages.create(...)
-                # Or: requests.post('your-whatsapp-api-url', ...)
+                # Format phone number to E.164 format
+                logger.info(f"Formatting phone number: {phone}")
+                formatted_phone = format_phone_number(phone)
                 
-                logger.info(f"Sending WhatsApp to {phone} for {customer_name}")
+                if not formatted_phone:
+                    error_msg = f"Invalid phone number format: {phone}"
+                    logger.warning(error_msg)
+                    results.append({
+                        "phone": phone,
+                        "customerName": customer_name,
+                        "success": False,
+                        "error": error_msg
+                    })
+                    continue
                 
-                # Placeholder - replace with actual API call
+                logger.info(f"Formatted phone: {phone} -> {formatted_phone}")
+                
+                # Format phone for WhatsApp (add whatsapp: prefix)
+                whatsapp_to = f"whatsapp:{formatted_phone}"
+                
+                logger.info(f"Preparing to send WhatsApp to {whatsapp_to} for {customer_name}")
+                logger.info(f"Message preview (first 50 chars): {message[:50]}...")
+                logger.info(f"From: {TWILIO_WHATSAPP_FROM}, To: {whatsapp_to}")
+                
+                # Send WhatsApp message via Twilio
+                logger.info("Calling Twilio API...")
+                twilio_message = twilio_client.messages.create(
+                    body=message,
+                    from_=TWILIO_WHATSAPP_FROM,
+                    to=whatsapp_to
+                )
+                
+                logger.info(f"WhatsApp sent successfully! SID: {twilio_message.sid}, Status: {twilio_message.status}")
+                logger.info(f"Full Twilio response: {twilio_message.sid} - Status: {twilio_message.status}, Error Code: {getattr(twilio_message, 'error_code', 'N/A')}, Error Message: {getattr(twilio_message, 'error_message', 'N/A')}")
+                
                 results.append({
                     "phone": phone,
+                    "formattedPhone": formatted_phone,
                     "customerName": customer_name,
                     "success": True,
-                    "messageId": f"msg_{phone}_{int(datetime.now().timestamp())}"
+                    "messageId": twilio_message.sid,
+                    "status": twilio_message.status
                 })
+                
             except Exception as e:
-                logger.error(f"Error sending to {phone}: {str(e)}")
+                error_msg = str(e)
+                error_type = type(e).__name__
+                logger.error(f"Error sending WhatsApp to {phone} (Type: {error_type}): {error_msg}", exc_info=True)
+                
+                # Extract more details from Twilio exceptions
+                if hasattr(e, 'msg'):
+                    error_msg = f"{error_msg} - {e.msg}"
+                if hasattr(e, 'code'):
+                    error_msg = f"{error_msg} (Code: {e.code})"
+                
                 results.append({
                     "phone": phone,
                     "customerName": customer_name,
                     "success": False,
-                    "error": str(e)
+                    "error": error_msg,
+                    "errorType": error_type
                 })
         
         success_count = sum(1 for r in results if r.get('success'))
+        
+        logger.info(f"WhatsApp send completed: {success_count}/{len(recipients)} successful")
+        logger.info(f"Results summary: {json.dumps(results, indent=2)}")
         
         return jsonify({
             "success": True,
@@ -551,8 +752,13 @@ def send_whatsapp():
         })
         
     except Exception as e:
-        logger.error(f"WhatsApp send error: {str(e)}", exc_info=True)
-        return jsonify({"error": f"An internal error occurred: {str(e)}"}), 500
+        error_type = type(e).__name__
+        error_msg = str(e)
+        logger.error(f"WhatsApp send endpoint error (Type: {error_type}): {error_msg}", exc_info=True)
+        return jsonify({
+            "error": f"An internal error occurred: {error_msg}",
+            "errorType": error_type
+        }), 500
 
 if __name__ == '__main__':
     logger.info("Starting Forecast Service on http://0.0.0.0:4000")

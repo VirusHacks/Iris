@@ -34,7 +34,7 @@ const SubscriptionModal = ({ user }: Props) => {
       router.refresh();
     } catch (e) {
       console.log("WEBINAR CREATION ERROR -->", e);
-      toast.error("Failed to create webinar");
+      toast.error("Failed to create meeting");
     } finally {
       setLoading(false);
     }
@@ -45,12 +45,12 @@ const SubscriptionModal = ({ user }: Props) => {
       <DialogTrigger asChild>
         <button className="rounded-xl flex gap-2 items-center hover:cursor-pointer px-4 py-2 border border-border bg-primary/10 backdrop-blur-sm text-sm font-normal text-primary hover:bg-primary-20">
           <PlusIcon />
-          Create Webinar
+          Create Meeting
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create Webinar</DialogTitle>
+          <DialogTitle>Create Meeting</DialogTitle>
         </DialogHeader>
 
         {/* Optional: Add your actual form inputs here */}

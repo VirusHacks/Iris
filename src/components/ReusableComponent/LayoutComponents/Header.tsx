@@ -24,11 +24,12 @@ const Header = ({ assistants, stripeProducts }: Props) => {
     { label: "Dashboard", route: "/dashboard", icon: BarChart3 },
     { label: "Customers", route: "/dashboard/customers", icon: Users },
     { label: "Lead Generation", route: "/dashboard/new-leads", icon: Target },
-    { label: "Assistant", route: "/assistant", icon: MessageSquare },
+    { label: "Assistant", route: "/dashboard/assistant", icon: MessageSquare },
   ];
 
   const getPageTitle = () => {
     if (pathname?.includes('pipeline')) return null;
+    if (pathname?.includes('dashboard/assistant')) return 'Assistant';
     if (pathname?.includes('dashboard/customers')) return 'Customers';
     if (pathname?.includes('dashboard/new-leads')) return 'Lead Generation';
     if (pathname?.includes('dashboard')) return 'Dashboard';
