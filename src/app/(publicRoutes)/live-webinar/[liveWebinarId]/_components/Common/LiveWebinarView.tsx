@@ -18,6 +18,7 @@ import { changeWebinarStatus } from "@/action/webinar";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ObsDialogBox from "./ObsDialogBox";
+import { useAttendeeStore } from "@/store/useAttendeeStore";
 
 type Props = {
   showChat: boolean;
@@ -50,6 +51,7 @@ const LiveWebinarView = ({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [obsDialogBox, setObsDialogOpen] = useState(false);
+  const { attendee } = useAttendeeStore();
   
 
   const handleEndStream = async () => {
@@ -270,7 +272,7 @@ const LiveWebinarView = ({
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           webinar={webinar}
-          userId={userId}
+          userId={isHost ? userId : (attendee?.id || userId)}
         />
       )}
       {

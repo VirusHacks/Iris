@@ -311,19 +311,48 @@ export const getAttendeeById = async (id: string, webinarId:string) => {
       },
     });
 
-    const attendance = await prismaClient.attendance.findFirst({
+    if (!attendee) {
+      return {
+        status: 404,
+        success: false,
+        message: "Attendee not found",
+        data: null,
+      };
+    }
+
+    // Check for existing attendance record
+    let attendance = await prismaClient.attendance.findFirst({
       where: {
         attendeeId: id,
         webinarId: webinarId,
       },
     });
 
-    if (!attendee || !attendance) {
-      return {
-        status: 404,
-        success: false,
-        message: "Attendee not found",
-      };
+    // If attendee exists but no attendance record, create one
+    // This can happen if attendee was created but never registered for the webinar
+    if (!attendance) {
+      // Verify webinar exists
+      const webinar = await prismaClient.webinar.findUnique({
+        where: { id: webinarId },
+      });
+
+      if (!webinar) {
+        return {
+          status: 404,
+          success: false,
+          message: "Webinar not found",
+          data: null,
+        };
+      }
+
+      // Create attendance record
+      attendance = await prismaClient.attendance.create({
+        data: {
+          attendeeId: id,
+          webinarId: webinarId,
+          attendedType: AttendedTypeEnum.REGISTERED,
+        },
+      });
     }
 
     return {
@@ -333,11 +362,18 @@ export const getAttendeeById = async (id: string, webinarId:string) => {
       data: attendee,
     };
   } catch (error) {
-    console.log("Error", error);
+    console.error("Error in getAttendeeById:", {
+      error,
+      attendeeId: id,
+      webinarId: webinarId,
+      errorMessage: error instanceof Error ? error.message : String(error),
+      errorStack: error instanceof Error ? error.stack : undefined,
+    });
     return {
       status:500,
       success: false,
-      message: "Something went wrong!"
+      message: `Something went wrong: ${error instanceof Error ? error.message : "Unknown error"}`,
+      data: null,
     }
   }
 };

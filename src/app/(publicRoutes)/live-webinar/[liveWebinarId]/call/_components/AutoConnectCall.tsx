@@ -225,9 +225,11 @@ const AutoConnectCall = ({
     };
 
     const onCallEnd = () => {
-      console.log("Call ended");
+      console.log("Call ended - agent exited");
       setCallStatus(CallStatus.FINISHED);
       cleanup();
+      // Don't redirect - let user stay on the page to see call ended message
+      // The call status is already updated to COMPLETED in stopCall
     };
 
     const onSpeechStart = () => {
@@ -242,6 +244,8 @@ const AutoConnectCall = ({
       console.error("Vapi error:", error);
       setCallStatus(CallStatus.FINISHED);
       cleanup();
+      // Don't redirect on error - let user see the error state
+      toast.error(`Call error: ${error.message || "Unknown error occurred"}`);
     };
 
     // Set up event listeners

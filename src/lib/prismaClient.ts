@@ -7,7 +7,32 @@ declare global {
 
 // Force fresh Prisma client instance to ensure new models are available
 const createPrismaClient = () => {
+  // Check if DATABASE_URL is set
+  if (!process.env.DATABASE_URL) {
+    console.error("❌ DATABASE_URL is not set in environment variables!");
+    throw new Error(
+      "DATABASE_URL environment variable is required. Please set it in your .env file."
+    );
+  }
+
+  // For Neon databases, ensure SSL is properly configured
+  const databaseUrl = process.env.DATABASE_URL;
+  
+  // If it's a Neon connection string, ensure it has proper SSL parameters
+  let connectionString = databaseUrl;
+  if (databaseUrl.includes("neon.tech") && !databaseUrl.includes("sslmode")) {
+    // Add SSL mode if not present (Neon requires SSL)
+    const separator = databaseUrl.includes("?") ? "&" : "?";
+    connectionString = `${databaseUrl}${separator}sslmode=require`;
+    console.warn("⚠️  Added sslmode=require to Neon connection string");
+  }
+
   return new PrismaClient({
+    datasources: {
+      db: {
+        url: connectionString,
+      },
+    },
     log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
   });
 };

@@ -31,17 +31,14 @@ type Props = {
 export default function NewLeadsList({ leads }: Props) {
   if (leads.length === 0) {
     return (
-      <Card className="bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#0a0a0a] border border-gray-800/50">
+      <Card className="bg-[#0a0a0a] border border-gray-800">
         <CardContent className="p-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center justify-center h-[400px] gap-4"
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl" />
-              <Users className="w-16 h-16 text-blue-400/60 relative z-10" />
-            </div>
+            <Users className="w-16 h-16 text-gray-600" />
             <div className="text-center space-y-2">
               <h3 className="text-xl font-semibold text-white">
                 No new leads yet

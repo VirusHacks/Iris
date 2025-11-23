@@ -18,14 +18,27 @@ type Props = {
 const page = async ({ params, searchParams }: Props) => {
   const { liveWebinarId } = await params;
   const { attendeeId } = await searchParams;
+  
   if (!liveWebinarId || !attendeeId) {
+    console.error("[Call Page] Missing required parameters:", { liveWebinarId, attendeeId });
     redirect("/404");
   }
 
+  console.log("[Call Page] Looking up attendee:", { attendeeId, liveWebinarId });
   const attendee = await getAttendeeById(attendeeId, liveWebinarId);
-  if (!attendee.data) {
+  
+  if (!attendee.success || !attendee.data) {
+    console.error("[Call Page] Attendee lookup failed:", {
+      attendeeId,
+      liveWebinarId,
+      status: attendee.status,
+      message: attendee.message,
+      success: attendee.success
+    });
     redirect(`/live-webinar/${liveWebinarId}?error=attendee-not-found`);
   }
+  
+  console.log("[Call Page] Attendee found successfully:", { attendeeId, name: attendee.data.name });
 
   const webinar = await getWebinarById(liveWebinarId);
   if (!webinar) {

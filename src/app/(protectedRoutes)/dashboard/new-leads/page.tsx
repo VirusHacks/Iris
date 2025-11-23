@@ -34,22 +34,24 @@ const NewLeadsPage = async () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-black space-y-6 pb-12 px-4 sm:px-6 lg:px-8">
-      {/* Header Row with Stats */}
-      <div className="flex items-center justify-between gap-6 flex-wrap pt-6">
-        <div className="flex-1 min-w-[280px]">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-            New Leads Management
-          </h1>
-          <p className="text-gray-400 text-sm">
-            Manage and convert your new customer leads with powerful insights
-          </p>
+    <div className="w-full min-h-screen bg-black space-y-8 pb-12">
+      {/* Minimal Header */}
+      <div className="relative">
+        <div className="flex items-center justify-between gap-6 flex-wrap">
+          <div className="flex-1 min-w-[280px]">
+            <h1 className="text-3xl font-bold text-white mb-2">
+              New Leads Management
+            </h1>
+            <p className="text-gray-400 text-sm">
+              Manage and convert your new customer leads with powerful insights
+            </p>
+          </div>
+          <CreditsStats
+            creditsEarned={stats.creditsEarned || 0}
+            clientsConverted={stats.convertedLeads || 0}
+            conversionRate={stats.conversionRate || 0}
+          />
         </div>
-        <CreditsStats
-          creditsEarned={stats.creditsEarned || 0}
-          clientsConverted={stats.convertedLeads || 0}
-          conversionRate={stats.conversionRate || 0}
-        />
       </div>
 
       {/* Main Content - Leads List + CSV Upload */}
