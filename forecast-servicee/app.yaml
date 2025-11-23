@@ -1,0 +1,43 @@
+# App Engine configuration (alternative to Cloud Run)
+runtime: python312
+
+# Use flexible environment for ML libraries
+env: flex
+
+# Resources for ML workloads
+resources:
+  cpu: 2
+  memory_gb: 2
+  disk_size_gb: 10
+
+# Automatic scaling
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 10
+  cool_down_period_sec: 180s
+  cpu_utilization:
+    target_utilization: 0.6
+
+# Health check
+readiness_check:
+  path: "/health"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+liveness_check:
+  path: "/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 4
+  success_threshold: 2
+
+# Environment variables (set in GCP Console or via gcloud)
+env_variables:
+  PORT: '8080'
+
+# Beta settings for Python 3.12
+beta_settings:
+  cloud_sql_instances: ''
+
