@@ -34,7 +34,7 @@ const page = async ({ searchParams }: Props) => {
         leftIcon={<HomeIcon className="w-3 h-3" />}
         mainIcon={<Webcam className="w-12 h-12" />}
         rightIcon={<LeadIcon className="w-4 h-4" />}
-        heading="The home to all your webinars"
+        heading="The home to all your Meetings"
         placeholder="Search option..."
       >
         <TabsList className="bg-transparent space-x-3">
@@ -62,7 +62,7 @@ const page = async ({ searchParams }: Props) => {
           ))
         ) : (
           <div className="w-full h-[200px] flex justify-center items-center text-primary font-semibold text-2xl col-span-12">
-            No Webinar found
+            No Meeting found
           </div>
         )}
       </TabsContent>
@@ -73,7 +73,7 @@ const page = async ({ searchParams }: Props) => {
           ))
         ) : (
           <div className="w-full h-[200px] flex justify-center items-center text-primary font-semibold text-2xl col-span-12">
-            No Webinar found
+            No Meeting found
           </div>
         )}
       </TabsContent>

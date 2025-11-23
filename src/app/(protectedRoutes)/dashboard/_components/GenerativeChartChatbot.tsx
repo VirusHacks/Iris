@@ -13,6 +13,7 @@ import DynamicChart from "./charts/DynamicChart";
 
 interface GenerativeChartChatbotProps {
   onChartGenerated: (config: ChartConfig, data: any[]) => void;
+  embeddedMode?: boolean;
 }
 
 const EXAMPLE_REQUESTS = [
@@ -26,7 +27,7 @@ const EXAMPLE_REQUESTS = [
   "Revenue vs orders over time",
 ];
 
-export default function GenerativeChartChatbot({ onChartGenerated }: GenerativeChartChatbotProps) {
+export default function GenerativeChartChatbot({ onChartGenerated, embeddedMode = false }: GenerativeChartChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -157,10 +158,12 @@ export default function GenerativeChartChatbot({ onChartGenerated }: GenerativeC
     }
   };
 
+  // Note: In embedded mode, we render content directly instead of using a dialog
+
   return (
     <>
-      {/* Trigger Button - appears at the start of dashboard */}
-      {hasData && (
+      {/* Trigger Button - only show when not in embedded mode */}
+      {hasData && !embeddedMode && (
         <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-2 border-primary/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
@@ -188,9 +191,155 @@ export default function GenerativeChartChatbot({ onChartGenerated }: GenerativeC
         </Card>
       )}
 
-      {/* Dialog Modal */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-[60vw] w-[60vw] max-h-[85vh] h-[85vh] overflow-hidden flex flex-col p-0 gap-0">
+      {/* Dialog Modal - In embedded mode, render content directly instead of in a dialog */}
+      {embeddedMode ? (
+        <div className="w-full space-y-6">
+          {/* Header Section */}
+          <div className="px-6 pt-6 pb-4 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent rounded-t-lg">
+            <div className="flex items-center gap-3 mb-3">
+              <Sparkles className="h-7 w-7 text-primary" />
+              <h2 className="text-3xl font-bold">AI Chart Generator</h2>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Describe the chart you want to create. For example: "Show me revenue by month" or "Top 5 products"
+            </p>
+          </div>
+
+          <div className="px-6 pb-6 space-y-8">
+            {/* Example Requests - Only show when no chart is generated */}
+            {!generatedChart && (
+              <div className="space-y-4">
+                <p className="text-base font-semibold text-muted-foreground">Try these examples:</p>
+                <div className="flex flex-wrap gap-3">
+                  {EXAMPLE_REQUESTS.map((example, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      size="default"
+                      onClick={() => handleGenerateChart(example)}
+                      disabled={isGenerating}
+                      className="text-sm px-4 py-2 h-auto"
+                    >
+                      {example}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Error Display */}
+            {error && (
+              <Card className="bg-destructive/10 border-destructive/50">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-3 text-destructive">
+                    <AlertCircle className="h-6 w-6" />
+                    <p className="text-base font-medium">{error}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Input Section */}
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <Input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="e.g., Show me revenue by month, Top 10 products, Revenue by day..."
+                  disabled={isGenerating || !!generatedChart}
+                  className="flex-1 text-lg h-14 px-4"
+                />
+                {!generatedChart ? (
+                  <Button
+                    onClick={() => handleGenerateChart()}
+                    disabled={isGenerating || !input.trim()}
+                    size="lg"
+                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg h-14 px-8 text-base"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-5 w-5 mr-2" />
+                        Generate
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleGenerateNew}
+                    variant="outline"
+                    size="lg"
+                    className="border-primary/30 hover:bg-primary/10 h-14 px-8 text-base"
+                  >
+                    <Plus className="h-5 w-5 mr-2" />
+                    New Chart
+                  </Button>
+                )}
+              </div>
+              {!generatedChart && (
+                <p className="text-base text-muted-foreground">
+                  Press Enter to generate, or click one of the example requests above
+                </p>
+              )}
+            </div>
+
+            {/* Generated Chart Display */}
+            {generatedChart && (
+              <div className="space-y-8 mt-6">
+                <div className="flex items-center justify-between flex-wrap gap-6">
+                  <div className="flex-1 min-w-[400px]">
+                    <h3 className="text-2xl font-bold text-foreground mb-3">
+                      Generated Chart: {generatedChart.config.title}
+                    </h3>
+                    <p className="text-base text-muted-foreground">
+                      {generatedChart.config.description}
+                    </p>
+                  </div>
+                  <div className="flex gap-4">
+                    {!isAddedToDashboard ? (
+                      <Button
+                        onClick={handleAddToDashboard}
+                        size="lg"
+                        className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg h-14 px-8 text-base"
+                      >
+                        <Plus className="h-5 w-5 mr-2" />
+                        Add to Dashboard
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="border-emerald-500/50 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 h-14 px-8 text-base"
+                        disabled
+                      >
+                        <Check className="h-5 w-5 mr-2" />
+                        Added to Dashboard
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Chart Preview - Full Width with More Space */}
+                <div className="w-full border-2 border-primary/20 rounded-xl p-8 bg-gradient-to-br from-background/50 to-background/30 shadow-xl">
+                  <DynamicChart
+                    config={generatedChart.config}
+                    data={generatedChart.data}
+                    compact={true}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="max-w-[60vw] w-[60vw] max-h-[85vh] h-[85vh] overflow-hidden flex flex-col p-0 gap-0">
           <DialogHeader className="px-10 pt-8 pb-6 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
             <DialogTitle className="text-3xl font-bold flex items-center gap-3">
               <Sparkles className="h-7 w-7 text-primary" />
@@ -334,7 +483,7 @@ export default function GenerativeChartChatbot({ onChartGenerated }: GenerativeC
           </div>
         </DialogContent>
       </Dialog>
+      )}
     </>
   );
 }
-

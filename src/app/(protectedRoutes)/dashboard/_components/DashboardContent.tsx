@@ -151,13 +151,9 @@ function DashboardContentInner() {
       </Card>
 
       {hasData ? (
-        <>
-          {/* AI Chart Generator - appears at the start */}
-          <GenerativeChartChatbot onChartGenerated={addGeneratedChart} />
-
         <Tabs defaultValue="analysis" className="w-full">
           <div className="flex justify-center mb-8">
-            <TabsList className="grid w-full max-w-2xl grid-cols-2 h-12 bg-[#0a0a0a] border border-gray-800 rounded-lg p-1">
+            <TabsList className="grid w-full max-w-3xl grid-cols-3 h-12 bg-[#0a0a0a] border border-gray-800 rounded-lg p-1">
               <TabsTrigger 
                 value="analysis" 
                 className="flex items-center justify-center gap-2 text-sm font-medium data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 data-[state=active]:border data-[state=active]:border-purple-500/30 text-gray-400 transition-all rounded-md"
@@ -172,6 +168,13 @@ function DashboardContentInner() {
                 <TrendingUp className="h-4 w-4" />
                 <span>Prediction</span>
               </TabsTrigger>
+              <TabsTrigger 
+                value="generator" 
+                className="flex items-center justify-center gap-2 text-sm font-medium data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 data-[state=active]:border data-[state=active]:border-purple-500/30 text-gray-400 transition-all rounded-md"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span>AI Generator</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -182,8 +185,11 @@ function DashboardContentInner() {
           <TabsContent value="prediction" className="mt-0 space-y-6">
             <PredictionDashboard />
           </TabsContent>
+
+          <TabsContent value="generator" className="mt-0 space-y-6">
+            <GenerativeChartChatbot onChartGenerated={addGeneratedChart} embeddedMode={true} />
+          </TabsContent>
         </Tabs>
-        </>
       ) : (
         <Card className="bg-[#0a0a0a] border border-gray-800">
           <CardContent className="flex flex-col items-center justify-center py-12">
@@ -201,4 +207,3 @@ function DashboardContentInner() {
 export default function DashboardContent() {
   return <DashboardContentInner />;
 }
-

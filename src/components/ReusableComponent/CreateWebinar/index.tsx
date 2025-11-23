@@ -86,7 +86,7 @@ const CreateWebinarButton = ({ assistants, stripeProducts }: Props) => {
           onClick={() => setModalOpen(true)}
         >
           <PlusIcon />
-          Create Webinar
+          Create Meeting
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[900px] p-0 bg-transparent border-none">
@@ -101,7 +101,7 @@ const CreateWebinarButton = ({ assistants, stripeProducts }: Props) => {
           </div>
         ) : (
           <>
-            <DialogTitle className="sr-only">Create Webinar</DialogTitle>
+            <DialogTitle className="sr-only">Create Meeting</DialogTitle>
             <MultiStepForm steps={steps} onComplete={handleComplete} />
           </>
         )}
