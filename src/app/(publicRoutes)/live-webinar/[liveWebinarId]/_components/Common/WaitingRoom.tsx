@@ -47,20 +47,20 @@ const WaitingRoom = ({
 
   if (isHost) {
     return (
-      <div className="flex flex-col items-center justify-center p-6 bg-gray-900 rounded-xl max-w-2xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">{webinarTitle}</h2>
+      <div className="flex flex-col items-center justify-center p-6 bg-[#0a0a0a] border border-gray-800 rounded-lg max-w-2xl mx-auto">
+        <h2 className="text-2xl font-bold mb-6 text-center text-white">{webinarTitle}</h2>
 
-        <div className="w-full aspect-video bg-black rounded-lg mb-6 relative overflow-hidden">
+        <div className="w-full aspect-video bg-black rounded-lg mb-6 relative overflow-hidden border border-gray-800">
           {/* Preview of host's camera would go here in a real implementation */}
           <div className="absolute inset-0 flex items-center justify-center">
             {isStreamReady ? (
               <div className="text-center">
-                <Video className="h-16 w-16 mx-auto mb-4 text-blue-500" />
+                <Video className="h-16 w-16 mx-auto mb-4 text-purple-400" />
                 <p className="text-gray-300">Your stream is ready to start</p>
               </div>
             ) : (
               <div className="text-center">
-                <Video className="h-16 w-16 mx-auto mb-4 text-gray-500" />
+                <Video className="h-16 w-16 mx-auto mb-4 text-gray-600" />
                 <p className="text-gray-400">Camera preview will appear here</p>
               </div>
             )}
@@ -75,7 +75,7 @@ const WaitingRoom = ({
         <div className="flex flex-col sm:flex-row gap-4 w-full">
           {!isStreamReady ? (
             <Button
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
               onClick={handleCreateStream}
               disabled={isCreatingStream}
             >
@@ -89,12 +89,15 @@ const WaitingRoom = ({
               )}
             </Button>
           ) : (
-            <Button className="w-full bg-green-600 hover:bg-green-700" onClick={handleStartStream}>
+            <Button 
+              className="w-full bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-emerald-500/50" 
+              onClick={handleStartStream}
+            >
               Go Live Now
             </Button>
           )}
 
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50">
             Test Audio & Video
           </Button>
         </div>
@@ -108,16 +111,16 @@ const WaitingRoom = ({
 
   // Attendee view
   return (
-    <div className="flex flex-col items-center justify-center p-6 bg-gray-900 rounded-xl max-w-2xl mx-auto">
-      <div className="w-full aspect-video bg-black rounded-lg mb-6 relative overflow-hidden">
+    <div className="flex flex-col items-center justify-center p-6 bg-[#0a0a0a] border border-gray-800 rounded-lg max-w-2xl mx-auto">
+      <div className="w-full aspect-video bg-black rounded-lg mb-6 relative overflow-hidden border border-gray-800">
         <Image src={thumbnailUrl || "/placeholder.svg"} alt={webinarTitle} fill className="object-cover" priority />
         <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-          <div className="text-center p-6 backdrop-blur-sm bg-black bg-opacity-30 rounded-lg">
-            <h2 className="text-2xl font-bold mb-2">{webinarTitle}</h2>
+          <div className="text-center p-6 backdrop-blur-sm bg-[#0a0a0a]/80 border border-gray-800 rounded-lg">
+            <h2 className="text-2xl font-bold mb-2 text-white">{webinarTitle}</h2>
             <p className="text-gray-300 mb-4">with {presenterName}</p>
-            <div className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 rounded-full">
+            <div className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-full">
               <div className="h-2 w-2 bg-red-500 rounded-full animate-pulse" />
-              <span className="text-sm font-medium">Starting soon</span>
+              <span className="text-sm font-medium text-purple-400">Starting soon</span>
             </div>
           </div>
         </div>

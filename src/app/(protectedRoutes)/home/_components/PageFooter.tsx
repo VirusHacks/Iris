@@ -15,17 +15,17 @@ export default function PageFooter() {
   });
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl rounded-2xl">
+    <Card className="bg-[#0a0a0a] border border-gray-800">
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
           <div className="flex items-center gap-6 flex-wrap">
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-gray-400">
               <span>System Version:</span>
-              <span className="font-medium text-foreground">v2.1.0</span>
+              <span className="font-medium text-white">v2.1.0</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-gray-400">
               <span>Last Refresh:</span>
-              <span className="font-medium text-foreground">{currentDate}</span>
+              <span className="font-medium text-white">{currentDate}</span>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -33,7 +33,7 @@ export default function PageFooter() {
               variant="ghost"
               size="sm"
               asChild
-              className="text-muted-foreground hover:text-foreground"
+              className="text-gray-400 hover:text-white hover:bg-gray-900"
             >
               <Link href="/ai-agents">
                 <Sparkles className="h-4 w-4 mr-2" />
@@ -44,7 +44,7 @@ export default function PageFooter() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-muted-foreground hover:text-foreground"
+              className="text-gray-400 hover:text-white hover:bg-gray-900"
             >
               <HelpCircle className="h-4 w-4 mr-2" />
               Help & Support

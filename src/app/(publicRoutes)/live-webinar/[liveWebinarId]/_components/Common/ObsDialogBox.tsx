@@ -30,19 +30,19 @@ const ObsDialogBox = ({ open, onOpenChange, rtmpURL, streamKey }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="bg-[#0a0a0a] border-gray-800 text-white">
         <DialogHeader>
-          <DialogTitle>OBS Streaming Credentials</DialogTitle>
+          <DialogTitle className="text-white">OBS Streaming Credentials</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">RTMP URL</label>
+            <label className="text-sm font-medium text-white">RTMP URL</label>
             <div className="flex">
-              <Input value={rtmpURL} readOnly className="flex-1" />
+              <Input value={rtmpURL} readOnly className="flex-1 bg-[#0a0a0a] border-gray-700 text-white" />
               <Button
                 variant="outline"
                 size="icon"
-                className="ml-2"
+                className="ml-2 bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
                 onClick={() => copyToClipboard(rtmpURL, "RTMP URL")}
               >
                 <Copy size={16} />
@@ -50,19 +50,19 @@ const ObsDialogBox = ({ open, onOpenChange, rtmpURL, streamKey }: Props) => {
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Stream Key</label>
+            <label className="text-sm font-medium text-white">Stream Key</label>
             <div className="flex">
-              <Input value={streamKey} readOnly className="flex-1" type="password" />
+              <Input value={streamKey} readOnly className="flex-1 bg-[#0a0a0a] border-gray-700 text-white" type="password" />
               <Button
                 variant="outline"
                 size="icon"
-                className="ml-2"
+                className="ml-2 bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
                 onClick={() => copyToClipboard(streamKey, "Stream Key")}
               >
                 <Copy size={16} />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               Keep your stream key private. Never share it with others.
             </p>
           </div>

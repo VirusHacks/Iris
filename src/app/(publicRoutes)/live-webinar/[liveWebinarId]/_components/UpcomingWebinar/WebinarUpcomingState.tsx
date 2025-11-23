@@ -44,10 +44,10 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
     }
   };
   return (
-    <div className="w-full min-h-screen mx-auto max-w-[400px] flex flex-col justify-center items-center gap-8 py-20">
+    <div className="w-full min-h-screen bg-black mx-auto max-w-[400px] flex flex-col justify-center items-center gap-8 py-20">
       {/* timer container */}
       <div className="space-y-6">
-        <p className="text-3xl font-semibold text-primary text-center">
+        <p className="text-3xl font-semibold text-white text-center">
           Seems Like you are a little early
         </p>
 
@@ -73,11 +73,11 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
         {webinar?.webinarStatus === WebinarStatusEnum.LIVE ? (
           <WaitListComponent webinarId={webinar.id} webinarStatus="LIVE" />
         ) : webinar?.webinarStatus === WebinarStatusEnum.CANCELLED ? (
-          <p className="text-xl text-foreground text-center font-semibold">
+          <p className="text-xl text-white text-center font-semibold">
             Webinar is cancelled
           </p>
         ) : webinar?.webinarStatus === WebinarStatusEnum.ENDED ? (
-          <Button disabled={true}>Ended</Button>
+          <Button disabled={true} className="bg-[#0a0a0a] border-gray-700 text-gray-500">Ended</Button>
         ) : webinar?.webinarStatus === WebinarStatusEnum.SCHEDULED &&
           new Date(webinar.startTime).getTime() > Date.now() ? (
           <WaitListComponent webinarId={webinar.id} webinarStatus="SCHEDULED" />
@@ -85,7 +85,7 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
           new Date(webinar.startTime).getTime() < Date.now() ? (
           currentUser?.id === webinar?.presenterId ? (
             <Button
-              className="w-full max-w-[300px] font-semibold"
+              className="w-full max-w-[300px] font-semibold bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
               onClick={handleStartWebinar}
               disabled={loading}
             >
@@ -109,20 +109,23 @@ const WebinarUpcomingState = ({ webinar, currentUser }: Props) => {
 
       {/* description component */}
       <div className="text-center space-y-4">
-        <h3 className="text-2xl font-semibold text-primary">
+        <h3 className="text-2xl font-semibold text-white">
           {webinar?.title}
         </h3>
-        <p className="text-muted-foreground text-xs">{webinar.description}</p>
+        <p className="text-gray-400 text-xs">{webinar.description}</p>
         <div className="w-full justify-center flex gap-2 flex-wrap items-center">
           <Button
             variant={"outline"}
-            className="rounded-md bg-secondary backdrop-blur-2xl"
+            className="rounded-md bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
           >
             <Calendar className="mr-2" />
             {format(new Date(webinar.startTime), "dd MMMM yyyy")}
           </Button>
 
-          <Button variant={"outline"}>
+          <Button 
+            variant={"outline"}
+            className="bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
+          >
             <Clock className="mr-2" />
             {format(new Date(webinar.startTime), "hh:mm a")}
           </Button>

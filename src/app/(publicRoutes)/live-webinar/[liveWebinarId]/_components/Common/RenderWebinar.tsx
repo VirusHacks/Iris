@@ -67,12 +67,12 @@ const RenderWebinar = ({
           )}
         </React.Fragment>
       ) : webinar.webinarStatus === WebinarStatusEnum.CANCELLED ? (
-        <div className="flex justify-center items-center h-full w-full">
+        <div className="flex justify-center items-center h-full w-full bg-black">
           <div className="text-center space-y-4">
-            <h3 className="text-2xl font-semibold text-primary">
+            <h3 className="text-2xl font-semibold text-white">
               {webinar?.title}
             </h3>
-            <p className="text-muted-foreground text-xs">
+            <p className="text-gray-400 text-xs">
               This webinar has been cancelled.
             </p>
           </div>
@@ -80,7 +80,7 @@ const RenderWebinar = ({
       ) : webinar.webinarStatus === WebinarStatusEnum.ENDED ? (
         <AspectRatio
           ratio={16 / 9}
-          className="w-full h-full rounded-lg overflow-hidden mt-10 border border-input"
+          className="w-full h-full rounded-lg overflow-hidden mt-10 border border-gray-800"
         >
           {recording?.url ? (
             <video
@@ -89,12 +89,12 @@ const RenderWebinar = ({
               src={recording?.url}
             />
           ) : (
-            <div className="flex justify-center items-center h-full w-full">
+            <div className="flex justify-center items-center h-full w-full bg-black">
               <div className="text-center space-y-4">
-                <h3 className="text-4xl font-semibold text-primary">
+                <h3 className="text-4xl font-semibold text-white">
                   {webinar?.title}
                 </h3>
-                <p className="text-muted-foreground text-xl">
+                <p className="text-gray-400 text-xl">
                   This webinar has ended. No recording is available.
                 </p>
               </div>

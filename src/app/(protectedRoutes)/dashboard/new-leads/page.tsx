@@ -47,9 +47,9 @@ const NewLeadsPage = async () => {
             </p>
           </div>
           <CreditsStats
-            creditsEarned={stats.creditsEarned || 0}
-            clientsConverted={stats.convertedLeads || 0}
-            conversionRate={stats.conversionRate || 0}
+            creditsEarned={stats?.creditsEarned || 0}
+            clientsConverted={stats?.convertedLeads || 0}
+            conversionRate={stats?.conversionRate || 0}
           />
         </div>
       </div>
@@ -58,12 +58,12 @@ const NewLeadsPage = async () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side - New Leads List (2 columns) */}
         <div className="lg:col-span-2 space-y-6">
-          <NewLeadsList leads={leads} />
+          <NewLeadsList leads={leads || []} />
           <LeadConversionFunnel
-            totalLeads={stats.totalLeads || 0}
-            contactedLeads={stats.contactedLeads || 0}
-            qualifiedLeads={stats.qualifiedLeads || 0}
-            convertedLeads={stats.convertedLeads || 0}
+            totalLeads={stats?.totalLeads || 0}
+            contactedLeads={stats?.contactedLeads || 0}
+            qualifiedLeads={stats?.qualifiedLeads || 0}
+            convertedLeads={stats?.convertedLeads || 0}
           />
         </div>
 
@@ -71,11 +71,11 @@ const NewLeadsPage = async () => {
         <div className="space-y-6">
           <CSVUploadBar />
           <ConversionRateChart
-            totalLeads={stats.totalLeads || 0}
-            convertedLeads={stats.convertedLeads || 0}
-            conversionRate={stats.conversionRate || 0}
+            totalLeads={stats?.totalLeads || 0}
+            convertedLeads={stats?.convertedLeads || 0}
+            conversionRate={stats?.conversionRate || 0}
           />
-          <OfferMessage totalLeads={leads.length} />
+          <OfferMessage totalLeads={leads?.length || 0} />
         </div>
       </div>
     </div>

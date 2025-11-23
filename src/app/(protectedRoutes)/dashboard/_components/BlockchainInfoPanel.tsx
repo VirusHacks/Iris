@@ -147,7 +147,9 @@ export default function BlockchainInfoPanel() {
       window.addEventListener("forecastStored", handleForecastStored as EventListener);
       
       return () => {
-        window.ethereum.removeListener?.("accountsChanged", handleAccountsChanged);
+        if (window.ethereum) {
+          window.ethereum.removeListener?.("accountsChanged", handleAccountsChanged);
+        }
         window.removeEventListener("forecastStored", handleForecastStored as EventListener);
       };
     }

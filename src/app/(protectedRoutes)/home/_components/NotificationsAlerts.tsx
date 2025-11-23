@@ -66,51 +66,51 @@ const getAlertIcon = (type: string) => {
 const getSeverityColor = (severity: string) => {
   switch (severity) {
     case "high":
-      return "bg-red-500/20 text-red-400 border-red-500/30";
+      return "bg-red-500/10 text-red-400 border-red-500/50";
     case "medium":
-      return "bg-amber-500/20 text-amber-400 border-amber-500/30";
+      return "bg-amber-500/10 text-amber-400 border-amber-500/50";
     case "low":
-      return "bg-blue-500/20 text-blue-400 border-blue-500/30";
+      return "bg-blue-500/10 text-blue-400 border-blue-500/50";
     default:
-      return "bg-muted text-muted-foreground";
+      return "bg-[#0a0a0a] text-gray-400 border-gray-800";
   }
 };
 
 export default function NotificationsAlerts() {
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl rounded-2xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-primary" />
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
+        <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4 text-purple-400" />
           Notifications & Alerts
         </CardTitle>
-        <CardDescription>Important actions requiring attention</CardDescription>
+        <CardDescription className="text-gray-400 text-sm mt-1">Important actions requiring attention</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <div className="space-y-3">
           {alerts.map((alert) => {
             const Icon = getAlertIcon(alert.type);
             return (
               <div
                 key={alert.id}
-                className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-border/50"
+                className="flex items-start gap-4 p-4 rounded-lg bg-[#0a0a0a] border border-gray-800 hover:border-gray-700 transition-colors"
               >
-                <div className={`p-2 rounded-lg ${getSeverityColor(alert.severity)}`}>
+                <div className={`p-2 rounded-lg border ${getSeverityColor(alert.severity)}`}>
                   <Icon className="h-4 w-4" />
                 </div>
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground text-sm">{alert.title}</h4>
+                    <h4 className="font-semibold text-white text-sm">{alert.title}</h4>
                     <Badge className={getSeverityColor(alert.severity)} variant="outline">
                       {alert.severity}
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">{alert.description}</p>
+                  <p className="text-sm text-gray-400">{alert.description}</p>
                   {alert.count && (
-                    <p className="text-xs font-medium text-primary">{alert.count} items need attention</p>
+                    <p className="text-xs font-medium text-purple-400">{alert.count} items need attention</p>
                   )}
                 </div>
-                <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
+                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-900">
                   View
                 </Button>
               </div>

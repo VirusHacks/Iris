@@ -10,28 +10,26 @@ interface SegmentCardProps {
   count: number;
   value: string;
   icon: React.ElementType;
-  gradient: string;
   iconColor: string;
-  borderColor: string;
   riskLevel?: "low" | "medium" | "high";
   onClick?: () => void;
 }
 
-const SegmentCard = ({ title, count, value, icon: Icon, gradient, iconColor, borderColor, riskLevel, onClick }: SegmentCardProps) => {
+const SegmentCard = ({ title, count, value, icon: Icon, iconColor, riskLevel, onClick }: SegmentCardProps) => {
   const riskColors = {
-    low: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    medium: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-    high: "bg-red-500/20 text-red-400 border-red-500/30",
+    low: "bg-emerald-500/10 text-emerald-400 border-emerald-500/50",
+    medium: "bg-amber-500/10 text-amber-400 border-amber-500/50",
+    high: "bg-red-500/10 text-red-400 border-red-500/50",
   };
 
   return (
     <Card
       onClick={onClick}
-      className={`bg-gradient-to-br ${gradient} border ${borderColor} backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer rounded-2xl`}
+      className="bg-[#0a0a0a] border border-gray-800 cursor-pointer hover:border-purple-500/50 transition-all"
     >
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
-          <div className={`${iconColor} bg-background/50 p-3 rounded-xl`}>
+          <div className={`${iconColor} p-3 rounded-xl bg-[#0a0a0a] border border-gray-800`}>
             <Icon className="h-5 w-5" />
           </div>
           {riskLevel && (
@@ -40,10 +38,10 @@ const SegmentCard = ({ title, count, value, icon: Icon, gradient, iconColor, bor
             </Badge>
           )}
         </div>
-        <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
+        <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
         <div className="space-y-1">
-          <p className="text-2xl font-bold text-foreground">{count}</p>
-          <p className="text-sm text-muted-foreground">{value}</p>
+          <p className="text-2xl font-bold text-white">{count}</p>
+          <p className="text-sm text-gray-400">{value}</p>
         </div>
       </CardContent>
     </Card>
@@ -59,9 +57,7 @@ export default function CustomerSegments() {
       count: 45,
       value: "$1.2M total value",
       icon: Users,
-      gradient: "from-emerald-500/20 to-teal-500/10",
       iconColor: "text-emerald-400",
-      borderColor: "border-emerald-500/30",
       riskLevel: "low" as const,
       onClick: () => router.push("/lead"),
     },
@@ -70,9 +66,7 @@ export default function CustomerSegments() {
       count: 23,
       value: "Requires attention",
       icon: AlertCircle,
-      gradient: "from-red-500/20 to-orange-500/10",
       iconColor: "text-red-400",
-      borderColor: "border-red-500/30",
       riskLevel: "high" as const,
       onClick: () => router.push("/lead"),
     },
@@ -81,9 +75,7 @@ export default function CustomerSegments() {
       count: 127,
       value: "+32 this week",
       icon: UserPlus,
-      gradient: "from-blue-500/20 to-cyan-500/10",
-      iconColor: "text-blue-400",
-      borderColor: "border-blue-500/30",
+      iconColor: "text-purple-400",
       onClick: () => router.push("/lead"),
     },
     {
@@ -91,9 +83,7 @@ export default function CustomerSegments() {
       count: 89,
       value: "Upsell opportunities",
       icon: TrendingUp,
-      gradient: "from-purple-500/20 to-pink-500/10",
       iconColor: "text-purple-400",
-      borderColor: "border-purple-500/30",
       riskLevel: "low" as const,
       onClick: () => router.push("/lead"),
     },
@@ -101,7 +91,7 @@ export default function CustomerSegments() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-foreground mb-6">Customer Segment Overview</h2>
+      <h2 className="text-2xl font-bold text-white mb-6">Customer Segment Overview</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {segments.map((segment, index) => (
           <SegmentCard key={index} {...segment} />

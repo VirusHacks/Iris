@@ -74,11 +74,11 @@ const getActivityIcon = (type: string) => {
 const getStatusBadge = (status?: string) => {
   switch (status) {
     case "completed":
-      return <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Completed</Badge>;
+      return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/50">Completed</Badge>;
     case "pending":
-      return <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">Pending</Badge>;
+      return <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/50">Pending</Badge>;
     case "warning":
-      return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Action Required</Badge>;
+      return <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/50">Action Required</Badge>;
     default:
       return null;
   }
@@ -86,33 +86,33 @@ const getStatusBadge = (status?: string) => {
 
 export default function RecentActivities() {
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl rounded-2xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" />
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
+        <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+          <Activity className="h-4 w-4 text-purple-400" />
           Recent Activities
         </CardTitle>
-        <CardDescription>Latest automated actions and AI suggestions</CardDescription>
+        <CardDescription className="text-gray-400 text-sm mt-1">Latest automated actions and AI suggestions</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <div className="space-y-4">
           {activities.map((activity) => {
             const Icon = getActivityIcon(activity.type);
             return (
               <div
                 key={activity.id}
-                className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
+                className="flex items-start gap-4 p-4 rounded-lg bg-[#0a0a0a] border border-gray-800 hover:border-gray-700 transition-colors"
               >
-                <div className="p-2 rounded-lg bg-background/50">
-                  <Icon className="h-4 w-4 text-primary" />
+                <div className="p-2 rounded-lg bg-[#0a0a0a] border border-gray-800">
+                  <Icon className="h-4 w-4 text-purple-400" />
                 </div>
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground text-sm">{activity.title}</h4>
+                    <h4 className="font-semibold text-white text-sm">{activity.title}</h4>
                     {getStatusBadge(activity.status)}
                   </div>
-                  <p className="text-sm text-muted-foreground">{activity.description}</p>
-                  <p className="text-xs text-muted-foreground">{activity.timestamp}</p>
+                  <p className="text-sm text-gray-400">{activity.description}</p>
+                  <p className="text-xs text-gray-500">{activity.timestamp}</p>
                 </div>
               </div>
             );

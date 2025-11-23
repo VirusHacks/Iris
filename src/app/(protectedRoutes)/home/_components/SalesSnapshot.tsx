@@ -27,67 +27,67 @@ export default function SalesSnapshot() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Top Regions */}
-      <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl rounded-2xl">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-primary" />
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <MapPin className="h-4 w-4 text-purple-400" />
             Top Sales Regions
           </CardTitle>
-          <CardDescription>Last period performance by region</CardDescription>
+          <CardDescription className="text-gray-400 text-sm mt-1">Last period performance by region</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-6 space-y-4">
           {topRegions.map((region, index) => (
-            <div key={index} className="flex items-center justify-between p-3 rounded-xl bg-muted/50">
+            <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-[#0a0a0a] border border-gray-800">
               <div className="flex-1">
-                <p className="font-semibold text-foreground">{region.region}</p>
-                <p className="text-sm text-muted-foreground">{region.revenue}</p>
+                <p className="font-semibold text-white">{region.region}</p>
+                <p className="text-sm text-gray-400">{region.revenue}</p>
               </div>
-              <Badge className={region.color}>{region.growth}</Badge>
+              <Badge variant="outline" className="border-gray-700 text-gray-300">{region.growth}</Badge>
             </div>
           ))}
         </CardContent>
       </Card>
 
       {/* Best Selling Products */}
-      <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl rounded-2xl">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5 text-primary" />
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <Package className="h-4 w-4 text-purple-400" />
             Best Selling Products
           </CardTitle>
-          <CardDescription>Top performers this period</CardDescription>
+          <CardDescription className="text-gray-400 text-sm mt-1">Top performers this period</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-6 space-y-4">
           {topProducts.map((product, index) => (
-            <div key={index} className="flex items-center justify-between p-3 rounded-xl bg-muted/50">
+            <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-[#0a0a0a] border border-gray-800">
               <div className="flex-1">
-                <p className="font-semibold text-foreground">{product.product}</p>
-                <p className="text-sm text-muted-foreground">{product.sales} sales • {product.revenue}</p>
+                <p className="font-semibold text-white">{product.product}</p>
+                <p className="text-sm text-gray-400">{product.sales} sales • {product.revenue}</p>
               </div>
-              <Badge className={product.color}>Top</Badge>
+              <Badge variant="outline" className="border-gray-700 text-gray-300">Top</Badge>
             </div>
           ))}
         </CardContent>
       </Card>
 
       {/* Revenue Trend */}
-      <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl rounded-2xl">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-purple-400" />
             Revenue Trend
           </CardTitle>
-          <CardDescription>4-week revenue progression</CardDescription>
+          <CardDescription className="text-gray-400 text-sm mt-1">4-week revenue progression</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="space-y-3">
             {revenueTrend.map((item, index) => (
               <div key={index} className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{item.period}</span>
-                  <span className="font-semibold">${item.value}K</span>
+                  <span className="text-gray-400">{item.period}</span>
+                  <span className="font-semibold text-white">${item.value}K</span>
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                   <div
                     className={`h-full ${item.color} rounded-full transition-all duration-500`}
                     style={{ width: `${(item.value / 250) * 100}%` }}

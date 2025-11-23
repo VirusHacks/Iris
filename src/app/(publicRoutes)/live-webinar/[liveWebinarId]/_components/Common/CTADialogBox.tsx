@@ -64,12 +64,12 @@ const CTADialogBox = ({ open, onOpenChange, trigger, webinar, userId }: Props) =
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className="sm:max-w-md bg-card text-card-foreground border-border">
+      <DialogContent className="sm:max-w-md bg-[#0a0a0a] text-white border-gray-800">
         <DialogHeader>
-          <DialogTitle className="text-lg font-medium">
+          <DialogTitle className="text-lg font-medium text-white">
             {webinar?.ctaType === "BOOK_A_CALL" ? "Book a Call" : "Buy Now"}
           </DialogTitle>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-gray-400 mt-1">
             {webinar?.ctaType === "BOOK_A_CALL"
               ? "You will be redirected to a call on another page "
               : "You will be redirected to checkout"}
@@ -77,29 +77,29 @@ const CTADialogBox = ({ open, onOpenChange, trigger, webinar, userId }: Props) =
         </DialogHeader>
 
         <div className="flex mt-4 space-x-4">
-          <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full bg-background flex items-center justify-center">
-              <Play />
+          <div className="w-16 h-16 bg-[#0a0a0a] border border-gray-800 rounded-md flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#0a0a0a] border border-gray-800 flex items-center justify-center">
+              <Play className="text-purple-400" />
             </div>
           </div>
 
           <div className="flex-1">
-            <h3 className="text-base font-medium">{webinar.title}</h3>
-            <p className="text-sm text-muted-foreground mt-1">{webinar.description}</p>
+            <h3 className="text-base font-medium text-white">{webinar.title}</h3>
+            <p className="text-sm text-gray-400 mt-1">{webinar.description}</p>
 
             {webinar.couponCode && (
               <div className="mt-3">
-                <div className="text-xs text-muted-foreground mb-1">Coupon Code:</div>
+                <div className="text-xs text-gray-400 mb-1">Coupon Code:</div>
                 <div className="flex items-center">
-                  <div className="bg-primary/10 border border-dashed border-primary/50 rounded-l-md px-3 py-1.5 text-sm font-mono font-semibold text-primary">
+                  <div className="bg-purple-500/10 border border-dashed border-purple-500/50 rounded-l-md px-3 py-1.5 text-sm font-mono font-semibold text-purple-400">
                     {webinar.couponCode}
                   </div>
                   <button
                     onClick={copyToClipboard}
-                    className="bg-primary/5 hover:bg-primary/10 border border-l-0 border-dashed border-primary/50 rounded-r-md p-1.5 text-primary transition-colors"
+                    className="bg-purple-500/5 hover:bg-purple-500/10 border border-l-0 border-dashed border-purple-500/50 rounded-r-md p-1.5 text-purple-400 transition-colors"
                     aria-label="Copy coupon code"
                   >
-                    <Copy className={`h-4 w-4 ${copied ? "text-green-500" : ""}`} />
+                    <Copy className={`h-4 w-4 ${copied ? "text-emerald-400" : ""}`} />
                   </button>
                 </div>
               </div>
@@ -108,10 +108,14 @@ const CTADialogBox = ({ open, onOpenChange, trigger, webinar, userId }: Props) =
         </div>
 
         <DialogFooter className="flex justify-between items-center mt-4 sm:mt-0">
-          <Button variant="outline" className="text-muted-foreground">
+          <Button variant="outline" className="text-gray-400 bg-[#0a0a0a] border-gray-700 hover:bg-gray-900 hover:border-purple-500/50">
             Cancel
           </Button>
-          <Button onClick={handleClick} disabled={loading} className="flex items-center">
+          <Button 
+            onClick={handleClick} 
+            disabled={loading} 
+            className="flex items-center bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
+          >
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

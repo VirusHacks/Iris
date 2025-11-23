@@ -107,7 +107,7 @@ export function getRpcProvider(): ethers.JsonRpcProvider {
     // Create a static network configuration to prevent network detection retries
     const staticNetwork = {
       name: "sepolia",
-      chainId: 11155111n,
+      chainId: 11155111,
     };
 
     // Create provider with static network - this prevents auto-detection

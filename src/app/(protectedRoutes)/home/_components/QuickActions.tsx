@@ -22,42 +22,36 @@ export default function QuickActions() {
       label: "Generate Campaign",
       icon: Sparkles,
       onClick: () => console.log("Generate Campaign"),
-      gradient: "from-purple-500/20 to-pink-500/10",
-      borderColor: "border-purple-500/30",
     },
     {
       label: "Send WhatsApp Promotion",
       icon: MessageSquare,
       onClick: () => console.log("Send WhatsApp"),
-      gradient: "from-emerald-500/20 to-teal-500/10",
-      borderColor: "border-emerald-500/30",
     },
     {
       label: "Create Follow-Up Task",
       icon: Calendar,
       onClick: () => console.log("Create Task"),
-      gradient: "from-blue-500/20 to-cyan-500/10",
-      borderColor: "border-blue-500/30",
     },
   ];
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl rounded-2xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Zap className="h-5 w-5 text-primary" />
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
+        <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+          <Zap className="h-4 w-4 text-purple-400" />
           Quick Actions
         </CardTitle>
-        <CardDescription>Common tasks and AI-powered assistance</CardDescription>
+        <CardDescription className="text-gray-400 text-sm mt-1">Common tasks and AI-powered assistance</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="p-6 space-y-6">
         {/* Quick Action Buttons */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {quickActions.map((action, index) => (
             <Button
               key={index}
               variant="outline"
-              className={`h-auto py-4 px-4 flex flex-col items-center gap-2 bg-gradient-to-br ${action.gradient} border ${action.borderColor} hover:shadow-lg transition-all rounded-xl`}
+              className="h-auto py-4 px-4 flex flex-col items-center gap-2 bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50 transition-all"
               onClick={action.onClick}
             >
               <action.icon className="h-5 w-5" />
@@ -68,24 +62,24 @@ export default function QuickActions() {
 
         {/* AI Chat Query */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">AI Chat Query</label>
+          <label className="text-sm font-medium text-white">AI Chat Query</label>
           <div className="flex gap-2">
             <Input
               placeholder="Ask AI about sales, customers, or campaigns…"
               value={aiQuery}
               onChange={(e) => setAiQuery(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSendQuery()}
-              className="flex-1"
+              className="flex-1 bg-[#0a0a0a] border-gray-700 text-white placeholder:text-gray-500"
             />
             <Button
               onClick={handleSendQuery}
-              className="bg-purple-500 hover:bg-purple-600 text-white"
+              className="bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
               size="icon"
             >
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-gray-400">
             Get instant insights, generate reports, or ask questions about your CRM data
           </p>
         </div>

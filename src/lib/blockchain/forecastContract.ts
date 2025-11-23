@@ -67,7 +67,7 @@ export function floatToWei(value: number): string {
   // Use Math.floor to avoid rounding issues with large numbers
   const weiValue = BigInt(Math.floor(value * 1e18));
   // Double-check it's not negative
-  if (weiValue < 0n) {
+  if (weiValue < BigInt(0)) {
     console.warn(`[Blockchain] Negative BigInt detected, using 0`);
     return "0";
   }

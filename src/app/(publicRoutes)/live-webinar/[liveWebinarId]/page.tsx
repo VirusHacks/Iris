@@ -19,7 +19,7 @@ const page = async ({ params, searchParams }: Props) => {
   const webinarData = await getWebinarById(liveWebinarId)
   if (!webinarData) {
     return (
-      <div className="w-full min-h-screen flex justify-center items-center text-lg sm:text-4xl">
+      <div className="w-full min-h-screen bg-black flex justify-center items-center text-lg sm:text-4xl text-white">
         Webinar not found
       </div>
     )
@@ -34,7 +34,7 @@ const page = async ({ params, searchParams }: Props) => {
   }
 
   return (
-    <div className="w-full min-h-screen mx-auto">
+    <div className="w-full min-h-screen bg-black mx-auto">
       <RenderWebinar
         error={error}
         user={checkUser.user || null}

@@ -9,30 +9,28 @@ interface KPICardProps {
   value: string;
   change?: string;
   icon: React.ElementType;
-  gradient: string;
   iconColor: string;
-  borderColor: string;
   onClick?: () => void;
 }
 
-const KPICard = ({ title, value, change, icon: Icon, gradient, iconColor, borderColor, onClick }: KPICardProps) => {
+const KPICard = ({ title, value, change, icon: Icon, iconColor, onClick }: KPICardProps) => {
   return (
     <Card
       onClick={onClick}
-      className={`bg-gradient-to-br ${gradient} border ${borderColor} backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer rounded-2xl`}
+      className="bg-[#0a0a0a] border border-gray-800 cursor-pointer hover:border-purple-500/50 transition-all"
     >
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <p className="text-sm font-medium text-muted-foreground mb-2">{title}</p>
-            <p className="text-3xl font-bold text-foreground mb-1">{value}</p>
+            <p className="text-sm font-medium text-gray-400 mb-2">{title}</p>
+            <p className="text-3xl font-bold text-white mb-1">{value}</p>
             {change && (
               <p className={`text-xs font-medium ${change.startsWith('+') ? 'text-emerald-400' : 'text-red-400'}`}>
                 {change}
               </p>
             )}
           </div>
-          <div className={`${iconColor} bg-background/50 p-3 rounded-xl`}>
+          <div className={`${iconColor} p-3 rounded-xl bg-[#0a0a0a] border border-gray-800`}>
             <Icon className="h-6 w-6" />
           </div>
         </div>
@@ -50,9 +48,7 @@ export default function ExecutiveOverview() {
       value: "$2.4M",
       change: "+12.5% vs last month",
       icon: DollarSign,
-      gradient: "from-emerald-500/20 to-teal-500/10",
       iconColor: "text-emerald-400",
-      borderColor: "border-emerald-500/30",
       onClick: () => router.push("/dashboard"),
     },
     {
@@ -60,9 +56,7 @@ export default function ExecutiveOverview() {
       value: "$2.8M",
       change: "+8.2% projected",
       icon: TrendingUp,
-      gradient: "from-blue-500/20 to-cyan-500/10",
-      iconColor: "text-blue-400",
-      borderColor: "border-blue-500/30",
+      iconColor: "text-purple-400",
       onClick: () => router.push("/dashboard"),
     },
     {
@@ -70,9 +64,7 @@ export default function ExecutiveOverview() {
       value: "247",
       change: "+18 new",
       icon: Users,
-      gradient: "from-purple-500/20 to-pink-500/10",
       iconColor: "text-purple-400",
-      borderColor: "border-purple-500/30",
       onClick: () => router.push("/lead"),
     },
     {
@@ -80,9 +72,7 @@ export default function ExecutiveOverview() {
       value: "12%",
       change: "-3.2% improved",
       icon: AlertTriangle,
-      gradient: "from-amber-500/20 to-orange-500/10",
       iconColor: "text-amber-400",
-      borderColor: "border-amber-500/30",
       onClick: () => router.push("/dashboard"),
     },
     {
@@ -90,9 +80,7 @@ export default function ExecutiveOverview() {
       value: "8.7/10",
       change: "+0.3 points",
       icon: Award,
-      gradient: "from-violet-500/20 to-indigo-500/10",
-      iconColor: "text-violet-400",
-      borderColor: "border-violet-500/30",
+      iconColor: "text-purple-400",
       onClick: () => router.push("/dashboard"),
     },
   ];

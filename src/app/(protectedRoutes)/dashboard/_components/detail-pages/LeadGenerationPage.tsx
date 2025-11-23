@@ -679,7 +679,6 @@ export default function LeadGenerationPage() {
                       </div>
                     </DialogContent>
                   </Dialog>
-          )}
 
           {/* Visualizations */}
           {rawData && (countryChartData.length > 0 || segmentChartData.length > 0) && (

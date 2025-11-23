@@ -84,12 +84,9 @@ export default function OfferMessage({ totalLeads }: Props) {
           >
               {isSending ? (
                 <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  >
+                  <div className="animate-spin">
                     <Send className="h-4 w-4 mr-2" />
-                  </motion.div>
+                  </div>
                   Sending...
                 </>
               ) : (

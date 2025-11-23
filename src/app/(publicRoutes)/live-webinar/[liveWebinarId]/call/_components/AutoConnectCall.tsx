@@ -266,16 +266,16 @@ const AutoConnectCall = ({
   }, [userName, callTimeLimit]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] bg-background">
+    <div className="flex flex-col h-[calc(100vh-80px)] bg-black">
       {/* Main call area */}
       <div className="flex-1 flex flex-col md:flex-row p-4 gap-4 relative">
         {/* AI Assistant */}
-        <div className="flex-1 bg-card rounded-xl overflow-hidden shadow-lg relative">
-          <div className="absolute top-4 left-4 bg-black/40 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2 z-10">
+        <div className="flex-1 bg-[#0a0a0a] border border-gray-800 rounded-lg overflow-hidden relative">
+          <div className="absolute top-4 left-4 bg-[#0a0a0a]/80 backdrop-blur-sm border border-gray-800 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2 z-10">
             <Mic
               className={cn(
                 "h-4 w-4",
-                assistantIsSpeaking ? "text-accent-primary" : ""
+                assistantIsSpeaking ? "text-purple-400" : "text-gray-400"
               )}
             />
             <span>{assistantName}</span>
@@ -287,11 +287,11 @@ const AutoConnectCall = ({
               {assistantIsSpeaking && (
                 <>
                   <div
-                    className="absolute inset-0 rounded-full border-4 border-accent-primary animate-ping opacity-20"
+                    className="absolute inset-0 rounded-full border-4 border-purple-400 animate-ping opacity-20"
                     style={{ margin: "-8px" }}
                   />
                   <div
-                    className="absolute inset-0 rounded-full border-4 border-accent-primary animate-ping opacity-10"
+                    className="absolute inset-0 rounded-full border-4 border-purple-400 animate-ping opacity-10"
                     style={{ margin: "-16px", animationDelay: "0.5s" }}
                   />
                 </>
@@ -301,15 +301,15 @@ const AutoConnectCall = ({
                 className={cn(
                   "flex justify-center items-center rounded-full overflow-hidden border-4 p-6",
                   assistantIsSpeaking
-                    ? "border-accent-primary"
-                    : "border-accent-secondary/50"
+                    ? "border-purple-400"
+                    : "border-gray-800"
                 )}
               >
-                <Bot className="w-[70px] h-[70px]" />
+                <Bot className="w-[70px] h-[70px] text-purple-400" />
               </div>
 
               {assistantIsSpeaking && (
-                <div className="absolute -bottom-2 -right-2 bg-accent-primary text-white p-2 rounded-full">
+                <div className="absolute -bottom-2 -right-2 bg-purple-500 text-white p-2 rounded-full border border-purple-400">
                   <Mic className="h-5 w-5" />
                 </div>
               )}
@@ -318,11 +318,11 @@ const AutoConnectCall = ({
         </div>
 
         {/* User */}
-        <div className="flex-1 bg-card rounded-xl overflow-hidden shadow-lg relative">
-          <div className="absolute top-4 left-4 bg-black/40 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2 z-10">
+        <div className="flex-1 bg-[#0a0a0a] border border-gray-800 rounded-lg overflow-hidden relative">
+          <div className="absolute top-4 left-4 bg-[#0a0a0a]/80 backdrop-blur-sm border border-gray-800 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2 z-10">
             {isMicMuted ? (
               <>
-                <MicOff className="h-4 w-4 text-destructive" />
+                <MicOff className="h-4 w-4 text-red-400" />
                 <span>Muted</span>
               </>
             ) : (
@@ -330,7 +330,7 @@ const AutoConnectCall = ({
                 <Mic
                   className={cn(
                     "h-4 w-4",
-                    userIsSpeaking ? "text-accent-secondary" : ""
+                    userIsSpeaking ? "text-emerald-400" : "text-gray-400"
                   )}
                 />
                 <span>{userName}</span>
@@ -339,7 +339,7 @@ const AutoConnectCall = ({
           </div>
 
           {/* Call time remaining indicator */}
-          <div className="absolute top-4 right-4 bg-black/40 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2 z-10">
+          <div className="absolute top-4 right-4 bg-[#0a0a0a]/80 backdrop-blur-sm border border-gray-800 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2 z-10">
             <Clock className="h-4 w-4" />
             <span>{formatTime(timeRemaining)}</span>
           </div>
@@ -350,7 +350,7 @@ const AutoConnectCall = ({
               {userIsSpeaking && !isMicMuted && (
                 <>
                   <div
-                    className="absolute inset-0 rounded-full border-4 border-accent-secondary animate-ping opacity-20"
+                    className="absolute inset-0 rounded-full border-4 border-emerald-400 animate-ping opacity-20"
                     style={{ margin: "-8px" }}
                   />
                 </>
@@ -360,26 +360,26 @@ const AutoConnectCall = ({
                 className={cn(
                   "flex justify-center items-center rounded-full overflow-hidden border-4",
                   isMicMuted
-                    ? "border-destructive/50"
+                    ? "border-red-500/50"
                     : userIsSpeaking
-                    ? "border-accent-secondary"
-                    : "border-accent-secondary/50"
+                    ? "border-emerald-400"
+                    : "border-gray-800"
                 )}
               >
                 <Avatar className="w-[100px] h-[100px]">
                   <AvatarImage src="/user-avatar.png" alt={userName} />
-                  <AvatarFallback>{userName.split("")?.[0]}</AvatarFallback>
+                  <AvatarFallback className="bg-gray-800 text-white">{userName.split("")?.[0]}</AvatarFallback>
                 </Avatar>
               </div>
 
               {isMicMuted && (
-                <div className="absolute -bottom-2 -right-2 bg-destructive text-white p-2 rounded-full">
+                <div className="absolute -bottom-2 -right-2 bg-red-500 text-white p-2 rounded-full border border-red-400">
                   <MicOff className="h-5 w-5" />
                 </div>
               )}
 
               {userIsSpeaking && !isMicMuted && (
-                <div className="absolute -bottom-2 -right-2 bg-accent-secondary text-white p-2 rounded-full">
+                <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white p-2 rounded-full border border-emerald-400">
                   <Mic className="h-5 w-5" />
                 </div>
               )}
@@ -389,36 +389,36 @@ const AutoConnectCall = ({
 
         {/* Call status overlay */}
         {callStatus === CallStatus.CONNECTING && (
-          <div className="absolute inset-0 bg-background/80 flex items-center justify-center flex-col gap-4 z-20">
-            <div className="size-20 rounded-full border-4 border-t-transparent border-accent-primary animate-spin" />
-            <h3 className="text-xl font-medium">Connecting...</h3>
+          <div className="absolute inset-0 bg-black/80 flex items-center justify-center flex-col gap-4 z-20">
+            <div className="size-20 rounded-full border-4 border-t-transparent border-purple-400 animate-spin" />
+            <h3 className="text-xl font-medium text-white">Connecting...</h3>
           </div>
         )}
 
         {callStatus === CallStatus.FINISHED && (
-          <div className="absolute inset-0 bg-background/90 flex items-center justify-center flex-col gap-4 z-20">
-            <h3 className="text-xl font-medium">Call Ended</h3>
-            <p className="text-muted-foreground">Time limit reached</p>
+          <div className="absolute inset-0 bg-black/90 flex items-center justify-center flex-col gap-4 z-20">
+            <h3 className="text-xl font-medium text-white">Call Ended</h3>
+            <p className="text-gray-400">Time limit reached</p>
           </div>
         )}
       </div>
 
       {/* Call controls */}
-      <div className="bg-card border-t border-border p-4">
+      <div className="bg-[#0a0a0a] border-t border-gray-800 p-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between flex-wrap gap-3">
           {/* Call info */}
           <div className="flex items-center gap-2">
             {callStatus === CallStatus.ACTIVE && (
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-muted-foreground" />
+                <Clock className="h-4 w-4 text-gray-400" />
                 <span
                   className={cn(
                     "text-sm font-medium",
                     timeRemaining < 30
-                      ? "text-destructive animate-pulse"
+                      ? "text-red-400 animate-pulse"
                       : timeRemaining < 60
-                      ? "text-amber-500"
-                      : "text-muted-foreground"
+                      ? "text-amber-400"
+                      : "text-gray-400"
                   )}
                 >
                   {formatTime(timeRemaining)} remaining
@@ -432,10 +432,10 @@ const AutoConnectCall = ({
             <button
               onClick={toggleMicMute}
               className={cn(
-                "p-3 rounded-full transition-all",
+                "p-3 rounded-full transition-all border",
                 isMicMuted
-                  ? "bg-destructive text-primary"
-                  : "bg-secondary hover:bg-secondary/80 text-foreground"
+                  ? "bg-red-500/10 text-red-400 border-red-500/50 hover:bg-red-500/20"
+                  : "bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
               )}
               disabled={callStatus !== CallStatus.ACTIVE}
             >
@@ -448,7 +448,7 @@ const AutoConnectCall = ({
 
             <button
               onClick={stopCall}
-              className="p-3 rounded-full bg-destructive text-primary hover:bg-destructive/90 transition-all"
+              className="p-3 rounded-full bg-red-500/10 text-red-400 border border-red-500/50 hover:bg-red-500/20 transition-all"
               aria-label="End call"
               disabled={callStatus !== CallStatus.ACTIVE}
             >
@@ -456,14 +456,18 @@ const AutoConnectCall = ({
             </button>
           </div>
 
-          <Button onClick={checkoutLink} variant={"outline"}>
+          <Button 
+            onClick={checkoutLink} 
+            variant={"outline"}
+            className="bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
+          >
             Buy Now
           </Button>
 
           {/* Right side info */}
           <div className="hidden md:block">
             {callStatus === CallStatus.ACTIVE && timeRemaining < 30 && (
-              <span className="text-destructive font-medium">
+              <span className="text-red-400 font-medium">
                 Call ending soon
               </span>
             )}

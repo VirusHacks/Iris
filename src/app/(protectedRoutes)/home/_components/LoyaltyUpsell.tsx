@@ -25,48 +25,48 @@ export default function LoyaltyUpsell() {
   const router = useRouter();
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl rounded-2xl">
-      <CardHeader>
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="h-5 w-5 text-primary" />
+            <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+              <Award className="h-4 w-4 text-purple-400" />
               Loyalty & Upsell Opportunities
             </CardTitle>
-            <CardDescription>High-value customers eligible for rewards and upgrades</CardDescription>
+            <CardDescription className="text-gray-400 text-sm mt-1">High-value customers eligible for rewards and upgrades</CardDescription>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => router.push("/lead")}
-            className="text-primary hover:text-primary/80"
+            className="text-gray-400 hover:text-white hover:bg-gray-900"
           >
             View All
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <div className="space-y-4">
           {highValueCustomers.map((customer) => (
             <div
               key={customer.id}
-              className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all"
+              className="flex items-center justify-between p-4 rounded-lg bg-[#0a0a0a] border border-gray-800 hover:border-purple-500/50 transition-all"
             >
               <div className="flex items-center gap-4 flex-1">
-                <div className="p-3 rounded-xl bg-purple-500/20">
+                <div className="p-3 rounded-xl bg-[#0a0a0a] border border-gray-800">
                   <Star className="h-5 w-5 text-purple-400" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-semibold text-foreground">{customer.name}</h4>
-                    <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                    <h4 className="font-semibold text-white">{customer.name}</h4>
+                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/50">
                       {customer.loyaltyScore}/10
                     </Badge>
                   </div>
                   <div className="flex items-center gap-4 text-sm">
-                    <span className="text-muted-foreground">Value: {customer.value}</span>
-                    <span className="text-muted-foreground">•</span>
-                    <span className="text-primary font-medium flex items-center gap-1">
+                    <span className="text-gray-400">Value: {customer.value}</span>
+                    <span className="text-gray-400">•</span>
+                    <span className="text-purple-400 font-medium flex items-center gap-1">
                       <TrendingUp className="h-3 w-3" />
                       {customer.upsellPotential}
                     </span>
@@ -76,7 +76,7 @@ export default function LoyaltyUpsell() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+                className="bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
               >
                 <Gift className="h-4 w-4 mr-2" />
                 Offer

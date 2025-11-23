@@ -12,39 +12,32 @@ type Props = {
 
 const WebinarCard = ({ webinar }: Props) => {
   return (
-    <div className="flex gap-3 flex-col items-start w-full">
-      <Link href={`/live-webinar/${webinar?.id}`} className="w-full max-w-[400px]">
+    <div className="flex gap-3 flex-col items-start w-full bg-[#0a0a0a] border border-gray-800 rounded-lg p-4 hover:border-purple-500/50 transition-all">
+      <Link href={`/live-webinar/${webinar?.id}`} className="w-full">
         <Image
           src={"/darkthumbnail.png"}
           alt="webinar"
           width={400}
           height={100}
-          className="rounded-md w-[400px]"
+          className="rounded-md w-full h-auto"
         />
       </Link>
-      <div className="w-full flex justify-between gap-3 items-center">
+      <div className="w-full flex justify-between gap-3 items-start">
         <Link
           href={`/live-webinar/${webinar?.id}`}
-          className="flex flex-col gap-2 items-start"
+          className="flex flex-col gap-2 items-start flex-1"
         >
           <div>
-            <p className="text-sm text-primary font-semibold">
+            <p className="text-sm text-white font-semibold">
               {webinar?.title}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-gray-400 mt-1 line-clamp-2">
               {webinar?.description}
             </p>
           </div>
 
           <div className="flex gap-2 justify-start items-center">
-            {/* {webinar?.startTime && (
-            <div className="flex gap-2 items-center text-xs text-muted-foreground">
-              <Clock size={15} />
-              <p>{format(new Date(webinar?.startTime), "dd/MM/yyyy")}</p>
-            </div>
-          )} */}
-            {/* <div className="w-3 h-3 bg-muted rounded-full text-xs " /> */}
-            <div className="flex gap-2 items-center text-xs text-muted-foreground">
+            <div className="flex gap-2 items-center text-xs text-gray-400">
               <Calendar size={15} />
               <p>{format(new Date(webinar?.startTime), "dd/MM/yyyy")}</p>
             </div>
@@ -53,7 +46,7 @@ const WebinarCard = ({ webinar }: Props) => {
 
         <Link
           href={`/webinars/${webinar?.id}/pipeline`}
-          className="flex px-4 py-2 rounded-md border-[0.5px] border-border bg-secondary"
+          className="flex px-4 py-2 rounded-md border border-gray-700 bg-[#0a0a0a] text-white hover:bg-gray-900 hover:border-purple-500/50 transition-all"
         >
           <PipelineIcon className="w-4 h-4"/> 
         </Link>

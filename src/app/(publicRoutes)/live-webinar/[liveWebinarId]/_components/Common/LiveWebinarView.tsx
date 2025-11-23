@@ -100,9 +100,7 @@ const LiveWebinarView = ({
         userToken
       );
 
-      const channel = client.channel("livestream", webinar.id, {
-        name: webinar.title,
-      });
+      const channel = client.channel("livestream", webinar.id);
 
       await channel.watch();
 
@@ -138,30 +136,30 @@ const LiveWebinarView = ({
   if (!chatClient || !channel) return null;
 
   return (
-    <div className="flex flex-col w-full h-screen max-h-screen overflow-hidden bg-background text-foreground">
+    <div className="flex flex-col w-full h-screen max-h-screen overflow-hidden bg-black text-white">
       {/* Header - kept compact */}
-      <div className="py-2 px-4 border-b border-border flex items-center justify-between">
+      <div className="py-2 px-4 border-b border-gray-800 flex items-center justify-between bg-[#0a0a0a]">
         <div className="flex items-center space-x-2">
-          <div className="bg-accent-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium flex items-center">
+          <div className="bg-red-500/10 text-red-400 px-3 py-1 rounded-full text-sm font-medium flex items-center border border-red-500/50">
             <span className="relative flex h-2 w-2 mr-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive animate-pulse"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500 animate-pulse"></span>
             </span>
             LIVE
           </div>
         </div>
 
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-1 bg-muted/50 px-3 py-1 rounded-full">
+          <div className="flex items-center space-x-1 bg-[#0a0a0a] border border-gray-800 px-3 py-1 rounded-full text-gray-300">
             <Users size={16} />
             <span className="text-sm">{viewerCount}</span>
           </div>
           <button
             onClick={() => setShowChat(!showChat)}
-            className={`px-3 py-1 rounded-full text-sm flex items-center space-x-1 ${
+            className={`px-3 py-1 rounded-full text-sm flex items-center space-x-1 transition-all ${
               showChat
-                ? "bg-accent-primary text-primary-foreground"
-                : "bg-muted/50"
+                ? "bg-purple-500/20 text-purple-400 border border-purple-500/50"
+                : "bg-[#0a0a0a] border border-gray-800 text-gray-300 hover:border-gray-700"
             }`}
           >
             <MessageSquare size={16} />
@@ -173,7 +171,7 @@ const LiveWebinarView = ({
       {/* Main content */}
       <div className="flex flex-1 p-2 gap-2 overflow-hidden">
         {/* Video area */}
-        <div className="flex-1 rounded-lg overflow-hidden border border-border flex flex-col bg-card">
+        <div className="flex-1 rounded-lg overflow-hidden border border-gray-800 flex flex-col bg-[#0a0a0a]">
           <div className="flex-1 relative overflow-hidden">
             {hostParticipant ? (
               <div className={`w-full h-full`}>
@@ -183,24 +181,24 @@ const LiveWebinarView = ({
                 />
               </div>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground flex-col space-y-4">
-                <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center">
-                  <Users size={40} className="text-muted-foreground" />
+              <div className="w-full h-full flex items-center justify-center text-gray-400 flex-col space-y-4">
+                <div className="w-24 h-24 rounded-full bg-[#0a0a0a] border border-gray-800 flex items-center justify-center">
+                  <Users size={40} className="text-gray-600" />
                 </div>
                 <p>Waiting for stream to start...</p>
               </div>
             )}
 
             {isHost && (
-              <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+              <div className="absolute top-4 right-4 bg-[#0a0a0a]/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-white border border-gray-800">
                 Host
               </div>
             )}
           </div>
 
-          <div className="p-2 border-t border-border flex items-center justify-between py-2">
+          <div className="p-2 border-t border-gray-800 flex items-center justify-between py-2 bg-[#0a0a0a]">
             <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium capitalize">
+              <div className="text-sm font-medium capitalize text-white">
                 {webinar?.title}
               </div>
             </div>
@@ -214,7 +212,7 @@ const LiveWebinarView = ({
                       })
                     }}
                     variant="outline"
-                    className="mr-2"
+                    className="mr-2 bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
                   >
                     Go Live
                   </Button>
@@ -222,11 +220,15 @@ const LiveWebinarView = ({
                 <Button
                   onClick={() => setObsDialogOpen(true)}
                   variant="outline"
-                  className="mr-2"
+                  className="mr-2 bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
                 >
                   Get OBS Creds
                 </Button>
-                <Button onClick={handleEndStream} disabled={loading}>
+                <Button 
+                  onClick={handleEndStream} 
+                  disabled={loading}
+                  className="bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-red-500/50"
+                >
                   {loading ? (
                     <>
                       <Loader2 className="animate-spin mr-2" /> Loading...
@@ -235,7 +237,10 @@ const LiveWebinarView = ({
                     "End Stream"
                   )}
                 </Button>
-                <Button onClick={handleCTAButtonClick}>
+                <Button 
+                  onClick={handleCTAButtonClick}
+                  className="bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50"
+                >
                   {webinar.ctaType === CtaTypeEnum.BOOK_A_CALL
                     ? "Book a Call"
                     : "Buy Now"}
@@ -249,17 +254,17 @@ const LiveWebinarView = ({
         {showChat && (
           <Chat client={chatClient}>
             <Channel channel={channel}>
-              <div className="w-72 bg-card border border-border rounded-lg overflow-hidden flex flex-col">
-                <div className="py-2 text-primary px-3 border-b border-border font-medium flex items-center justify-between">
+              <div className="w-72 bg-[#0a0a0a] border border-gray-800 rounded-lg overflow-hidden flex flex-col">
+                <div className="py-2 text-white px-3 border-b border-gray-800 font-medium flex items-center justify-between">
                   <span>Chat</span>
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-[#0a0a0a] border border-gray-800 px-2 py-0.5 rounded-full text-gray-400">
                     {viewerCount} viewers
                   </span>
                 </div>
 
                 <MessageList />
 
-                <div className="p-2 border-t border-border">
+                <div className="p-2 border-t border-gray-800">
                   <MessageInput />
                 </div>
               </div>

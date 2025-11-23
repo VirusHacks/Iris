@@ -35,11 +35,11 @@ export default function HomePage() {
   };
 
   return (
-    <div className="w-full min-h-screen space-y-8 pb-12">
+    <div className="w-full min-h-screen bg-black space-y-8 pb-12">
       {/* Top Navigation Bar */}
-      <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-b border-border/50 rounded-2xl p-2 shadow-lg">
+      <div className="sticky top-0 z-20 bg-black border-b border-gray-800 p-2">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full h-14 bg-gradient-to-r from-muted/80 to-muted/60 backdrop-blur-md border-2 border-border/50 shadow-xl rounded-xl p-1.5 flex overflow-x-auto scrollbar-hide">
+          <TabsList className="w-full h-12 bg-[#0a0a0a] border border-gray-800 rounded-lg p-1 flex overflow-x-auto scrollbar-hide">
             {navigationTabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -47,7 +47,7 @@ export default function HomePage() {
                   key={tab.id}
                   value={tab.id}
                   onClick={() => handleTabClick(tab.route)}
-                  className="flex items-center justify-center gap-2 text-sm font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:text-purple-400 data-[state=active]:shadow-xl data-[state=active]:border data-[state=active]:border-purple-500/30 transition-all duration-300 rounded-lg whitespace-nowrap flex-shrink-0 min-w-fit px-4"
+                  className="flex items-center justify-center gap-2 text-sm font-medium data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 data-[state=active]:border data-[state=active]:border-purple-500/30 text-gray-400 transition-all rounded-md whitespace-nowrap flex-shrink-0 min-w-fit px-4"
                 >
                   <Icon className="h-4 w-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -63,14 +63,14 @@ export default function HomePage() {
         <TabsContent value="home" className="mt-0 space-y-8">
           {/* Executive Overview Panel */}
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Executive Overview</h1>
-            <p className="text-muted-foreground mb-6">Key performance indicators and business metrics</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Executive Overview</h1>
+            <p className="text-gray-400 text-sm mb-6">Key performance indicators and business metrics</p>
             <ExecutiveOverview />
           </div>
 
           {/* Sales Snapshot Cards */}
           <div>
-            <h2 className="text-2xl font-bold text-foreground mb-6">Sales Snapshot</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Sales Snapshot</h2>
             <SalesSnapshot />
           </div>
 
