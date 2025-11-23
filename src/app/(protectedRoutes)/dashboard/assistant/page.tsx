@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Bot, AlertCircle } from "lucide-react";
@@ -155,27 +154,17 @@ Always be professional, concise, and action-oriented. Focus on helping sales emp
     <div className="w-full min-h-screen bg-black space-y-8 pb-12">
       {/* Minimal Header */}
       <div className="relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-2">
-            <Bot className="h-8 w-8 text-purple-400" />
-            AI Sales Assistant
-          </h1>
-          <p className="text-gray-400 text-sm">
-            Talk to your sales data and get AI-powered insights in real-time
-          </p>
-        </motion.div>
+        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-2">
+          <Bot className="h-8 w-8 text-purple-400" />
+          AI Sales Assistant
+        </h1>
+        <p className="text-gray-400 text-sm">
+          Talk to your sales data and get AI-powered insights in real-time
+        </p>
       </div>
 
       {/* Main Assistant Card */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1 }}
-      >
-        <Card className="bg-[#0a0a0a] border border-gray-800">
+      <Card className="bg-[#0a0a0a] border border-gray-800">
           <CardHeader className="border-b border-gray-800">
             <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
               <Bot className="h-4 w-4 text-purple-400" />
@@ -257,7 +246,6 @@ Always be professional, concise, and action-oriented. Focus on helping sales emp
             )}
           </CardContent>
         </Card>
-      </motion.div>
     </div>
   );
 }

@@ -60,15 +60,13 @@ export default function NewLeadsList({ leads }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#0a0a0a] border border-gray-800/50 overflow-hidden">
-        <CardHeader className="border-b border-gray-800/50 bg-gradient-to-r from-blue-500/5 to-purple-500/5">
+      <Card className="bg-[#0a0a0a] border border-gray-800 overflow-hidden">
+        <CardHeader className="border-b border-gray-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg border border-blue-500/30">
-                <Users className="h-5 w-5 text-blue-400" />
-              </div>
+              <Users className="h-4 w-4 text-purple-400" />
               <div>
-                <CardTitle className="text-xl font-bold text-white">
+                <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
                   New Leads
                 </CardTitle>
                 <p className="text-xs text-gray-400 mt-1">
@@ -76,22 +74,18 @@ export default function NewLeadsList({ leads }: Props) {
                 </p>
               </div>
             </div>
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              className="px-4 py-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/20"
-            >
-              <span className="text-sm font-semibold text-blue-400">
+            <div className="px-4 py-2 bg-[#0a0a0a] border border-gray-800 rounded-lg">
+              <span className="text-sm font-semibold text-white">
                 {leads.length}
               </span>
               <span className="text-xs text-gray-400 ml-1">leads</span>
-            </motion.div>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-0">
           <div className="max-h-[600px] overflow-y-auto scrollbar-hide">
             <Table>
-              <TableHeader className="sticky top-0 z-10 bg-[#0a0a0a] border-b border-gray-800/50">
+              <TableHeader className="sticky top-0 z-10 bg-[#0a0a0a] border-b border-gray-800">
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Name
@@ -114,15 +108,14 @@ export default function NewLeadsList({ leads }: Props) {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.03 }}
-                    whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.05)" }}
-                    className="border-b border-gray-800/30 group cursor-pointer transition-colors"
+                    className="border-b border-gray-800 group cursor-pointer transition-colors hover:bg-gray-900/50"
                   >
                     <TableCell className="py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 flex items-center justify-center text-xs font-bold text-blue-400">
+                        <div className="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-xs font-bold text-white">
                           {lead.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-semibold text-sm text-white group-hover:text-blue-400 transition-colors">
+                        <span className="font-semibold text-sm text-white">
                           {lead.name}
                         </span>
                       </div>
@@ -140,7 +133,7 @@ export default function NewLeadsList({ leads }: Props) {
                             <Badge
                               key={tagIndex}
                               variant="outline"
-                              className="text-[10px] bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/30 text-blue-300 px-2 py-0.5"
+                              className="text-[10px] bg-[#0a0a0a] border-gray-700 text-gray-300 px-2 py-0.5"
                             >
                               <Tag className="h-2.5 w-2.5 mr-1" />
                               {tag}
@@ -152,7 +145,7 @@ export default function NewLeadsList({ leads }: Props) {
                         {lead.tags && lead.tags.length > 2 && (
                           <Badge
                             variant="outline"
-                            className="text-[10px] bg-gray-800/50 border-gray-700 text-gray-400 px-2 py-0.5"
+                            className="text-[10px] bg-[#0a0a0a] border-gray-700 text-gray-400 px-2 py-0.5"
                           >
                             +{lead.tags.length - 2}
                           </Badge>

@@ -19,7 +19,7 @@ const CustomTooltip = ({ active, payload }: any) => {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] border border-blue-500/30 rounded-xl p-4 shadow-2xl backdrop-blur-sm min-w-[180px]"
+        className="bg-[#0a0a0a] border border-gray-800 rounded-xl p-4 min-w-[180px]"
       >
         <p className="font-bold text-sm text-white mb-2 flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full`} style={{ backgroundColor: data.color }} />
@@ -90,27 +90,18 @@ export default function LeadConversionFunnel({
       transition={{ duration: 0.5 }}
       whileHover={{ scale: 1.01 }}
     >
-      <Card className="bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#0a0a0a] border border-gray-800/50 hover:border-blue-500/30 transition-all duration-300 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 hover:opacity-100 transition-opacity duration-300" />
-        <CardHeader className="border-b border-gray-800/50 relative z-10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg border border-blue-500/30">
-                <Funnel className="h-5 w-5 text-blue-400" />
-              </div>
-              <div>
-                <CardTitle className="text-lg font-bold text-white flex items-center gap-2">
-                  Lead Conversion Funnel
-                </CardTitle>
-                <CardDescription className="mt-1 text-gray-400 text-sm">
-                  Track your lead progression through each stage
-                </CardDescription>
-              </div>
-            </div>
-          </div>
+      <Card className="bg-[#0a0a0a] border border-gray-800 overflow-hidden">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <Funnel className="h-4 w-4 text-purple-400" />
+            Lead Conversion Funnel
+          </CardTitle>
+          <CardDescription className="text-gray-400 text-sm mt-1">
+            Track your lead progression through each stage
+          </CardDescription>
         </CardHeader>
-        <CardContent className="p-6 relative z-10">
-          <div className="bg-gradient-to-br from-black/40 to-black/20 rounded-xl p-4 border border-gray-800/30">
+        <CardContent className="p-6">
+          <div className="bg-[#0a0a0a] rounded-xl p-4 border border-gray-800">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <defs>
@@ -161,25 +152,22 @@ export default function LeadConversionFunnel({
             </ResponsiveContainer>
           </div>
 
-          <div className="mt-6 grid grid-cols-3 gap-4 pt-4 border-t border-gray-800/50">
+          <div className="mt-6 grid grid-cols-3 gap-4 pt-4 border-t border-gray-800">
             {[
-              { label: "Contact Drop-off", value: contactDropOff, color: "text-red-400", bg: "from-red-500/10 to-orange-500/10", border: "border-red-500/20" },
-              { label: "Qualify Drop-off", value: qualifyDropOff, color: "text-orange-400", bg: "from-orange-500/10 to-yellow-500/10", border: "border-orange-500/20" },
-              { label: "Convert Drop-off", value: convertDropOff, color: "text-yellow-400", bg: "from-yellow-500/10 to-amber-500/10", border: "border-yellow-500/20" },
+              { label: "Contact Drop-off", value: contactDropOff, color: "text-red-400" },
+              { label: "Qualify Drop-off", value: qualifyDropOff, color: "text-orange-400" },
+              { label: "Convert Drop-off", value: convertDropOff, color: "text-yellow-400" },
             ].map((item, index) => (
-              <motion.div
+              <div
                 key={item.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + index * 0.1 }}
-                className={`text-center p-3 rounded-lg bg-gradient-to-br ${item.bg} border ${item.border}`}
+                className="text-center p-3 rounded-lg bg-[#0a0a0a] border border-gray-800"
               >
                 <div className="flex items-center justify-center gap-1 mb-2">
                   <TrendingDown className="h-3 w-3" />
                   <span className={`text-xs font-semibold ${item.color}`}>{item.label}</span>
                 </div>
                 <p className="text-xl font-bold text-white">{item.value}%</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </CardContent>

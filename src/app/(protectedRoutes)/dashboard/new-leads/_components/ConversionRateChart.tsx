@@ -18,7 +18,7 @@ const CustomTooltip = ({ active, payload }: any) => {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] border border-blue-500/30 rounded-xl p-4 shadow-2xl backdrop-blur-sm"
+        className="bg-[#0a0a0a] border border-gray-800 rounded-xl p-4"
       >
         <p className="font-bold text-sm text-white mb-2 flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${data.name === "Converted" ? "bg-emerald-400" : "bg-gray-500"}`} />
@@ -66,34 +66,27 @@ export default function ConversionRateChart({ totalLeads, convertedLeads, conver
       transition={{ duration: 0.5 }}
       whileHover={{ scale: 1.01 }}
     >
-      <Card className="bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#0a0a0a] border border-gray-800/50 hover:border-blue-500/30 transition-all duration-300 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 hover:opacity-100 transition-opacity duration-300" />
-        <CardHeader className="border-b border-gray-800/50 relative z-10">
+      <Card className="bg-[#0a0a0a] border border-gray-800 overflow-hidden">
+        <CardHeader className="border-b border-gray-800">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 rounded-lg border border-emerald-500/30">
-                <TrendingUp className="h-5 w-5 text-emerald-400" />
-              </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-purple-400" />
               <div>
-                <CardTitle className="text-lg font-bold text-white flex items-center gap-2">
+                <CardTitle className="text-lg font-semibold text-white">
                   Lead Conversion Rate
                 </CardTitle>
-                <CardDescription className="mt-1 text-gray-400 text-sm">
+                <CardDescription className="text-gray-400 text-sm mt-1">
                   {convertedLeads} out of {totalLeads} leads converted
                 </CardDescription>
               </div>
             </div>
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              className="px-3 py-1.5 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-lg border border-emerald-500/20"
-            >
+            <div className="px-3 py-1.5 bg-[#0a0a0a] border border-gray-800 rounded-lg">
               <span className="text-lg font-bold text-emerald-400">{conversionRate.toFixed(1)}%</span>
-            </motion.div>
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="p-6 relative z-10">
-          <div className="bg-gradient-to-br from-black/40 to-black/20 rounded-xl p-4 border border-gray-800/30">
+        <CardContent className="p-6">
+          <div className="bg-[#0a0a0a] rounded-xl p-4 border border-gray-800">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 20, bottom: 10 }}>
                 <defs>

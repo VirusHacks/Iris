@@ -69,24 +69,15 @@ export default function CSVUploadBar({ onUploadSuccess }: { onUploadSuccess?: ()
       transition={{ duration: 0.5 }}
       whileHover={{ scale: 1.01 }}
     >
-      <Card className="bg-gradient-to-br from-[#0a0a0a] via-blue-500/5 to-purple-500/5 border border-blue-500/30 hover:border-blue-500/50 transition-all duration-300 h-full overflow-hidden relative group">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <CardHeader className="border-b border-gray-800/50 relative z-10">
-          <div className="flex items-center gap-3">
-            <motion.div
-              animate={{ rotate: isUploading ? 360 : 0 }}
-              transition={{ duration: 2, repeat: isUploading ? Infinity : 0, ease: "linear" }}
-              className="p-2.5 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30"
-            >
-              <Upload className="h-5 w-5 text-blue-400" />
-            </motion.div>
-            <div>
-              <CardTitle className="text-base font-bold text-white">Upload New Leads CSV</CardTitle>
-              <p className="text-xs text-gray-400 mt-0.5">Import leads from a CSV file</p>
-            </div>
-          </div>
+      <Card className="bg-[#0a0a0a] border border-gray-800 h-full overflow-hidden">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <Upload className="h-4 w-4 text-purple-400" />
+            Upload Sales Data
+          </CardTitle>
+          <p className="text-gray-400 text-sm mt-1">Import leads from a CSV file</p>
         </CardHeader>
-        <CardContent className="p-4 h-full flex flex-col relative z-10">
+        <CardContent className="p-6 h-full flex flex-col">
           <div className="space-y-3 flex-1">
             <AnimatePresence>
               {uploadStats && (
@@ -94,20 +85,20 @@ export default function CSVUploadBar({ onUploadSuccess }: { onUploadSuccess?: ()
                   initial={{ opacity: 0, y: -10, scale: 0.9 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/30 rounded-lg p-3 space-y-2"
+                  className="bg-[#0a0a0a] border border-gray-800 rounded-lg p-3 space-y-2"
                 >
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                     <span className="text-sm font-bold text-emerald-400">{uploadStats.processed}</span>
-                    <span className="text-xs text-gray-300">processed</span>
+                    <span className="text-xs text-gray-400">processed</span>
                   </div>
                   {uploadStats.newLeads > 0 && (
                     <motion.div
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="flex items-center gap-2 text-xs text-blue-400 ml-6"
+                      className="flex items-center gap-2 text-xs text-gray-300 ml-6"
                     >
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                       <span className="font-semibold">+{uploadStats.newLeads}</span>
                       <span>new leads</span>
                     </motion.div>
@@ -117,7 +108,7 @@ export default function CSVUploadBar({ onUploadSuccess }: { onUploadSuccess?: ()
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
-                      className="flex items-center gap-2 text-xs text-purple-400 ml-6"
+                      className="flex items-center gap-2 text-xs text-gray-300 ml-6"
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
                       <span className="font-semibold">{uploadStats.updated}</span>
@@ -131,28 +122,26 @@ export default function CSVUploadBar({ onUploadSuccess }: { onUploadSuccess?: ()
           
           <div className="mt-auto pt-4">
             <label htmlFor="leads-csv-upload" className="w-full block">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="cursor-pointer w-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/50 text-white hover:from-blue-500/20 hover:to-purple-500/20 hover:border-blue-400 transition-all duration-300 font-semibold"
-                  disabled={isUploading}
-                >
-                  <span>
-                    {isUploading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <FileUp className="mr-2 h-4 w-4" />
-                        Choose CSV File
-                      </>
-                    )}
-                  </span>
-                </Button>
-              </motion.div>
+              <Button
+                asChild
+                variant="outline"
+                className="cursor-pointer w-full h-10 px-4 text-sm font-medium bg-[#0a0a0a] border-gray-700 text-white hover:bg-gray-900 hover:border-purple-500/50 transition-all"
+                disabled={isUploading}
+              >
+                <span>
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <FileUp className="mr-2 h-4 w-4" />
+                      Choose CSV File
+                    </>
+                  )}
+                </span>
+              </Button>
             </label>
             <input
               id="leads-csv-upload"
