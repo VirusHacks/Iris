@@ -1,4 +1,4 @@
-# Pixro - AI-Powered Sales CRM & Analytics Platform
+# IRIS - AI-Powered Sales CRM & Analytics Platform
 
 A comprehensive, AI-driven Customer Relationship Management (CRM) platform that combines sales analytics, customer segmentation, revenue forecasting, live webinars, AI voice assistants, and lead generation into a single, powerful solution.
 
