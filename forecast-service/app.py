@@ -6,6 +6,17 @@ import json
 from datetime import datetime, timedelta
 import numpy as np
 import logging
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env (if present)
+load_dotenv()
+
+# Import WhatsApp helper
+try:
+    from whatsapp_client import send_whatsapp
+except Exception:
+    send_whatsapp = None
 import io
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
@@ -277,6 +288,38 @@ def forecast():
             "historical": [],
             "forecast": []
         }), 500
+
+
+@app.route('/send-whatsapp', methods=['POST'])
+def send_whatsapp_route():
+    """API endpoint to send WhatsApp messages via Twilio.
+
+    Expected JSON body:
+    {
+      "users": ["+919876543210", "whatsapp:+1..."],
+      "message": "Hello",
+      "from": "whatsapp:+1415..." (optional)
+    }
+    """
+    try:
+        if send_whatsapp is None:
+            return jsonify({"error": "WhatsApp support not available (twilio not installed)"}), 500
+
+        data = request.json or {}
+        users = data.get('users') or data.get('to') or []
+        message = data.get('message') or data.get('body')
+        from_number = data.get('from')
+
+        if not isinstance(users, list) or not users:
+            return jsonify({"error": "'users' must be a non-empty list of phone numbers"}), 400
+        if not message:
+            return jsonify({"error": "'message' is required"}), 400
+
+        results = send_whatsapp(users, message, from_number)
+        return jsonify(results)
+    except Exception as e:
+        logger.error('Error in send_whatsapp_route: %s', str(e), exc_info=True)
+        return jsonify({"error": str(e)}), 500
 
 # --- Customer Segmentation Service (Fuzzy Logic + K-means) ---
 
