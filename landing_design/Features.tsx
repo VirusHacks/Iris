@@ -50,7 +50,7 @@ export const Features = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className='text-5xl md:text-6xl font-medium text-center tracking-tighter text-white'
+                    className='text-5xl md:text-6xl font-medium text-center tracking-tighter'
                 >
                     Your Ultimate AI-Powered CRM
                 </motion.h2>
@@ -83,7 +83,7 @@ export const Features = () => {
                             >
 
                             </motion.div>
-                            <div className='font-medium text-white'>
+                            <div className='font-medium'>
                                 {tab.title}
                             </div>
                             {tab.isNew && (
