@@ -45,7 +45,7 @@ export const Testimonial = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="text-5xl md:text-6xl text-center tracking-tighter font-medium text-white"
+                className="text-5xl md:text-6xl text-center tracking-tighter font-medium"
             >
                 Beyond Expectations.
             </motion.h2>
@@ -83,7 +83,7 @@ export const Testimonial = () => {
                             transition={{ duration: 0.3 }}
                             className="border border-white/15 p-6 rounded-xl bg-[linear-gradient(to_bottom_left,rgb(140,69,255,.3),black)] max-w-xs md:max-w-md flex-none"
                         >
-                            <div className="text-lg md:text-xl tracking-tight text-white">{testimonial.text}</div>
+                            <div className="text-lg md:text-xl tracking-tight">{testimonial.text}</div>
                             <div className="flex items-center gap-3 mt-5">
                                 <motion.div 
                                     whileHover={{ scale: 1.1 }}
@@ -97,7 +97,7 @@ export const Testimonial = () => {
                                 />
                                  </motion.div>
                                 <div>
-                                    <div className="text-white">{testimonial.name}</div>
+                                    <div className="">{testimonial.name}</div>
                                     <div className="text-white/50 text-sm">{testimonial.title}</div>
                                 </div>
                             </div>
