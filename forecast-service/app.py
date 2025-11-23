@@ -17,6 +17,11 @@ try:
     from whatsapp_client import send_whatsapp
 except Exception:
     send_whatsapp = None
+import io
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,9 +30,18 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)
 
-# Suppress Prophet warnings
+# Suppress Prophet warnings and plotly import warnings
 import warnings
 warnings.filterwarnings('ignore')
+
+# Suppress plotly import warning from Prophet
+import os
+os.environ['PROPHET_DISABLE_PLOTLY'] = '1'
+
+# Suppress specific logger warnings
+import logging
+logging.getLogger('prophet').setLevel(logging.ERROR)
+logging.getLogger('prophet.plot').setLevel(logging.ERROR)
 
 @app.route('/health', methods=['GET'])
 def health():
@@ -187,8 +201,363 @@ def send_whatsapp_route():
         logger.error('Error in send_whatsapp_route: %s', str(e), exc_info=True)
         return jsonify({"error": str(e)}), 500
 
+# --- Customer Segmentation Service (Fuzzy Logic + K-means) ---
+
+# Global variables for segmentation models (will be initialized on first use)
+segmentation_scaler = None
+segmentation_kmeans = None
+segmentation_initialized = False
+
+# Define the universe of discourse for numerical attributes
+total_spent_universe = np.arange(0, 5001, 1)
+intent_score_universe = np.arange(0, 1.01, 0.01)
+touchpoints_count_universe = np.arange(0, 21, 1)
+recency_universe = np.arange(0, 801, 1)
+promotional_segment_universe = np.arange(0, 11, 1)
+
+# Input Antecedents
+total_spent_ctrl = ctrl.Antecedent(total_spent_universe, 'total_spent')
+intent_score_ctrl = ctrl.Antecedent(intent_score_universe, 'intent_score')
+touchpoints_count_ctrl = ctrl.Antecedent(touchpoints_count_universe, 'touchpoints_count')
+recency_ctrl = ctrl.Antecedent(recency_universe, 'recency')
+
+# Output Consequent
+promotional_segment_ctrl = ctrl.Consequent(promotional_segment_universe, 'promotional_segment')
+
+# Membership functions for total_spent
+total_spent_ctrl['low'] = fuzz.trimf(total_spent_universe, [0, 0, 1500])
+total_spent_ctrl['medium'] = fuzz.trimf(total_spent_universe, [1000, 2500, 4000])
+total_spent_ctrl['high'] = fuzz.trimf(total_spent_universe, [3500, 5000, 5000])
+
+# Membership functions for intent_score
+intent_score_ctrl['weak'] = fuzz.trimf(intent_score_universe, [0, 0, 0.5])
+intent_score_ctrl['moderate'] = fuzz.trimf(intent_score_universe, [0.3, 0.6, 0.9])
+intent_score_ctrl['strong'] = fuzz.trimf(intent_score_universe, [0.7, 1, 1])
+
+# Membership functions for touchpoints_count
+touchpoints_count_ctrl['low'] = fuzz.trimf(touchpoints_count_universe, [0, 0, 7])
+touchpoints_count_ctrl['medium'] = fuzz.trimf(touchpoints_count_universe, [5, 12, 18])
+touchpoints_count_ctrl['high'] = fuzz.trimf(touchpoints_count_universe, [15, 20, 20])
+
+# Membership functions for recency
+recency_ctrl['recent'] = fuzz.trimf(recency_universe, [0, 0, 200])
+recency_ctrl['moderate'] = fuzz.trimf(recency_universe, [150, 400, 650])
+recency_ctrl['distant'] = fuzz.trimf(recency_universe, [600, recency_universe.max(), recency_universe.max()])
+
+# Output membership functions for promotional_segment
+promotional_segment_ctrl['new_customer_nurture'] = fuzz.trimf(promotional_segment_universe, [0, 0, 4])
+promotional_segment_ctrl['high_value_engagement'] = fuzz.trimf(promotional_segment_universe, [3, 6, 9])
+promotional_segment_ctrl['re_engagement'] = fuzz.trimf(promotional_segment_universe, [7, 10, 10])
+
+# Fuzzy Rules
+rule1 = ctrl.Rule(total_spent_ctrl['high'] & intent_score_ctrl['strong'] & recency_ctrl['recent'],
+                  promotional_segment_ctrl['high_value_engagement'])
+rule2 = ctrl.Rule(total_spent_ctrl['low'] & recency_ctrl['distant'],
+                  promotional_segment_ctrl['re_engagement'])
+rule3 = ctrl.Rule(total_spent_ctrl['low'] & intent_score_ctrl['weak'] & recency_ctrl['recent'] & touchpoints_count_ctrl['low'],
+                  promotional_segment_ctrl['new_customer_nurture'])
+rule4 = ctrl.Rule(total_spent_ctrl['medium'] & intent_score_ctrl['moderate'] & recency_ctrl['moderate'],
+                  promotional_segment_ctrl['high_value_engagement'])
+rule5 = ctrl.Rule(recency_ctrl['distant'] & touchpoints_count_ctrl['low'],
+                  promotional_segment_ctrl['re_engagement'])
+rule6 = ctrl.Rule(intent_score_ctrl['strong'] & touchpoints_count_ctrl['high'],
+                  promotional_segment_ctrl['high_value_engagement'])
+
+# Control System and Simulation
+promotional_segmenting_ctrl = ctrl.ControlSystem([
+    rule1, rule2, rule3, rule4, rule5, rule6
+])
+promotional_segmenting_sim = ctrl.ControlSystemSimulation(promotional_segmenting_ctrl)
+
+# Bins and labels for promotional segment category mapping
+promotional_bins = [0, 4.5, 7.5, 10]
+promotional_labels = ['New Customer Nurture', 'High Value Engagement', 'Re-engagement']
+
+# Features for clustering
+clustering_features = ['total_spent', 'intent_score', 'touchpoints_count', 'recency']
+
+def initialize_segmentation_models(df_training):
+    """Initialize scaler and K-means models with training data"""
+    global segmentation_scaler, segmentation_kmeans, segmentation_initialized
+    
+    try:
+        # Prepare training data
+        df_training = df_training.copy()
+        df_training['last_purchase_date'] = pd.to_datetime(df_training['last_purchase_date'], errors='coerce')
+        df_training['total_spent'] = df_training['total_spent'].fillna(0)
+        
+        # Calculate recency
+        initial_reference_date = pd.Timestamp.now()
+        df_training['recency'] = (initial_reference_date - df_training['last_purchase_date']).dt.days
+        initial_max_recency = df_training['recency'].max()
+        if pd.isna(initial_max_recency):
+            initial_max_recency = 1000
+        df_training['recency'] = df_training['recency'].fillna(initial_max_recency + 30).astype(int)
+        
+        # Ensure all required features exist
+        for feature in clustering_features:
+            if feature not in df_training.columns:
+                if feature == 'intent_score':
+                    df_training[feature] = 0.5  # Default intent score
+                elif feature == 'touchpoints_count':
+                    df_training[feature] = 0  # Default touchpoints
+                else:
+                    df_training[feature] = 0
+        
+        df_for_training = df_training[clustering_features].copy()
+        
+        # Initialize and train StandardScaler
+        segmentation_scaler = StandardScaler()
+        segmentation_scaler.fit(df_for_training)
+        
+        # Initialize and train KMeans
+        segmentation_kmeans = KMeans(n_clusters=4, random_state=42, n_init='auto')
+        segmentation_kmeans.fit(segmentation_scaler.transform(df_for_training))
+        
+        segmentation_initialized = True
+        logger.info("Segmentation models initialized successfully")
+        return True
+    except Exception as e:
+        logger.error(f"Error initializing segmentation models: {str(e)}", exc_info=True)
+        return False
+
+def prepare_customer_data(df_input):
+    """Preprocess customer data for segmentation"""
+    df_processed = df_input.copy()
+    
+    # Convert 'last_purchase_date' to datetime
+    df_processed['last_purchase_date'] = pd.to_datetime(df_processed['last_purchase_date'], errors='coerce')
+    
+    # Fill NaN 'total_spent' with 0
+    df_processed['total_spent'] = df_processed['total_spent'].fillna(0)
+    
+    # Calculate 'recency' based on current date
+    current_date = pd.Timestamp.now()
+    df_processed['recency'] = (current_date - df_processed['last_purchase_date']).dt.days
+    
+    # For customers with no purchase date (NaN recency), assign a value higher than any existing recency
+    max_recency_val = df_processed['recency'].max()
+    if pd.isna(max_recency_val):
+        max_recency_val = 1000
+    df_processed['recency'] = df_processed['recency'].fillna(max_recency_val + 30).astype(int)
+    
+    # Ensure all required features exist
+    for feature in clustering_features:
+        if feature not in df_processed.columns:
+            if feature == 'intent_score':
+                df_processed[feature] = 0.5  # Default intent score
+            elif feature == 'touchpoints_count':
+                df_processed[feature] = 0  # Default touchpoints
+            else:
+                df_processed[feature] = 0
+    
+    # Select features for scaling and clustering
+    features_to_scale = df_processed[clustering_features]
+    df_scaled_features = segmentation_scaler.transform(features_to_scale)
+    
+    return df_processed, df_scaled_features
+
+def apply_fuzzy_segmentation(row_data):
+    """Apply fuzzy logic segmentation to a single row"""
+    promotional_segment_score = np.nan
+    promotional_segment_category = 'Unknown'
+    
+    try:
+        # Set input values for the fuzzy inference system
+        promotional_segmenting_sim.input['total_spent'] = float(row_data['total_spent'])
+        promotional_segmenting_sim.input['intent_score'] = float(row_data['intent_score'])
+        promotional_segmenting_sim.input['touchpoints_count'] = float(row_data['touchpoints_count'])
+        promotional_segmenting_sim.input['recency'] = float(row_data['recency'])
+        
+        # Compute the fuzzy output
+        promotional_segmenting_sim.compute()
+        
+        # Defuzzify the output to get a crisp promotional segment score
+        if 'promotional_segment' in promotional_segmenting_sim.output:
+            promotional_segment_score = promotional_segmenting_sim.output['promotional_segment']
+            
+            # Map score to category using predefined bins and labels
+            if not np.isnan(promotional_segment_score):
+                if promotional_segment_score >= promotional_bins[0] and promotional_segment_score < promotional_bins[1]:
+                    promotional_segment_category = promotional_labels[0]
+                elif promotional_segment_score >= promotional_bins[1] and promotional_segment_score < promotional_bins[2]:
+                    promotional_segment_category = promotional_labels[1]
+                elif promotional_segment_score >= promotional_bins[2] and promotional_segment_score <= promotional_bins[3]:
+                    promotional_segment_category = promotional_labels[2]
+    except (ValueError, KeyError) as e:
+        logger.warning(f"Fuzzy segmentation error for row: {str(e)}")
+        pass
+    
+    return promotional_segment_score, promotional_segment_category
+
+@app.route('/segmentation', methods=['POST'])
+def segment_customers():
+    """Customer segmentation endpoint using fuzzy logic and K-means"""
+    global segmentation_initialized
+    
+    try:
+        # Check if file is uploaded
+        if 'file' not in request.files:
+            return jsonify({"error": "No file part in the request"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
+        
+        # Read CSV file into DataFrame
+        df_input = pd.read_csv(io.StringIO(file.stream.read().decode("utf-8")))
+        
+        logger.info(f"Segmentation request: {len(df_input)} rows received")
+        
+        # Initialize models with the uploaded data if not already initialized
+        if not segmentation_initialized:
+            logger.info("Initializing segmentation models with uploaded data...")
+            if not initialize_segmentation_models(df_input):
+                return jsonify({"error": "Failed to initialize segmentation models"}), 500
+        
+        # Preprocess data and get scaled features
+        df_processed, df_scaled_features = prepare_customer_data(df_input)
+        
+        # Initialize columns for results
+        df_processed['promotional_segment_score'] = np.nan
+        df_processed['promotional_segment_category'] = 'Unknown'
+        df_processed['cluster_label'] = -1
+        
+        # Apply fuzzy segmentation
+        for index, row in df_processed.iterrows():
+            score, category = apply_fuzzy_segmentation(row)
+            df_processed.at[index, 'promotional_segment_score'] = score
+            df_processed.at[index, 'promotional_segment_category'] = category
+        
+        # K-means clustering labels
+        df_processed['cluster_label'] = segmentation_kmeans.predict(df_scaled_features)
+        
+        # Convert DataFrame to JSON and return
+        result = df_processed.to_dict(orient='records')
+        
+        # Convert numpy types to native Python types for JSON serialization
+        for record in result:
+            for key, value in record.items():
+                if isinstance(value, (np.integer, np.int64)):
+                    record[key] = int(value)
+                elif isinstance(value, (np.floating, np.float64)):
+                    record[key] = float(value) if not np.isnan(value) else None
+                elif pd.isna(value):
+                    record[key] = None
+        
+        logger.info(f"Segmentation successful: {len(result)} customers segmented")
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Segmentation error: {str(e)}", exc_info=True)
+        return jsonify({"error": f"An internal error occurred: {str(e)}"}), 500
+
+@app.route('/segmentation/initialize', methods=['POST'])
+def initialize_segmentation():
+    """Initialize segmentation models with training data"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file part in the request"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
+        
+        # Read CSV file into DataFrame
+        df_training = pd.read_csv(io.StringIO(file.stream.read().decode("utf-8")))
+        
+        logger.info(f"Initialization request: {len(df_training)} rows received")
+        
+        if initialize_segmentation_models(df_training):
+            return jsonify({
+                "status": "success",
+                "message": "Segmentation models initialized successfully",
+                "rows_trained": len(df_training)
+            })
+        else:
+            return jsonify({"error": "Failed to initialize models"}), 500
+            
+    except Exception as e:
+        logger.error(f"Initialization error: {str(e)}", exc_info=True)
+        return jsonify({"error": f"An internal error occurred: {str(e)}"}), 500
+
+@app.route('/whatsapp/send', methods=['POST'])
+def send_whatsapp():
+    """Send WhatsApp messages to customers"""
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        recipients = data.get('recipients', [])  # Array of {phone: string, message: string, customerName?: string}
+        
+        if not recipients or len(recipients) == 0:
+            return jsonify({"error": "No recipients provided"}), 400
+        
+        logger.info(f"WhatsApp send request: {len(recipients)} recipients")
+        
+        # TODO: Integrate with your WhatsApp API service (Twilio, WhatsApp Business API, etc.)
+        # For now, this is a placeholder that returns success
+        # Replace this with your actual WhatsApp sending logic
+        
+        results = []
+        for recipient in recipients:
+            phone = recipient.get('phone')
+            message = recipient.get('message')
+            customer_name = recipient.get('customerName', 'Customer')
+            
+            if not phone or not message:
+                results.append({
+                    "phone": phone,
+                    "success": False,
+                    "error": "Missing phone or message"
+                })
+                continue
+            
+            # Example: Send via your WhatsApp service
+            # Replace this with actual WhatsApp API call
+            try:
+                # Your WhatsApp API integration here
+                # Example: twilio_client.messages.create(...)
+                # Or: requests.post('your-whatsapp-api-url', ...)
+                
+                logger.info(f"Sending WhatsApp to {phone} for {customer_name}")
+                
+                # Placeholder - replace with actual API call
+                results.append({
+                    "phone": phone,
+                    "customerName": customer_name,
+                    "success": True,
+                    "messageId": f"msg_{phone}_{int(datetime.now().timestamp())}"
+                })
+            except Exception as e:
+                logger.error(f"Error sending to {phone}: {str(e)}")
+                results.append({
+                    "phone": phone,
+                    "customerName": customer_name,
+                    "success": False,
+                    "error": str(e)
+                })
+        
+        success_count = sum(1 for r in results if r.get('success'))
+        
+        return jsonify({
+            "success": True,
+            "total": len(recipients),
+            "sent": success_count,
+            "failed": len(recipients) - success_count,
+            "results": results
+        })
+        
+    except Exception as e:
+        logger.error(f"WhatsApp send error: {str(e)}", exc_info=True)
+        return jsonify({"error": f"An internal error occurred: {str(e)}"}), 500
+
 if __name__ == '__main__':
     logger.info("Starting Forecast Service on http://0.0.0.0:4000")
     logger.info("Health check: http://localhost:4000/health")
+    logger.info("Segmentation endpoint: http://localhost:4000/segmentation")
+    logger.info("WhatsApp endpoint: http://localhost:4000/whatsapp/send")
     app.run(host='0.0.0.0', port=4000, debug=True)
 

@@ -215,3 +215,26 @@ model ForecastAnalytics {
 
   @@index([userId])
 }
+
+model CustomerSegmentation {
+  id                          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                      String   @db.Uuid
+  customerId                  String?  // Customer identifier from CSV
+  lastPurchaseDate            DateTime?
+  totalSpent                  Float    @default(0)
+  intentScore                 Float    @default(0.5)
+  touchpointsCount            Int      @default(0)
+  recency                     Int       // Days since last purchase
+  promotionalSegmentScore     Float?
+  promotionalSegmentCategory  String   @default("Unknown") @db.VarChar(50)
+  clusterLabel                Int      @default(-1)
+  // Store additional customer data as JSON
+  customerData                Json?    // Any additional fields from CSV
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([clusterLabel])
+  @@index([promotionalSegmentCategory])
+  @@index([userId, clusterLabel])
+}

@@ -4,6 +4,7 @@ import { useDashboardDataContext } from "../../DashboardDataProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { DollarSign } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("en-US", {
@@ -38,6 +39,7 @@ export default function AOVForecastLineChart({ periods }: { periods: number }) {
   const { aovForecast } = useDashboardDataContext();
   const data = aovForecast;
   const error = aovForecast?.error || null;
+  const isFromBlockchain = data?.source === "blockchain";
 
   if (!data || data.error) {
     const errorMessage = error || data?.error || "No forecast available";
@@ -72,6 +74,12 @@ export default function AOVForecastLineChart({ periods }: { periods: number }) {
             </CardTitle>
             <CardDescription className="mt-2">
               {periods}-month projection • MAPE: {data.metrics?.mape?.toFixed(2) || "N/A"}%
+              {isFromBlockchain && (
+                <Badge variant="outline" className="ml-2 gap-1 text-green-500 border-green-500/50">
+                  <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  On-Chain
+                </Badge>
+              )}
             </CardDescription>
           </div>
         </div>

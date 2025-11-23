@@ -1,0 +1,581 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "forecastType",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "ForecastStored",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "forecastData",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "month",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "forecastType",
+						"type": "string"
+					}
+				],
+				"name": "forecastExists",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "forecastType",
+						"type": "string"
+					}
+				],
+				"name": "getForecastData",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "month",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "value",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct SalesForecast.ForecastData[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "forecastType",
+						"type": "string"
+					}
+				],
+				"name": "getForecastRecord",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "user",
+								"type": "address"
+							},
+							{
+								"internalType": "string",
+								"name": "forecastType",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestamp",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "historicalCount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "forecastCount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "exists",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct SalesForecast.ForecastRecord",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "forecastType",
+						"type": "string"
+					}
+				],
+				"name": "getHistoricalData",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "month",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "value",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct SalesForecast.ForecastData[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "forecastType",
+						"type": "string"
+					}
+				],
+				"name": "getMetrics",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "mape",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "mae",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "rmse",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct SalesForecast.Metrics",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "userAddress",
+						"type": "address"
+					}
+				],
+				"name": "getUserForecastTypes",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "historicalData",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "month",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"name": "metrics",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "mape",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "mae",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rmse",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"name": "records",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "forecastType",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "historicalCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "forecastCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "exists",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "forecastType",
+						"type": "string"
+					},
+					{
+						"internalType": "string[]",
+						"name": "historicalMonths",
+						"type": "string[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "historicalValues",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "string[]",
+						"name": "forecastMonths",
+						"type": "string[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "forecastValues",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "mape",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "mae",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rmse",
+						"type": "uint256"
+					}
+				],
+				"name": "storeForecast",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "userForecastTypes",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Simple smart contract to store and retrieve sales forecasting data Simplified structure: - Store historical and forecast data as simple arrays - Store metrics separately - Easy to integrate with frontend",
+			"kind": "dev",
+			"methods": {
+				"forecastExists(address,string)": {
+					"details": "Check if forecast exists",
+					"params": {
+						"forecastType": "Forecast type",
+						"userAddress": "User address"
+					},
+					"returns": {
+						"_0": "bool True if exists"
+					}
+				},
+				"getForecastData(address,string)": {
+					"details": "Get forecast data",
+					"params": {
+						"forecastType": "Forecast type",
+						"userAddress": "User address"
+					},
+					"returns": {
+						"_0": "Array of ForecastData"
+					}
+				},
+				"getForecastRecord(address,string)": {
+					"details": "Get forecast record metadata",
+					"params": {
+						"forecastType": "Forecast type",
+						"userAddress": "User address"
+					},
+					"returns": {
+						"_0": "ForecastRecord metadata"
+					}
+				},
+				"getHistoricalData(address,string)": {
+					"details": "Get historical data",
+					"params": {
+						"forecastType": "Forecast type",
+						"userAddress": "User address"
+					},
+					"returns": {
+						"_0": "Array of ForecastData"
+					}
+				},
+				"getMetrics(address,string)": {
+					"details": "Get forecast metrics",
+					"params": {
+						"forecastType": "Forecast type",
+						"userAddress": "User address"
+					},
+					"returns": {
+						"_0": "Metrics struct"
+					}
+				},
+				"getUserForecastTypes(address)": {
+					"details": "Get all forecast types for a user",
+					"params": {
+						"userAddress": "User address"
+					},
+					"returns": {
+						"_0": "Array of forecast type strings"
+					}
+				},
+				"storeForecast(string,string[],uint256[],string[],uint256[],uint256,uint256,uint256)": {
+					"details": "Store forecast data (simplified - stores in batches to avoid stack issues)",
+					"params": {
+						"forecastMonths": "Array of forecast month strings",
+						"forecastType": "Type: \"revenue\", \"aov\", or \"orders\"",
+						"forecastValues": "Array of forecast values (multiply by 1e18)",
+						"historicalMonths": "Array of historical month strings",
+						"historicalValues": "Array of historical values (multiply by 1e18)",
+						"mae": "MAE * 1e18",
+						"mape": "MAPE * 100",
+						"rmse": "RMSE * 1e18"
+					}
+				}
+			},
+			"title": "SalesForecast",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/contracts/SalesForecast.sol": "SalesForecast"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"src/contracts/SalesForecast.sol": {
+			"keccak256": "0xc60dec5c23e7c2fe3782c6064be2f4b9ff0bf4d7b397aed2bac54df6b7e6044c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://117bfd4ed9790fd28cc729dc14cd5a742d14189a2fd3bffe12cfe173678b59b7",
+				"dweb:/ipfs/QmQ45wzWo26bQA8RtEMRtqRNs4ZgDY7pX8TiRGqqhgbMMU"
+			]
+		}
+	},
+	"version": 1
+}

@@ -18,9 +18,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const value = payload[0].value as number;
     return (
-      <div className="bg-background/95 backdrop-blur-md border-2 border-primary/50 rounded-xl p-4 shadow-2xl">
-        <p className="font-bold text-lg text-foreground mb-2">{label}</p>
-        <p className="text-xl font-bold text-primary">{formatCurrency(value)}</p>
+      <div className="bg-[#0a0a0a] border border-gray-700 rounded-lg p-3 shadow-xl">
+        <p className="font-semibold text-sm text-white mb-2">{label}</p>
+        <p className="text-sm font-bold text-indigo-400">{formatCurrency(value)}</p>
       </div>
     );
   }
@@ -31,16 +31,18 @@ export default function RevenueByHourAreaChart() {
   const { revenueByHour } = useDashboardDataContext();
   const data = revenueByHour || [];
 
+  // Don't render if no data
   if (data.length === 0) {
+    return null;
     return (
-      <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl">
-        <CardHeader className="border-b border-border/50">
-          <CardTitle className="text-xl font-bold">Revenue by Hour of Day</CardTitle>
-          <CardDescription>Peak shopping hours</CardDescription>
+      <Card className="bg-[#0a0a0a] border border-gray-800">
+        <CardHeader className="border-b border-gray-800">
+          <CardTitle className="text-lg font-semibold text-white">Revenue by Hour of Day</CardTitle>
+          <CardDescription className="text-gray-400 text-sm">Peak shopping hours</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="h-[400px] flex items-center justify-center">
-            <p className="text-muted-foreground">No data available</p>
+            <p className="text-gray-500">No data available</p>
           </div>
         </CardContent>
       </Card>
@@ -57,22 +59,22 @@ export default function RevenueByHourAreaChart() {
   const totalRevenue = data.reduce((sum, item) => sum + item.revenue, 0);
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300">
-      <CardHeader className="border-b border-border/50 bg-gradient-to-r from-indigo-500/5 to-transparent">
+    <Card className="bg-[#0a0a0a] border border-gray-800">
+      <CardHeader className="border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Clock className="h-5 w-5 text-indigo-400" />
+            <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+              <Clock className="h-4 w-4 text-indigo-400" />
               Revenue by Hour of Day
             </CardTitle>
-            <CardDescription className="mt-2">
+            <CardDescription className="mt-1 text-gray-400 text-sm">
               Best hour: {String(bestHour.hour).padStart(2, "0")}:00 ({formatCurrency(bestHour.revenue)}) • Total: {formatCurrency(totalRevenue)}
             </CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="bg-gradient-to-br from-background/50 to-background/30 rounded-xl p-4 border border-border/30">
+        <div className="bg-black rounded-lg p-4">
           <ResponsiveContainer width="100%" height={400}>
             <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 80 }}>
               <defs>
@@ -81,26 +83,26 @@ export default function RevenueByHourAreaChart() {
                   <stop offset="95%" stopColor="#6366f1" stopOpacity={0.1}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" opacity={0.2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" opacity={0.5} />
               <XAxis 
                 dataKey="hour" 
                 angle={-45} 
                 textAnchor="end" 
                 height={100}
-                stroke="hsl(var(--foreground))"
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 10, fontWeight: 600 }}
-                tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
+                stroke="#666"
+                tick={{ fill: "#999", fontSize: 10 }}
+                tickLine={{ stroke: "#333" }}
                 interval={1}
               />
               <YAxis 
-                stroke="hsl(var(--foreground))"
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 12, fontWeight: 600 }}
+                stroke="#666"
+                tick={{ fill: "#999", fontSize: 12 }}
                 tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                tickLine={{ stroke: "hsl(var(--muted-foreground))" }}
+                tickLine={{ stroke: "#333" }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend 
-                wrapperStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
+                wrapperStyle={{ color: "#999", fontSize: "12px" }}
                 iconType="circle"
               />
               <Area
