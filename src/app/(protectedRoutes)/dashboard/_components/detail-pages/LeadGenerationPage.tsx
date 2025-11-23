@@ -524,162 +524,161 @@ export default function LeadGenerationPage() {
           {/* Lead Generation Modal */}
           <Dialog open={showLeadModal} onOpenChange={setShowLeadModal}>
             <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-                          <Sparkles className="h-6 w-6 text-purple-400" />
-                          Generate Leads
-                        </DialogTitle>
-                        <DialogDescription>
-                          Generate leads based on your best customer profiles and analysis
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <div className="flex-1">
-                            <Label htmlFor="leadCount">Number of Leads</Label>
-                            <Input
-                              id="leadCount"
-                              type="number"
-                              min={10}
-                              max={500}
-                              value={leadCount}
-                              onChange={(e) => setLeadCount(parseInt(e.target.value) || 50)}
-                              className="mt-1"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <Label>Target Country</Label>
-                            <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                              <SelectTrigger className="mt-1">
-                                <SelectValue placeholder="All Countries" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="all">All Countries</SelectItem>
-                                {availableCountries.map((country) => (
-                                  <SelectItem key={country} value={country}>
-                                    {country}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="flex-1">
-                            <Label>Target Segment</Label>
-                            <Select value={selectedSegment} onValueChange={setSelectedSegment}>
-                              <SelectTrigger className="mt-1">
-                                <SelectValue placeholder="All Segments" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="all">All Segments</SelectItem>
-                                {availableSegments.map((segment) => (
-                                  <SelectItem key={segment} value={segment}>
-                                    {segment}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                        <Button
-                          onClick={handleGenerateLeads}
-                          disabled={isGeneratingLeads}
-                          className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
-                        >
-                          {isGeneratingLeads ? (
-                            <>
-                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              Generating Leads...
-                            </>
-                          ) : (
-                            <>
-                              <Sparkles className="h-4 w-4 mr-2" />
-                              Generate {leadCount} Leads
-                            </>
-                          )}
-                        </Button>
-                        
-                        {leadStats && (
-                          <div className="grid grid-cols-4 gap-4 p-4 rounded-lg bg-muted/30 border border-border/50">
-                            <div>
-                              <div className="text-xs text-muted-foreground">Total Leads</div>
-                              <div className="text-lg font-bold">{leadStats.totalLeads}</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-muted-foreground">Avg Lead Score</div>
-                              <div className="text-lg font-bold">{leadStats.avgLeadScore.toFixed(1)}</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-muted-foreground">High Value</div>
-                              <div className="text-lg font-bold text-emerald-400">{leadStats.highValueLeads}</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-muted-foreground">Est. Total Value</div>
-                              <div className="text-lg font-bold text-purple-400">${leadStats.estimatedTotalValue.toFixed(0)}</div>
-                            </div>
-                          </div>
-                        )}
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+                  <Sparkles className="h-6 w-6 text-purple-400" />
+                  Generate Leads
+                </DialogTitle>
+                <DialogDescription>
+                  Generate leads based on your best customer profiles and analysis
+                </DialogDescription>
+              </DialogHeader>
 
-                        {generatedLeads.length > 0 && (
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                              <h3 className="text-lg font-bold">Generated Leads ({generatedLeads.length})</h3>
-                              <Button
-                                variant="outline"
-                                onClick={exportLeadsToCSV}
-                              >
-                                <Download className="h-4 w-4 mr-2" />
-                                Export CSV
-                              </Button>
-                            </div>
-                            <div className="border rounded-lg overflow-hidden">
-                              <Table>
-                                <TableHeader>
-                                  <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Company</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Phone</TableHead>
-                                    <TableHead>Industry</TableHead>
-                                    <TableHead>Country</TableHead>
-                                    <TableHead>Lead Score</TableHead>
-                                    <TableHead>Est. Value</TableHead>
-                                  </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                  {generatedLeads.map((lead, index) => (
-                                    <TableRow key={index}>
-                                      <TableCell className="font-medium">{lead.name}</TableCell>
-                                      <TableCell>{lead.company}</TableCell>
-                                      <TableCell>{lead.email}</TableCell>
-                                      <TableCell>{lead.phone}</TableCell>
-                                      <TableCell>{lead.industry}</TableCell>
-                                      <TableCell>{lead.country}</TableCell>
-                                      <TableCell>
-                                        <Badge
-                                          variant="outline"
-                                          className={
-                                            parseInt(lead.leadScore) >= 70
-                                              ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/50"
-                                              : parseInt(lead.leadScore) >= 50
-                                              ? "bg-amber-500/20 text-amber-400 border-amber-500/50"
-                                              : "bg-gray-500/20 text-gray-400 border-gray-500/50"
-                                          }
-                                        >
-                                          {lead.leadScore}
-                                        </Badge>
-                                      </TableCell>
-                                      <TableCell className="font-semibold text-emerald-400">{lead.estimatedValue}</TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              </Table>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-          )}
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <Label htmlFor="leadCount">Number of Leads</Label>
+                    <Input
+                      id="leadCount"
+                      type="number"
+                      min={10}
+                      max={500}
+                      value={leadCount}
+                      onChange={(e) => setLeadCount(parseInt(e.target.value) || 50)}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label>Target Country</Label>
+                    <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="All Countries" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Countries</SelectItem>
+                        {availableCountries.map((country) => (
+                          <SelectItem key={country} value={country}>
+                            {country}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1">
+                    <Label>Target Segment</Label>
+                    <Select value={selectedSegment} onValueChange={setSelectedSegment}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="All Segments" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Segments</SelectItem>
+                        {availableSegments.map((segment) => (
+                          <SelectItem key={segment} value={segment}>
+                            {segment}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleGenerateLeads}
+                  disabled={isGeneratingLeads}
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                >
+                  {isGeneratingLeads ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Generating Leads...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Generate {leadCount} Leads
+                    </>
+                  )}
+                </Button>
+
+                {leadStats && (
+                  <div className="grid grid-cols-4 gap-4 p-4 rounded-lg bg-muted/30 border border-border/50">
+                    <div>
+                      <div className="text-xs text-muted-foreground">Total Leads</div>
+                      <div className="text-lg font-bold">{leadStats.totalLeads}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted-foreground">Avg Lead Score</div>
+                      <div className="text-lg font-bold">{leadStats.avgLeadScore.toFixed(1)}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted-foreground">High Value</div>
+                      <div className="text-lg font-bold text-emerald-400">{leadStats.highValueLeads}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-muted-foreground">Est. Total Value</div>
+                      <div className="text-lg font-bold text-purple-400">${leadStats.estimatedTotalValue.toFixed(0)}</div>
+                    </div>
+                  </div>
+                )}
+
+                {generatedLeads.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-bold">Generated Leads ({generatedLeads.length})</h3>
+                      <Button variant="outline" onClick={exportLeadsToCSV}>
+                        <Download className="h-4 w-4 mr-2" />
+                        Export CSV
+                      </Button>
+                    </div>
+
+                    <div className="border rounded-lg overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Company</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Phone</TableHead>
+                            <TableHead>Industry</TableHead>
+                            <TableHead>Country</TableHead>
+                            <TableHead>Lead Score</TableHead>
+                            <TableHead>Est. Value</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {generatedLeads.map((lead, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">{lead.name}</TableCell>
+                              <TableCell>{lead.company}</TableCell>
+                              <TableCell>{lead.email}</TableCell>
+                              <TableCell>{lead.phone}</TableCell>
+                              <TableCell>{lead.industry}</TableCell>
+                              <TableCell>{lead.country}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant="outline"
+                                  className={
+                                    parseInt(lead.leadScore) >= 70
+                                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/50"
+                                      : parseInt(lead.leadScore) >= 50
+                                      ? "bg-amber-500/20 text-amber-400 border-amber-500/50"
+                                      : "bg-gray-500/20 text-gray-400 border-gray-500/50"
+                                  }
+                                >
+                                  {lead.leadScore}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="font-semibold text-emerald-400">{lead.estimatedValue}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
 
           {/* Visualizations */}
           {rawData && (countryChartData.length > 0 || segmentChartData.length > 0) && (

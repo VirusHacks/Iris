@@ -46,9 +46,9 @@ const NewLeadsPage = async () => {
           </p>
         </div>
         <CreditsStats
-          creditsEarned={stats.creditsEarned || 0}
-          clientsConverted={stats.convertedLeads || 0}
-          conversionRate={stats.conversionRate || 0}
+          creditsEarned={stats?.creditsEarned ?? 0}
+          clientsConverted={stats?.convertedLeads ?? 0}
+          conversionRate={stats?.conversionRate ?? 0}
         />
       </div>
 
@@ -58,10 +58,10 @@ const NewLeadsPage = async () => {
         <div className="lg:col-span-2 space-y-6">
           <NewLeadsList leads={leads} />
           <LeadConversionFunnel
-            totalLeads={stats.totalLeads || 0}
-            contactedLeads={stats.contactedLeads || 0}
-            qualifiedLeads={stats.qualifiedLeads || 0}
-            convertedLeads={stats.convertedLeads || 0}
+            totalLeads={stats?.totalLeads ?? 0}
+            contactedLeads={stats?.contactedLeads ?? 0}
+            qualifiedLeads={stats?.qualifiedLeads ?? 0}
+            convertedLeads={stats?.convertedLeads ?? 0}
           />
         </div>
 
@@ -69,9 +69,9 @@ const NewLeadsPage = async () => {
         <div className="space-y-6">
           <CSVUploadBar />
           <ConversionRateChart
-            totalLeads={stats.totalLeads || 0}
-            convertedLeads={stats.convertedLeads || 0}
-            conversionRate={stats.conversionRate || 0}
+            totalLeads={stats?.totalLeads ?? 0}
+            convertedLeads={stats?.convertedLeads ?? 0}
+            conversionRate={stats?.conversionRate ?? 0}
           />
           <OfferMessage totalLeads={leads.length} />
         </div>

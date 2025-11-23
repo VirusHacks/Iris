@@ -147,7 +147,8 @@ export default function BlockchainInfoPanel() {
       window.addEventListener("forecastStored", handleForecastStored as EventListener);
       
       return () => {
-        window.ethereum.removeListener?.("accountsChanged", handleAccountsChanged);
+        // Use optional chaining because TypeScript may still consider window.ethereum possibly undefined
+        window.ethereum?.removeListener?.("accountsChanged", handleAccountsChanged);
         window.removeEventListener("forecastStored", handleForecastStored as EventListener);
       };
     }
